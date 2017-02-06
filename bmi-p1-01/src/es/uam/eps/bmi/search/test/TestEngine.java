@@ -9,7 +9,7 @@ import es.uam.eps.bmi.search.index.freq.TermFreq;
 import es.uam.eps.bmi.search.index.lucene.LuceneIndex;
 import es.uam.eps.bmi.search.index.lucene.LuceneIndexBuilder;
 import es.uam.eps.bmi.search.lucene.LuceneEngine;
-import es.uam.eps.bmi.search.pablo.VSMEngine;
+import es.uam.eps.bmi.search.vsm.VSMEngine;
 import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.SearchRankingDoc;
 import es.uam.eps.bmi.search.ui.TextResultDocRenderer;
@@ -32,13 +32,12 @@ public class TestEngine {
     
     static void testCollection(String collectionPath, String indexPath, String word, String query) throws IOException {
         
-        // Prueba de creación de índice
-        
+        // Prueba de creación de índice        
         IndexBuilder builder = new LuceneIndexBuilder();
         builder.build(collectionPath, indexPath);
+       
         
-        // Pruebas de inspección del índice
-        
+        // Pruebas de inspección del índice        
         Index index = new LuceneIndex(indexPath);
         List<String> terms = index.getAllTerms();
         Collections.sort(terms, new Comparator<String>() {
@@ -61,16 +60,16 @@ public class TestEngine {
         int docID = 0;
         FreqVector vector = index.getDocVector(docID);
         int initialTerm = (int) vector.size() / 2, nTerms = 5;
-        System.out.print("\n  A few term frequencies for docID = " + docID + " - " + index.getDocPath(docID) + ": ");
+        System.out.print("\n  A few term frequencies for docID = " + docID + " - " + index.getDocVector(docID) + ": ");
         int i = 0;
         for (TermFreq f : vector) 
             if (++i >= initialTerm && i < initialTerm + nTerms) System.out.print(f.getTerm() + " (" + f.getFreq() + ") ");
         System.out.println();
-        System.out.println("\n  Frequency of word \"" + word + "\" in document " + docID + " - " + index.getDocPath(docID) + ": " + index.getTermFreq(word, docID));
+        System.out.println("\n  Frequency of word \"" + word + "\" in document " + docID + " - " + index.getDocVector(docID) + ": " + index.getTermFreq(word, docID));
         System.out.println("\n  Total frequency of word \"" + word + "\" in the collection: " + index.getTermTotalFreq(word) + " occurrences over " + index.getTermDocFreq(word) + " documents\n");
+  
         
-        // Pruebas de búsqueda
-        
+        // Pruebas de búsqueda        
         int cutoff = 5;
         SearchEngine engine = new LuceneEngine("prueba");
         // Provocamos error
@@ -80,7 +79,7 @@ public class TestEngine {
             System.out.println ("\n  No index found in " + ex.getFolder() + "!\n");
         }
         
-        engine.loadIndex(indexPath);
+        engine.º(indexPath);
         testSearch (engine, query, cutoff);
     }
     
