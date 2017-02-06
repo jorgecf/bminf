@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/bmi-p1-01/src/es/uam/eps/bmi/search/test/TestEngine.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="es.uam.eps.bmi.search.test.TestEngine"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="bmi-p1-01"/>
+</launchConfiguration>
