@@ -36,12 +36,14 @@ public class LuceneIndex extends AbstractIndex {
 		this.indexPath = iPath;
 
 		Path path = Paths.get(iPath);
-		
-		/* Creamos un FSDirectory a partir de la ruta pasada y lo abrimos
-		 * en el indexReader */
-		 try {
+
+		/*
+		 * Creamos un FSDirectory a partir de la ruta pasada y lo abrimos en el
+		 * indexReader
+		 */
+		try {
 			Directory directory = FSDirectory.open(path);
-			this.idxReader= DirectoryReader.open(directory);
+			this.idxReader = DirectoryReader.open(directory);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -49,11 +51,11 @@ public class LuceneIndex extends AbstractIndex {
 
 	@Override
 	public List<String> getAllTerms() {
-		
+
 		// cargar terminos del indice
-		
-		List<String> ret;		
-		
+
+		List<String> ret;
+
 		return null;
 	}
 
@@ -69,8 +71,26 @@ public class LuceneIndex extends AbstractIndex {
 		return null;
 	}
 
+	@Override
+	public String getDocPath(int doc) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public String getPath() {
 		return path;
+	}
+
+	@Override
+	public String getTermFreq(String word, int docID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getTermDocFreq(String word) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public void setPath(String path) {

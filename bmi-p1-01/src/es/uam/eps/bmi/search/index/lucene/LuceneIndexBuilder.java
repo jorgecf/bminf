@@ -1,19 +1,23 @@
 package es.uam.eps.bmi.search.index.lucene;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
@@ -42,7 +46,6 @@ public class LuceneIndexBuilder implements IndexBuilder {
 
 		/* 1) Leer los archivos de disco y cargar sus rutas */
 		File collectionFile = new File(collectionPath);
-
 		if (collectionFile.exists() == false) {
 			throw new IOException();
 		}
@@ -54,8 +57,25 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		 */
 		ArrayList<Document> documents = new ArrayList<Document>();
 
+		/* Si es un zip, leemos su contenido */
+		if (collectionPath.endsWith(".zip")) {
+
+			ZipFile zipFile = new ZipFile(collectionFile);
+			Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+			while (entries.hasMoreElements()) {
+				ZipEntry entry = entries.nextElement();
+				InputStream inputStream = zipFile.getInputStream(entry);
+				String entryName = entry.getName();
+				File f = new File(entryName); // TODO no funciona Zipentry to file
+
+				documents.add(this.getDocument(Jsoup.parse(f, "UTF-8", f.getName())));
+			}
+
+			zipFile.close();
+		}
 		/* Si es un directorio de html's cargamos cada archivo */
-		if (collectionFile.isDirectory() == true) {
+		else if (collectionFile.isDirectory() == true) {
 
 			for (File f : collectionFile.listFiles()) {
 				documents.add(this.getDocument(Jsoup.parse(f, "UTF-8", f.getName())));
@@ -63,7 +83,9 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		}
 		/* Si es un txt con webs, cargamos cada web */
 		else if (collectionFile.isFile() == true) {
+			
 			Stream<String> stream = Files.lines(Paths.get(collectionPath));
+			
 			stream.forEach(line -> {
 				try {
 					documents.add(this.getDocument(Jsoup.connect(line).get()));
