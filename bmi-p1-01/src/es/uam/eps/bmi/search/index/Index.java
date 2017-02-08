@@ -1,5 +1,6 @@
 package es.uam.eps.bmi.search.index;
 
+import java.io.IOException;
 import java.util.List;
 
 import es.uam.eps.bmi.search.index.freq.FreqVector;
@@ -10,7 +11,7 @@ public interface Index {
 
 	public abstract List<String> getAllTerms();
 
-	public abstract int getTermTotalFreq(String s);
+	public abstract int getTermTotalFreq(String s) throws IOException;
 
 	public abstract FreqVector getDocVector(int docID);
 

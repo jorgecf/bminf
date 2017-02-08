@@ -24,10 +24,10 @@ import java.util.List;
  */
 public class TestEngine {
 	public static void main(String a[]) throws IOException {
-		// testCollection("src/es/uam/eps/bmi/search/ranking", "index", "size", "public abstract");
+		testCollection("src/es/uam/eps/bmi/search/ranking", "index", "size", "public abstract");
 		testCollection("collections/docs.zip", "index", "seat", "obama family tree");
 		testCollection("collections/urls.txt", "index", "wikipedia", "information probability");
-		testSearch(new VSMEngine("index"), "information probability", 5);
+		// testSearch(new VSMEngine("index"), "information probability", 5);
 	}
 
 	static void testCollection(String collectionPath, String indexPath, String word, String query) throws IOException {
@@ -37,7 +37,7 @@ public class TestEngine {
 		builder.build(collectionPath, indexPath);
 
 		// Pruebas de inspección del índice
-	/*
+        Index index = new LuceneIndex(indexPath);
 		List<String> terms = index.getAllTerms();
 		Collections.sort(terms, new Comparator<String>() {
 			public int compare(String t1, String t2) {
@@ -49,7 +49,7 @@ public class TestEngine {
 				}
 			}
 		});
-
+/*
 		System.out.println("------------------------------");
 		System.out.println("Collection: " + collectionPath);
 		System.out.println("\n  Most frequent terms:");

@@ -11,6 +11,10 @@ local.properties
 .loadpath
 .recommenders
 
+# archivos practica 1
+bmi-p1-01/tmp
+bmi-p1-01/index
+
 
 # External tool builders
 .externalToolBuilders/

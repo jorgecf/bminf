@@ -25,17 +25,13 @@ public class LuceneIndex extends AbstractIndex {
 
 	public LuceneIndex(String path) throws IOException {
 		super(path);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void load(String iPath) {
 
-		// cargar el indice
-
-		this.indexPath = iPath;
-
 		Path path = Paths.get(iPath);
+		this.indexPath = iPath;
 
 		/*
 		 * Creamos un FSDirectory a partir de la ruta pasada y lo abrimos en el
@@ -92,9 +88,4 @@ public class LuceneIndex extends AbstractIndex {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-
 }
