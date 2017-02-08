@@ -1,34 +1,59 @@
 package es.uam.eps.bmi.search.index.lucene;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.SimpleFSDirectory;
 
 import es.uam.eps.bmi.search.index.AbstractIndex;
 import es.uam.eps.bmi.search.index.freq.FreqVector;
 
+public class LuceneIndex extends AbstractIndex {
 
-public class LuceneIndex extends AbstractIndex{
+	private IndexReader idxReader;
+	private String indexPath;
 
 	private String path; // ruta al indice
-	//private String content;
-	
-	
+	// private String content;
+
 	public LuceneIndex(String path) throws IOException {
 		super(path);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public void load(String s) {
+	public void load(String iPath) {
+
 		// cargar el indice
-		// TODO Auto-generated method stub
-		// 
+
+		this.indexPath = iPath;
+
+		Path path = Paths.get(iPath);
+		
+		/* Creamos un FSDirectory a partir de la ruta pasada y lo abrimos
+		 * en el indexReader */
+		 try {
+			Directory directory = FSDirectory.open(path);
+			this.idxReader= DirectoryReader.open(directory);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public List<String> getAllTerms() {
+		
 		// cargar terminos del indice
-		// TODO Auto-generated method stub
+		
+		List<String> ret;		
+		
 		return null;
 	}
 
@@ -50,14 +75,6 @@ public class LuceneIndex extends AbstractIndex{
 
 	public void setPath(String path) {
 		this.path = path;
-	}
-	
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
 	}
 
 }
