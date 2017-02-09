@@ -16,7 +16,6 @@ public class LuceneFreqVector implements FreqVector {
 
 	public LuceneFreqVector(Terms terms) throws IOException {
 		iterator = new LuceneFreqVectorIterator(terms);
-
 	}
 
 	public long size() throws IOException {

@@ -51,6 +51,7 @@ public class TestEngine {
 		});
 
 		System.out.println("------------------------------");
+		
 		System.out.println("Collection: " + collectionPath);
 		System.out.println("\n  Most frequent terms:");
 		for (String term : terms.subList(0, 5))
@@ -66,6 +67,8 @@ public class TestEngine {
 		for (TermFreq f : vector)
 			if (++i >= initialTerm && i < initialTerm + nTerms)
 				System.out.print(f.getTerm() + " (" + f.getFreq() + ") ");
+	
+		
 		System.out.println();
 		System.out.println("\n  Frequency of word \"" + word + "\" in document " + docID + " - "
 				+ index.getDocVector(docID) + ": " + index.getTermFreq(word, docID));

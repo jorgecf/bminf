@@ -109,15 +109,21 @@ public class LuceneIndex extends AbstractIndex {
 
 		TermsEnum t;
 
+		
+		/*
 		try {
 			t = this.idxReader.getTermVector(docID, "content").iterator();
 			ltf = new LuceneTermFreq(t);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		 */
 		// ltfi = new LuceneFreqVectorIterator(t);
 		// lfv = new LuceneFreqVector();
+		
+		
+		
+		
 
 		return null;
 	}
