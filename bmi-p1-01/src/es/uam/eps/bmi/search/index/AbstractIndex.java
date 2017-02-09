@@ -7,6 +7,7 @@ import java.io.IOException;
  * @author pablo
  */
 public abstract class AbstractIndex implements Index {
+	
 	protected Index index;
 	protected String indexFolder;
 

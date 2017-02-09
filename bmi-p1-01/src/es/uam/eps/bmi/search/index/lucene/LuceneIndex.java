@@ -4,16 +4,30 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.Fields;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.MultiFields;
+import org.apache.lucene.index.Terms;
+import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.SimpleFSDirectory;
+import org.jsoup.nodes.Document;
 
 import es.uam.eps.bmi.search.index.AbstractIndex;
 import es.uam.eps.bmi.search.index.freq.FreqVector;
+import es.uam.eps.bmi.search.index.freq.lucene.LuceneFreqVector;
+import es.uam.eps.bmi.search.index.freq.lucene.LuceneFreqVectorIterator;
+import es.uam.eps.bmi.search.index.freq.lucene.LuceneTermFreq;
 
 public class LuceneIndex extends AbstractIndex {
 
@@ -45,25 +59,66 @@ public class LuceneIndex extends AbstractIndex {
 		}
 	}
 
+	private List<String> getRawTerms() {
+
+		List<String> ret = new ArrayList<String>();
+
+		for (int i = 0; i < idxReader.numDocs(); i++) {
+
+			// TODO if (idxReader.isDeleted(i))
+			// continue;
+
+			org.apache.lucene.document.Document doc;
+			try {
+				doc = idxReader.document(i);
+				String[] s = doc.getValues("content");
+
+				for (String s1 : s) {
+					ret.addAll(new ArrayList<String>(Arrays.asList(s1.split(" "))));
+				}
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		/* eliminamos tokens innecesarios y mayusculas */
+		List<String> res = ret.stream().map(str -> str.replaceAll("[{}*//()@;]", "").toLowerCase())
+				.filter(str -> str.length() > 0).sorted(String::compareTo).collect(Collectors.toList());
+
+		return res;
+	}
+
 	@Override
 	public List<String> getAllTerms() {
-
-		// cargar terminos del indice
-
-		List<String> ret;
-
-		return null;
+		return this.getRawTerms().stream().distinct().collect(Collectors.toList());
 	}
 
 	@Override
 	public int getTermTotalFreq(String s) {
-		// TODO Auto-generated method stub
-		return 0;
+		List<String> ret = this.getRawTerms();
+		return Collections.frequency(ret, s);
 	}
 
 	@Override
 	public FreqVector getDocVector(int docID) {
-		// TODO Auto-generated method stub
+
+		LuceneTermFreq ltf;
+		LuceneFreqVector lfv;
+		LuceneFreqVectorIterator ltfi;
+
+		TermsEnum t;
+
+		try {
+			t = this.idxReader.getTermVector(docID, "content").iterator();
+			ltf = new LuceneTermFreq(t);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// ltfi = new LuceneFreqVectorIterator(t);
+		// lfv = new LuceneFreqVector();
+
 		return null;
 	}
 

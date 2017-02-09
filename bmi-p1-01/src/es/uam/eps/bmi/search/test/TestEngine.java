@@ -25,8 +25,8 @@ import java.util.List;
 public class TestEngine {
 	public static void main(String a[]) throws IOException {
 		testCollection("src/es/uam/eps/bmi/search/ranking", "index", "size", "public abstract");
-		testCollection("collections/docs.zip", "index", "seat", "obama family tree");
-		testCollection("collections/urls.txt", "index", "wikipedia", "information probability");
+		//testCollection("collections/docs.zip", "index", "seat", "obama family tree");
+		//testCollection("collections/urls.txt", "index", "wikipedia", "information probability");
 		// testSearch(new VSMEngine("index"), "information probability", 5);
 	}
 
@@ -49,7 +49,7 @@ public class TestEngine {
 				}
 			}
 		});
-/*
+
 		System.out.println("------------------------------");
 		System.out.println("Collection: " + collectionPath);
 		System.out.println("\n  Most frequent terms:");
@@ -58,8 +58,10 @@ public class TestEngine {
 
 		int docID = 0;
 		FreqVector vector = index.getDocVector(docID);
+		
 		int initialTerm = (int) vector.size() / 2, nTerms = 5;
 		System.out.print("\n  A few term frequencies for docID = " + docID + " - " + index.getDocVector(docID) + ": ");
+		
 		int i = 0;
 		for (TermFreq f : vector)
 			if (++i >= initialTerm && i < initialTerm + nTerms)

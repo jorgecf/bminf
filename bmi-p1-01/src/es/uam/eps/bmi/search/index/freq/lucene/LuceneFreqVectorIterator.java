@@ -12,7 +12,8 @@ import org.apache.lucene.util.BytesRef;
  * @author pablo
  */
 public class LuceneFreqVectorIterator implements FreqVectorIterator {
-    TermsEnum terms;
+   
+	TermsEnum terms;
     long size;
     long pointer;
 

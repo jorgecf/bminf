@@ -11,21 +11,23 @@ import org.apache.lucene.index.Terms;
  * @author pablo
  */
 public class LuceneFreqVector implements FreqVector {
-    LuceneFreqVectorIterator iterator;
-    
-    public LuceneFreqVector(Terms terms) throws IOException {
-        iterator = new LuceneFreqVectorIterator(terms);
 
-    }
-    public long size() throws IOException {
-        return iterator.size;
-    }
+	LuceneFreqVectorIterator iterator;
 
-    public Iterator<TermFreq> iterator() {
-        return iterator;
-    }
-    
-    public long getFreq(String term) throws IOException {
-        return iterator.getFreq(term);
-    }
+	public LuceneFreqVector(Terms terms) throws IOException {
+		iterator = new LuceneFreqVectorIterator(terms);
+
+	}
+
+	public long size() throws IOException {
+		return iterator.size;
+	}
+
+	public Iterator<TermFreq> iterator() {
+		return iterator;
+	}
+
+	public long getFreq(String term) throws IOException {
+		return iterator.getFreq(term);
+	}
 }

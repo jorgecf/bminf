@@ -2,6 +2,11 @@ package es.uam.eps.bmi.search.ranking;
 
 import java.io.IOException;
 
+/**
+ * 
+ * @author jorge
+ *
+ */
 public class SearchRankingDoc implements Comparable<SearchRankingDoc> {
 
 	@Override

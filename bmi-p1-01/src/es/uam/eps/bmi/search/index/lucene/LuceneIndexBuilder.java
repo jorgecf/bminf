@@ -23,6 +23,7 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.jsoup.Jsoup;
@@ -150,8 +151,15 @@ public class LuceneIndexBuilder implements IndexBuilder {
 	 *             si falla al añadir un documento al indice
 	 */
 	private void indexDocument(Document d) throws IOException {
+
 		System.out.println("Indexing (" + this.idxwriter.numDocs() + "): " + d.getField("filepath").stringValue());
-		this.idxwriter.addDocument(d);
+
+		/*
+		 * No usamos addDocument, ya que agregaria elementos repetidos. Con
+		 * updateDocument conseguimos que se actualicen pasandole el Field
+		 * filepath
+		 */
+		idxwriter.updateDocument(new Term("filepath", d.getField("filepath").stringValue()), d);
 	}
 
 	/**
