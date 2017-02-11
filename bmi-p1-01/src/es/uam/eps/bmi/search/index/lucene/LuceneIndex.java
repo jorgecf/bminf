@@ -1,48 +1,42 @@
 package es.uam.eps.bmi.search.index.lucene;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.Fields;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiFields;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.index.Terms;
 import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.store.SimpleFSDirectory;
+import org.apache.lucene.util.BytesRef;
 import org.jsoup.nodes.Document;
 
 import es.uam.eps.bmi.search.index.AbstractIndex;
+import es.uam.eps.bmi.search.index.NoIndexException;
 import es.uam.eps.bmi.search.index.freq.FreqVector;
 import es.uam.eps.bmi.search.index.freq.lucene.LuceneFreqVector;
 import es.uam.eps.bmi.search.index.freq.lucene.LuceneFreqVectorIterator;
-import es.uam.eps.bmi.search.index.freq.lucene.LuceneTermFreq;
 
 public class LuceneIndex extends AbstractIndex {
 
 	private IndexReader idxReader;
 	private String indexPath;
 
-	private String path; // ruta al indice
-	// private String content;
-
 	public LuceneIndex(String path) throws IOException {
 		super(path);
 	}
 
 	@Override
-	public void load(String iPath) {
+	public void load(String iPath) throws NoIndexException {
 
 		Path path = Paths.get(iPath);
 		this.indexPath = iPath;
@@ -53,6 +47,11 @@ public class LuceneIndex extends AbstractIndex {
 		 */
 		try {
 			Directory directory = FSDirectory.open(path);
+
+			if (DirectoryReader.indexExists(directory) == false) {
+				throw new NoIndexException("El indice no existe");
+			}
+
 			this.idxReader = DirectoryReader.open(directory);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -95,58 +94,42 @@ public class LuceneIndex extends AbstractIndex {
 	}
 
 	@Override
-	public int getTermTotalFreq(String s) {
-		List<String> ret = this.getRawTerms();
-		return Collections.frequency(ret, s);
-	}
+	public FreqVector getDocVector(int docID) throws IOException {
 
-	@Override
-	public FreqVector getDocVector(int docID) {
+		Terms t = this.idxReader.getTermVector(docID, "content");
+		LuceneFreqVector lfv = new LuceneFreqVector(t);
 
-		LuceneTermFreq ltf;
-		LuceneFreqVector lfv;
-		LuceneFreqVectorIterator ltfi;
-
-		TermsEnum t;
-
-		
-		/*
-		try {
-			t = this.idxReader.getTermVector(docID, "content").iterator();
-			ltf = new LuceneTermFreq(t);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		 */
-		// ltfi = new LuceneFreqVectorIterator(t);
-		// lfv = new LuceneFreqVector();
-		
-		
-		
-		
-
-		return null;
+		return lfv;
 	}
 
 	@Override
 	public String getDocPath(int doc) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getPath() {
-		return path;
+		return this.indexPath;
 	}
 
 	@Override
-	public String getTermFreq(String word, int docID) {
-		// TODO Auto-generated method stub
-		return null;
+	public long getTermFreq(String word, int docID) throws IOException {
+
+		LuceneFreqVector fvector = new LuceneFreqVector(this.idxReader.getTermVector(docID, "content"));
+		LuceneFreqVectorIterator fiter = (LuceneFreqVectorIterator) fvector.iterator();
+
+		// numero de veces que aparece "word" en un documento especifico
+		return fiter.getFreq(word);
 	}
 
 	@Override
-	public String getTermDocFreq(String word) {
-		// TODO Auto-generated method stub
-		return null;
+	public int getTermTotalFreq(String word) throws IOException {
+		Term t = new Term("content", word);
+
+		// numero de veces que aparece "word" en todos los documentos
+		return (int) this.idxReader.totalTermFreq(t);
+	}
+
+	@Override
+	public long getTermDocFreq(String word) throws IOException {
+		Term t = new Term("content", word);
+
+		// numero de documentos donde aparece "word"
+		return this.idxReader.docFreq(t);
 	}
 }

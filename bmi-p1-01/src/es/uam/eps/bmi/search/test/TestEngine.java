@@ -25,8 +25,10 @@ import java.util.List;
 public class TestEngine {
 	public static void main(String a[]) throws IOException {
 		testCollection("src/es/uam/eps/bmi/search/ranking", "index", "size", "public abstract");
-		//testCollection("collections/docs.zip", "index", "seat", "obama family tree");
-		//testCollection("collections/urls.txt", "index", "wikipedia", "information probability");
+		// testCollection("collections/docs.zip", "index", "seat", "obama family
+		// tree");
+		// testCollection("collections/urls.txt", "index", "wikipedia",
+		// "information probability");
 		// testSearch(new VSMEngine("index"), "information probability", 5);
 	}
 
@@ -37,7 +39,7 @@ public class TestEngine {
 		builder.build(collectionPath, indexPath);
 
 		// Pruebas de inspección del índice
-        Index index = new LuceneIndex(indexPath);
+		Index index = new LuceneIndex(indexPath);
 		List<String> terms = index.getAllTerms();
 		Collections.sort(terms, new Comparator<String>() {
 			public int compare(String t1, String t2) {
@@ -51,7 +53,7 @@ public class TestEngine {
 		});
 
 		System.out.println("------------------------------");
-		
+
 		System.out.println("Collection: " + collectionPath);
 		System.out.println("\n  Most frequent terms:");
 		for (String term : terms.subList(0, 5))
@@ -59,41 +61,44 @@ public class TestEngine {
 
 		int docID = 0;
 		FreqVector vector = index.getDocVector(docID);
-		
-		int initialTerm = (int) vector.size() / 2, nTerms = 5;
+
+		int initialTerm = (int) vector.size() / 2;
+		int nTerms = 5;
 		System.out.print("\n  A few term frequencies for docID = " + docID + " - " + index.getDocVector(docID) + ": ");
-		
+
 		int i = 0;
 		for (TermFreq f : vector)
 			if (++i >= initialTerm && i < initialTerm + nTerms)
 				System.out.print(f.getTerm() + " (" + f.getFreq() + ") ");
-	
-		
+
 		System.out.println();
+
 		System.out.println("\n  Frequency of word \"" + word + "\" in document " + docID + " - "
 				+ index.getDocVector(docID) + ": " + index.getTermFreq(word, docID));
+
 		System.out.println("\n  Total frequency of word \"" + word + "\" in the collection: "
 				+ index.getTermTotalFreq(word) + " occurrences over " + index.getTermDocFreq(word) + " documents\n");
 
 		// Pruebas de búsqueda
-	//	int cutoff = 5;
-	//	SearchEngine engine = new LuceneEngine("prueba");
+		int cutoff = 5;
+		SearchEngine engine = new LuceneEngine("prueba");
+
 		// Provocamos error
-	/*
-	 	try {
-	 
+		try {
 			testSearch(engine, query, cutoff);
 		} catch (NoIndexException ex) {
 			System.out.println("\n  No index found in " + ex.getFolder() + "!\n");
 		}
 
-		engine.º(indexPath);
+		engine.loadIndex(indexPath);
 		testSearch(engine, query, cutoff);
-	*/
+
 	}
 
 	static void testSearch(SearchEngine engine, String query, int cutoff) throws IOException {
+		
 		SearchRanking ranking = engine.search(query, cutoff);
+
 		System.out.println("  Top " + cutoff + " results for query \"" + query + "\"");
 		for (SearchRankingDoc result : ranking)
 			System.out.println("\t" + new TextResultDocRenderer(result));

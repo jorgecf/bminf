@@ -19,6 +19,7 @@ import java.util.zip.ZipInputStream;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
@@ -127,9 +128,17 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		if (d == null)
 			return null;
 
+		/* queremos que con el contenido se puedan crear TermVectors */
+		FieldType ft = new FieldType(TextField.TYPE_STORED);
+		ft.setStored(true);
+		ft.setStoreTermVectors(true);
+		ft.setStoreTermVectorOffsets(true);
+		ft.setStoreTermVectorPayloads(true);
+		ft.setStoreTermVectorPositions(true);
+
 		/* Creamos los campos del documento */
-		Field contentField = new TextField("content", d.body().text(), Store.YES);
 		Field filePathField = new StringField("filepath", d.baseUri(), Store.YES);
+		Field contentField = new Field("content", d.body().text(), ft);
 
 		/* Creamos el documento */
 		Document document = new Document();

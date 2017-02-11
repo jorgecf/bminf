@@ -29,4 +29,9 @@ public class LuceneFreqVector implements FreqVector {
 	public long getFreq(String term) throws IOException {
 		return iterator.getFreq(term);
 	}
+
+	@Override
+	public String toString() {
+		return "ruta-del-archivo-aqui";
+	}
 }

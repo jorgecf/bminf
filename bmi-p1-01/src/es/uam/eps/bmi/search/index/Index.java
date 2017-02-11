@@ -7,18 +7,18 @@ import es.uam.eps.bmi.search.index.freq.FreqVector;
 
 public interface Index {
 
-	public abstract void load(String s);
+	public abstract void load(String s) throws NoIndexException;
 
 	public abstract List<String> getAllTerms();
 
-	public abstract int getTermTotalFreq(String s) throws IOException;
+	public abstract int getTermTotalFreq(String word) throws IOException;
 
-	public abstract FreqVector getDocVector(int docID);
+	public abstract FreqVector getDocVector(int docID) throws IOException;
 
 	public abstract String getDocPath(int doc);
 
-	public abstract String getTermFreq(String word, int docID);
+	public abstract long getTermFreq(String word, int docID) throws IOException;
 
-	public abstract String getTermDocFreq(String word);
+	public abstract long getTermDocFreq(String word) throws IOException;
 	
 }
