@@ -1,5 +1,6 @@
 package es.uam.eps.bmi.search.ranking.lucene;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.lucene.search.ScoreDoc;
@@ -7,22 +8,22 @@ import org.apache.lucene.search.ScoreDoc;
 import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.SearchRankingDoc;
 
-public class LuceneRanking implements SearchRanking{
-	
-	private ScoreDoc scoreDoc;
+public class LuceneRanking implements SearchRanking {
+
+	private ArrayList<SearchRankingDoc> scoreDocs;
+
+	public LuceneRanking(ArrayList<SearchRankingDoc> scoreDocs) {
+		this.scoreDocs = scoreDocs;
+	}
 
 	@Override
 	public Iterator<SearchRankingDoc> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.scoreDocs.iterator();
 	}
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.scoreDocs.size();
 	}
-	
-	
 
 }

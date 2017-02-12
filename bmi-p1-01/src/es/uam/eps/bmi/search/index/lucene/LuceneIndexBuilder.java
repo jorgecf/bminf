@@ -4,13 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -83,7 +79,7 @@ public class LuceneIndexBuilder implements IndexBuilder {
 
 			File zipCollectionFile = new File("tmp/");
 			for (File f : zipCollectionFile.listFiles()) {
-				this.indexDocument((this.getDocument(Jsoup.parse(f, "UTF-8", f.getName()))));
+				this.indexDocument((this.getDocument(Jsoup.parse(f, "UTF-8", f.getAbsolutePath()))));
 			}
 
 		}
@@ -92,7 +88,7 @@ public class LuceneIndexBuilder implements IndexBuilder {
 
 			for (File f : collectionFile.listFiles()) {
 				if (f.isDirectory() == false) { // no entramos en directorios
-					this.indexDocument((this.getDocument(Jsoup.parse(f, "UTF-8", f.getName()))));
+					this.indexDocument((this.getDocument(Jsoup.parse(f, "UTF-8", f.getAbsolutePath()))));
 				}
 			}
 		}

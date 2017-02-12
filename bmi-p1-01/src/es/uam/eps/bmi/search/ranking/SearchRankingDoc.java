@@ -2,6 +2,8 @@ package es.uam.eps.bmi.search.ranking;
 
 import java.io.IOException;
 
+import org.apache.lucene.search.ScoreDoc;
+
 /**
  * 
  * @author jorge
@@ -9,20 +11,40 @@ import java.io.IOException;
  */
 public class SearchRankingDoc implements Comparable<SearchRankingDoc> {
 
+	private ScoreDoc scoreDoc;
+	private String path;
+
+	public SearchRankingDoc() {
+	}
+
+	public SearchRankingDoc(ScoreDoc scoreDoc, String path) {
+		this.scoreDoc = scoreDoc;
+		this.path = path;
+	}
+
 	@Override
 	public int compareTo(SearchRankingDoc o) {
-		// TODO Auto-generated method stub
+
+		// ordenados por docID
+		if (this.scoreDoc.doc > o.getScoreDoc().doc) {
+			return 1;
+		} else if (this.scoreDoc.doc < o.getScoreDoc().doc) {
+			return -1;
+		}
+
 		return 0;
 	}
 
 	public String getPath() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return path;
 	}
 
 	public double getScore() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.scoreDoc.score;
+	}
+
+	public ScoreDoc getScoreDoc() {
+		return scoreDoc;
 	}
 
 }

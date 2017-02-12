@@ -36,7 +36,7 @@ public class LuceneIndex extends AbstractIndex {
 	}
 
 	@Override
-	public void load(String iPath) throws NoIndexException {
+	public void load(String iPath) throws IOException {
 
 		Path path = Paths.get(iPath);
 		this.indexPath = iPath;
@@ -45,20 +45,22 @@ public class LuceneIndex extends AbstractIndex {
 		 * Creamos un FSDirectory a partir de la ruta pasada y lo abrimos en el
 		 * indexReader
 		 */
-		try {
-			Directory directory = FSDirectory.open(path);
 
-			if (DirectoryReader.indexExists(directory) == false) {
-				throw new NoIndexException("El indice no existe");
-			}
+		Directory directory = FSDirectory.open(path);
 
-			this.idxReader = DirectoryReader.open(directory);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (DirectoryReader.indexExists(directory) == false) {
+			throw new NoIndexException("El indice no existe");
 		}
+
+		this.idxReader = DirectoryReader.open(directory);
+
 	}
 
-	private List<String> getRawTerms() {
+	private List<String> getRawTerms() throws NoIndexException {
+
+		if (this.idxReader == null) {
+			throw new NoIndexException(this.indexPath);
+		}
 
 		List<String> ret = new ArrayList<String>();
 
@@ -90,7 +92,13 @@ public class LuceneIndex extends AbstractIndex {
 
 	@Override
 	public List<String> getAllTerms() {
-		return this.getRawTerms().stream().distinct().collect(Collectors.toList());
+		try {
+			return this.getRawTerms().stream().distinct().collect(Collectors.toList());
+		} catch (NoIndexException e) {
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 
 	@Override
@@ -103,8 +111,11 @@ public class LuceneIndex extends AbstractIndex {
 	}
 
 	@Override
-	public String getDocPath(int doc) {
-		return this.indexPath;
+	public String getDocPath(int docID) throws IOException {
+		// devolvemos la ruta fisica del documento pasado
+		org.apache.lucene.document.Document d = this.idxReader.document(docID);
+		return d.getValues("filepath")[0];
+		
 	}
 
 	@Override
@@ -132,4 +143,9 @@ public class LuceneIndex extends AbstractIndex {
 		// numero de documentos donde aparece "word"
 		return this.idxReader.docFreq(t);
 	}
+
+	public IndexReader getIndexReader() {
+		return idxReader;
+	}
+
 }

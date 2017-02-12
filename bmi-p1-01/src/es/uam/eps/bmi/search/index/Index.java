@@ -7,7 +7,7 @@ import es.uam.eps.bmi.search.index.freq.FreqVector;
 
 public interface Index {
 
-	public abstract void load(String s) throws NoIndexException;
+	public abstract void load(String s) throws IOException, NoIndexException;
 
 	public abstract List<String> getAllTerms();
 
@@ -15,7 +15,7 @@ public interface Index {
 
 	public abstract FreqVector getDocVector(int docID) throws IOException;
 
-	public abstract String getDocPath(int doc);
+	public abstract String getDocPath(int docID) throws IOException;
 
 	public abstract long getTermFreq(String word, int docID) throws IOException;
 

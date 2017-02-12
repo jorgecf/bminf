@@ -27,8 +27,7 @@ public class TestEngine {
 		testCollection("src/es/uam/eps/bmi/search/ranking", "index", "size", "public abstract");
 		// testCollection("collections/docs.zip", "index", "seat", "obama family
 		// tree");
-		// testCollection("collections/urls.txt", "index", "wikipedia",
-		// "information probability");
+		// testCollection("collections/urls.txt", "index", "wikipedia", "information probability");
 		// testSearch(new VSMEngine("index"), "information probability", 5);
 	}
 
