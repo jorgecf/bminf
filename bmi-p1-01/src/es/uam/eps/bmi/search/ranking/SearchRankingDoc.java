@@ -5,8 +5,11 @@ import java.io.IOException;
 import org.apache.lucene.search.ScoreDoc;
 
 /**
+ * El SearchRankingDoc se compone de un scoreDoc (documento resultado de una
+ * busqueda y su score) y la ruta al archivo correpondiente.
  * 
- * @author jorge
+ * @author
+ * @author
  *
  */
 public class SearchRankingDoc implements Comparable<SearchRankingDoc> {
@@ -25,7 +28,7 @@ public class SearchRankingDoc implements Comparable<SearchRankingDoc> {
 	@Override
 	public int compareTo(SearchRankingDoc o) {
 
-		// ordenados por docID
+		// los documentos son ordenados por docID
 		if (this.scoreDoc.doc > o.getScoreDoc().doc) {
 			return 1;
 		} else if (this.scoreDoc.doc < o.getScoreDoc().doc) {

@@ -3,11 +3,16 @@ package es.uam.eps.bmi.search.ranking.lucene;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.apache.lucene.search.ScoreDoc;
-
 import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.SearchRankingDoc;
 
+/**
+ * El LuceneRanking se compone de una lista de SearchRankingDocs.
+ * 
+ * @author
+ * @author
+ *
+ */
 public class LuceneRanking implements SearchRanking {
 
 	private ArrayList<SearchRankingDoc> scoreDocs;

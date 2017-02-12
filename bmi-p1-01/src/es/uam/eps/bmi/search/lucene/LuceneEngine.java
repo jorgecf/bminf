@@ -33,53 +33,40 @@ public class LuceneEngine extends AbstractEngine {
 
 	@Override
 	public SearchRanking search(String query, int cutoff) throws IOException {
-	
-		LuceneRanking ret = null;
-
-		/*
-		
-		 PhraseQuery.Builder builder = new PhraseQuery.Builder();
-		 
-		 String[] words = query.split(" ");
-		 
-		 for (String s : words) {
-		 builder.add(new Term("content", s));
-		 }
-		 
-		 PhraseQuery pQuery = builder.build();
-		 
-		*/
-		
-		BooleanQuery.Builder builder = new BooleanQuery.Builder();
-		
-		String[] words = query.split(" ");
-		 
-		 for (String s : words) {
-			 TermQuery tq = new TermQuery(new Term("content", s));
-			 builder.add(tq, BooleanClause.Occur.SHOULD);
-		 }
-		
-		BooleanQuery pQuery = builder.build();
-		
 
 		if (this.idxSearcher == null)
 			throw new NoIndexException(this.indexFolder);
 
+		// creamos un Query Booleana donde cada palabra de la query es a su vez
+		// un TermQuery, para buscar (preferentemente) documentos donde
+		// aparezcan todas las palabras
+		BooleanQuery.Builder builder = new BooleanQuery.Builder();
+
+		String[] words = query.split(" ");
+
+		for (String s : words) {
+			TermQuery tq = new TermQuery(new Term("content", s));
+			builder.add(tq, BooleanClause.Occur.SHOULD);
+		}
+
+		BooleanQuery pQuery = builder.build();
+
+		// realizamos la busqueda
 		TopDocs top = this.idxSearcher.search(pQuery, cutoff);
 
-			
-			ArrayList<SearchRankingDoc> srDocs = new ArrayList<>();
-			for (ScoreDoc sd : top.scoreDocs) {
-				SearchRankingDoc doc = new SearchRankingDoc(sd, this.index.getDocPath(sd.doc));
-				srDocs.add(doc);
-			}
-			
-			ret = new LuceneRanking(srDocs);
-		return ret;
+		// creamos un SearchRankingDoc para cada resultado
+		ArrayList<SearchRankingDoc> srDocs = new ArrayList<>();
+		for (ScoreDoc sd : top.scoreDocs) {
+			SearchRankingDoc doc = new SearchRankingDoc(sd, this.index.getDocPath(sd.doc));
+			srDocs.add(doc);
+		}
+
+		return new LuceneRanking(srDocs);
 	}
 
 	@Override
 	public void loadIndex(String path) throws IOException {
+
 		this.index = new LuceneIndex(path);
 
 		if (this.index != null && this.index.getIndexReader() != null)
