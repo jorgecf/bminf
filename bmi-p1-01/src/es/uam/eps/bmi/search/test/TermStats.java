@@ -26,7 +26,9 @@ public class TermStats {
 		PrintWriter pw1 = new PrintWriter(txtTermFreq);
 		
 		IndexBuilder builder = new LuceneIndexBuilder();
-		builder.build("collections/urls.txt", "index");
+	//	builder.build("collections/urls.txt", "index");
+		builder.build("src/es/uam/eps/bmi/search/ranking", "index");
+
 		
 		Index index = new LuceneIndex("index");
 		
@@ -42,6 +44,8 @@ public class TermStats {
 				}
 			}
 		});
+		
+		int test = index.getTermTotalFreq("SearchRankingIterator");
 		
 		for (String term : terms1) {
 			pw1.println(term + "\t" + index.getTermTotalFreq(term));
@@ -66,6 +70,7 @@ public class TermStats {
 				}
 			}
 		});
+		
 		
 		for (String term : terms1) {
 			pw2.println(term + "\t" + index.getTermDocFreq(term));

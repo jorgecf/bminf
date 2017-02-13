@@ -61,6 +61,12 @@ public class LuceneIndex extends AbstractIndex {
 		if (this.idxReader == null) {
 			throw new NoIndexException(this.indexPath);
 		}
+		
+		TermEnum termEnum = idxReader.terms(); 
+		while (termEnum.next()) { 
+		    Term term = termEnum.term(); 
+		    System.out.println(term.text()); 
+		}
 
 		List<String> ret = new ArrayList<String>();
 
@@ -84,10 +90,10 @@ public class LuceneIndex extends AbstractIndex {
 		}
 
 		/* eliminamos tokens innecesarios y mayusculas */
-		List<String> res = ret.stream().map(str -> str.replaceAll("[{}*//()@;]", "").toLowerCase())
-				.filter(str -> str.length() > 0).sorted(String::compareTo).collect(Collectors.toList());
+		//List<String> res = ret.stream().map(str -> str.replaceAll("[{}*//()@;]", "").toLowerCase())
+		//		.filter(str -> str.length() > 0).sorted(String::compareTo).collect(Collectors.toList());
 
-		return res;
+		return ret;
 	}
 
 	@Override

@@ -7,11 +7,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Store;
@@ -23,6 +29,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
 import org.jsoup.Jsoup;
 
 import es.uam.eps.bmi.search.index.IndexBuilder;
@@ -58,7 +65,7 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		Path path = Paths.get(indexPath);
 		Directory indexDir = FSDirectory.open(path);
 
-		this.idxwriter = new IndexWriter(indexDir, new IndexWriterConfig());
+		this.idxwriter = new IndexWriter(indexDir, new IndexWriterConfig(new StandardAnalyzer()));
 
 		/*
 		 * leemos los archivos de disco y cargamos sus rutas, despues creamos un
@@ -133,8 +140,16 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		ft.setStoreTermVectorPositions(true);
 
 		/* Creamos los campos del documento */
+		
+		/* eliminamos tokens innecesarios y mayusculas */
+		//String prueba = d.body().text().replaceAll("[{}*//()@;=+-<>]", "").toLowerCase();
+				
+		//Analyzer analyzer = new StandardAnalyzer();
+		String normalized = d.body().text().replaceAll("[^A-Za-z]+", " ");
+		 
+		
 		Field filePathField = new StringField("filepath", d.baseUri(), Store.YES);
-		Field contentField = new Field("content", d.body().text(), ft);
+		Field contentField = new Field("content", normalized, ft);
 
 		/* Creamos el documento */
 		Document document = new Document();
