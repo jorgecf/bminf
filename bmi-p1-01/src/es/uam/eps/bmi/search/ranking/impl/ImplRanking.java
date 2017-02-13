@@ -2,21 +2,26 @@ package es.uam.eps.bmi.search.ranking.impl;
 
 import java.util.Iterator;
 
+import es.uam.eps.bmi.search.index.lucene.LuceneIndex;
 import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.SearchRankingDoc;
 
-public class ImplSearchRanking implements SearchRanking{
+public class ImplRanking implements SearchRanking {
+
+	private ImplRankingIterator iter;
+
+	public ImplRanking(LuceneIndex index, ImplRankedDoc[] scoreDocs) {
+		this.iter = new ImplRankingIterator(index, scoreDocs);
+	}
 
 	@Override
 	public Iterator<SearchRankingDoc> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.iter;
 	}
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.iter.results.length;
 	}
 
 }

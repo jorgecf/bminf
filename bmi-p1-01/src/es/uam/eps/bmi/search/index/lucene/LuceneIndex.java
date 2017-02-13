@@ -45,7 +45,6 @@ public class LuceneIndex extends AbstractIndex {
 		 * Creamos un FSDirectory a partir de la ruta pasada y lo abrimos en el
 		 * indexReader
 		 */
-
 		Directory directory = FSDirectory.open(path);
 
 		if (DirectoryReader.indexExists(directory) == false) {
@@ -56,37 +55,26 @@ public class LuceneIndex extends AbstractIndex {
 
 	}
 
-	private List<String> getRawTerms() throws NoIndexException {
+	/**
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	private List<String> getRawTerms() throws IOException {
 
 		if (this.idxReader == null) {
 			throw new NoIndexException(this.indexPath);
 		}
 
-		/*
-		 * TermEnum termEnum = idxReader.terms(); while (termEnum.next()) { Term
-		 * term = termEnum.term(); System.out.println(term.text()); }
-		 */
-
 		List<String> ret = new ArrayList<String>();
 
 		for (int i = 0; i < idxReader.numDocs(); i++) {
 
-			// TODO if (idxReader.isDeleted(i))
-			// continue;
+			TermsEnum terms = this.idxReader.getTermVector(i, "content").iterator();
+			BytesRef indexed;
 
-			//TODO limpiar
-			try {
-				Terms t2 = this.idxReader.getTermVector(i, "content");
-				TermsEnum t3 = t2.iterator();
-				BytesRef termn;
-				while ((termn = t3.next()) != null) {
-					System.out.println("LuceneIndex.getRawTerms()" + termn.utf8ToString());
-
-					ret.add(termn.utf8ToString());
-				}
-
-			} catch (IOException e1) {
-				e1.printStackTrace();
+			while ((indexed = terms.next()) != null) {
+				ret.add(indexed.utf8ToString());
 			}
 
 		}
@@ -99,6 +87,9 @@ public class LuceneIndex extends AbstractIndex {
 		try {
 			return this.getRawTerms().stream().distinct().collect(Collectors.toList());
 		} catch (NoIndexException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}

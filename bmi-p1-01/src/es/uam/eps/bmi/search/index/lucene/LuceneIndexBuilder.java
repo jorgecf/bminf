@@ -65,13 +65,12 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		Path path = Paths.get(indexPath);
 		Directory indexDir = FSDirectory.open(path);
 
-		//this.idxwriter = new IndexWriter(indexDir, new IndexWriterConfig(new StandardAnalyzer()));
-		
-		
-		this.idxwriter = new IndexWriter(indexDir, new IndexWriterConfig());
-		
-		System.out.println(this.idxwriter.getAnalyzer().toString());
+		// this.idxwriter = new IndexWriter(indexDir, new IndexWriterConfig(new
+		// StandardAnalyzer()));
 
+		this.idxwriter = new IndexWriter(indexDir, new IndexWriterConfig());
+
+		System.out.println(this.idxwriter.getAnalyzer().toString());
 
 		/*
 		 * leemos los archivos de disco y cargamos sus rutas, despues creamos un
@@ -144,18 +143,12 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		ft.setStoreTermVectorOffsets(true);
 		ft.setStoreTermVectorPayloads(true);
 		ft.setStoreTermVectorPositions(true);
-	//	ft.setTokenized(true);
 
 		/* Creamos los campos del documento */
-		
-		/* eliminamos tokens innecesarios y mayusculas */
-		//String prueba = d.body().text().replaceAll("[{}*//()@;=+-<>]", "").toLowerCase();
-				
-		//Analyzer analyzer = new StandardAnalyzer();
-		//String normalized = d.body().text().replaceAll("[^A-Za-z.]+", " ");
+
+		/* Normalizamos el texto */
 		String normalized = d.body().text().replaceAll("[^A-Za-z]+", " ");
 
-		
 		Field filePathField = new StringField("filepath", d.baseUri(), Store.YES);
 		Field contentField = new Field("content", normalized, ft);
 

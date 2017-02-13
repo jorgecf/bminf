@@ -14,14 +14,14 @@ import org.apache.lucene.search.ScoreDoc;
  */
 public class SearchRankingDoc implements Comparable<SearchRankingDoc> {
 
-	private ScoreDoc scoreDoc;
-	private String path;
+	protected ScoreDoc rankedDoc;
+	protected String path;
 
 	public SearchRankingDoc() {
 	}
 
 	public SearchRankingDoc(ScoreDoc scoreDoc, String path) {
-		this.scoreDoc = scoreDoc;
+		this.rankedDoc = scoreDoc;
 		this.path = path;
 	}
 
@@ -29,9 +29,9 @@ public class SearchRankingDoc implements Comparable<SearchRankingDoc> {
 	public int compareTo(SearchRankingDoc o) {
 
 		// los documentos son ordenados por docID
-		if (this.scoreDoc.doc > o.getScoreDoc().doc) {
+		if (this.rankedDoc.doc > o.getScoreDoc().doc) {
 			return 1;
-		} else if (this.scoreDoc.doc < o.getScoreDoc().doc) {
+		} else if (this.rankedDoc.doc < o.getScoreDoc().doc) {
 			return -1;
 		}
 
@@ -43,11 +43,11 @@ public class SearchRankingDoc implements Comparable<SearchRankingDoc> {
 	}
 
 	public double getScore() {
-		return this.scoreDoc.score;
+		return this.rankedDoc.score;
 	}
 
 	public ScoreDoc getScoreDoc() {
-		return scoreDoc;
+		return rankedDoc;
 	}
 
 }

@@ -21,6 +21,7 @@ import es.uam.eps.bmi.search.index.lucene.LuceneIndex;
 import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.SearchRankingDoc;
 import es.uam.eps.bmi.search.ranking.lucene.LuceneRanking;
+import es.uam.eps.bmi.search.ranking.lucene.LuceneRankingDoc;
 
 public class LuceneEngine extends AbstractEngine {
 
@@ -54,14 +55,7 @@ public class LuceneEngine extends AbstractEngine {
 		// realizamos la busqueda
 		TopDocs top = this.idxSearcher.search(pQuery, cutoff);
 
-		// creamos un SearchRankingDoc para cada resultado
-		ArrayList<SearchRankingDoc> srDocs = new ArrayList<>();
-		for (ScoreDoc sd : top.scoreDocs) {
-			SearchRankingDoc doc = new SearchRankingDoc(sd, this.index.getDocPath(sd.doc));
-			srDocs.add(doc);
-		}
-
-		return new LuceneRanking(srDocs);
+		return new LuceneRanking(index, top.scoreDocs);
 	}
 
 	@Override

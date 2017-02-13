@@ -21,7 +21,6 @@ public class TermStats {
 		txtDir.mkdir(); 
 		
 		// Las frecuencias totales en la colección de los términos, ordenadas de mayor a menor
-		
 		FileWriter txtTermFreq = new FileWriter ("txt/termfreq.txt");
 		PrintWriter pw1 = new PrintWriter(txtTermFreq);
 		
@@ -44,18 +43,17 @@ public class TermStats {
 				}
 			}
 		});
-		
-		int test = index.getTermTotalFreq("searchrankingiterator");
-		System.out.println("SearchRankingIterator = "+String.valueOf(test));
+	
 		
 		for (String term : terms1) {
-			pw1.println("<"+term+">" + "\t" + index.getTermTotalFreq(term));
+			pw1.println(term+ "\t" + index.getTermTotalFreq(term));
 		}
 		
 		txtTermFreq.close();
 		
-		// El número de documentos que contiene cada término, igualmente de mayor a menor 
 		
+		
+		// El número de documentos que contiene cada término, igualmente de mayor a menor 
 		FileWriter txtTermDocFreq = new FileWriter ("txt/termdocfreq.txt");
 		PrintWriter pw2 = new PrintWriter(txtTermDocFreq);
 		
