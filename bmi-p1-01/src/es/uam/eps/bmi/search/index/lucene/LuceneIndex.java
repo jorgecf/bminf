@@ -61,12 +61,11 @@ public class LuceneIndex extends AbstractIndex {
 		if (this.idxReader == null) {
 			throw new NoIndexException(this.indexPath);
 		}
-		
-		TermEnum termEnum = idxReader.terms(); 
-		while (termEnum.next()) { 
-		    Term term = termEnum.term(); 
-		    System.out.println(term.text()); 
-		}
+
+		/*
+		 * TermEnum termEnum = idxReader.terms(); while (termEnum.next()) { Term
+		 * term = termEnum.term(); System.out.println(term.text()); }
+		 */
 
 		List<String> ret = new ArrayList<String>();
 
@@ -75,23 +74,22 @@ public class LuceneIndex extends AbstractIndex {
 			// TODO if (idxReader.isDeleted(i))
 			// continue;
 
-			org.apache.lucene.document.Document doc;
+			//TODO limpiar
 			try {
-				doc = idxReader.document(i);
-				String[] s = doc.getValues("content");
+				Terms t2 = this.idxReader.getTermVector(i, "content");
+				TermsEnum t3 = t2.iterator();
+				BytesRef termn;
+				while ((termn = t3.next()) != null) {
+					System.out.println("LuceneIndex.getRawTerms()" + termn.utf8ToString());
 
-				for (String s1 : s) {
-					ret.addAll(new ArrayList<String>(Arrays.asList(s1.split(" "))));
+					ret.add(termn.utf8ToString());
 				}
 
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
-		}
 
-		/* eliminamos tokens innecesarios y mayusculas */
-		//List<String> res = ret.stream().map(str -> str.replaceAll("[{}*//()@;]", "").toLowerCase())
-		//		.filter(str -> str.length() > 0).sorted(String::compareTo).collect(Collectors.toList());
+		}
 
 		return ret;
 	}
@@ -121,7 +119,7 @@ public class LuceneIndex extends AbstractIndex {
 		// devolvemos la ruta fisica del documento pasado
 		org.apache.lucene.document.Document d = this.idxReader.document(docID);
 		return d.getValues("filepath")[0];
-		
+
 	}
 
 	@Override

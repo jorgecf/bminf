@@ -28,7 +28,7 @@ public class TestEngine {
 		// testCollection("collections/docs.zip", "index", "seat", "obama family
 		// tree");
 		// testCollection("collections/urls.txt", "index", "wikipedia", "information probability");
-		 testSearch(new VSMEngine("index"), "information probability", 5);
+		  testSearch(new VSMEngine("index"), "information probability", 5);
 	}
 
 	static void testCollection(String collectionPath, String indexPath, String word, String query) throws IOException {

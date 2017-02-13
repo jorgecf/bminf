@@ -45,10 +45,11 @@ public class TermStats {
 			}
 		});
 		
-		int test = index.getTermTotalFreq("SearchRankingIterator");
+		int test = index.getTermTotalFreq("searchrankingiterator");
+		System.out.println("SearchRankingIterator = "+String.valueOf(test));
 		
 		for (String term : terms1) {
-			pw1.println(term + "\t" + index.getTermTotalFreq(term));
+			pw1.println("<"+term+">" + "\t" + index.getTermTotalFreq(term));
 		}
 		
 		txtTermFreq.close();
