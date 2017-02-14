@@ -14,25 +14,25 @@ import es.uam.eps.bmi.search.index.lucene.LuceneIndex;
 import es.uam.eps.bmi.search.index.lucene.LuceneIndexBuilder;
 
 public class TermStats {
-	
+
 	public static void main(String a[]) throws IOException {
-		
-		File txtDir = new File("txt/"); 
-		txtDir.mkdir(); 
-		
-		// Las frecuencias totales en la colección de los términos, ordenadas de mayor a menor
-		FileWriter txtTermFreq = new FileWriter ("txt/termfreq.txt");
+
+		File txtDir = new File("txt/");
+		txtDir.mkdir();
+
+		// Las frecuencias totales en la colección de los términos, ordenadas de
+		// mayor a menor
+		FileWriter txtTermFreq = new FileWriter("txt/termfreq.txt");
 		PrintWriter pw1 = new PrintWriter(txtTermFreq);
-		
+
 		IndexBuilder builder = new LuceneIndexBuilder();
-	//	builder.build("collections/urls.txt", "index");
+		// builder.build("collections/urls.txt", "index");
 		builder.build("src/es/uam/eps/bmi/search/ranking", "index");
 
-		
 		Index index = new LuceneIndex("index");
-		
+
 		List<String> terms1 = index.getAllTerms();
-		
+
 		Collections.sort(terms1, new Comparator<String>() {
 			public int compare(String t1, String t2) {
 				try {
@@ -43,22 +43,20 @@ public class TermStats {
 				}
 			}
 		});
-	
-		
+
 		for (String term : terms1) {
-			pw1.println(term+ "\t" + index.getTermTotalFreq(term));
+			pw1.println(term + "\t" + index.getTermTotalFreq(term));
 		}
-		
+
 		txtTermFreq.close();
-		
-		
-		
-		// El número de documentos que contiene cada término, igualmente de mayor a menor 
-		FileWriter txtTermDocFreq = new FileWriter ("txt/termdocfreq.txt");
+
+		// El número de documentos que contiene cada término, igualmente de
+		// mayor a menor
+		FileWriter txtTermDocFreq = new FileWriter("txt/termdocfreq.txt");
 		PrintWriter pw2 = new PrintWriter(txtTermDocFreq);
-		
+
 		List<String> terms2 = index.getAllTerms();
-		
+
 		Collections.sort(terms2, new Comparator<String>() {
 			public int compare(String t1, String t2) {
 				try {
@@ -69,14 +67,13 @@ public class TermStats {
 				}
 			}
 		});
-		
-		
+
 		for (String term : terms1) {
 			pw2.println(term + "\t" + index.getTermDocFreq(term));
 		}
-		
+
 		txtTermDocFreq.close();
-		
+
 	}
 
 }

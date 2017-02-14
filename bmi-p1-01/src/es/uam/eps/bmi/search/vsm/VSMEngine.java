@@ -1,26 +1,21 @@
 package es.uam.eps.bmi.search.vsm;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-
-import org.apache.lucene.index.MultiFields;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.util.Bits;
 
 import es.uam.eps.bmi.search.AbstractEngine;
 import es.uam.eps.bmi.search.index.lucene.LuceneIndex;
 import es.uam.eps.bmi.search.ranking.SearchRanking;
-import es.uam.eps.bmi.search.ranking.SearchRankingDoc;
 import es.uam.eps.bmi.search.ranking.impl.ImplRankedDoc;
 import es.uam.eps.bmi.search.ranking.impl.ImplRanking;
+import es.uam.eps.bmi.utils.CosineSimilarity;
 
 public class VSMEngine extends AbstractEngine {
 
 	private LuceneIndex index;
-	private IndexSearcher idxSearcher;
 
 	public VSMEngine(String path) throws IOException {
 		super(path);
@@ -28,44 +23,43 @@ public class VSMEngine extends AbstractEngine {
 
 	@Override
 	public SearchRanking search(String query, int cutoff) throws IOException {
-		
-		
+
 		ArrayList<ImplRankedDoc> matches = new ArrayList<>();
 		String[] components = query.split(" ");
 
+		// abrimos el archivo con los modulos almacenados
+		FileReader r = new FileReader("index/modulos.txt");
+		BufferedReader modReader = new BufferedReader(r);
+
 		// recorremos cada documento del indice
 		for (int i = 0; i < this.index.getIndexReader().numDocs(); i++) {
-
-			// TODO comprobar si isDeleted
 
 			// recorremos cada palabra de la query
 			double sum = 0;
 			for (int j = 0; j < components.length; j++) {
 
-				System.out.println(
-						"doc: " + i + ", term_i: " + components[j] + "  " + this.index.getTermFreq(components[j], i));
-
-				
-				// calculamos el producto escalar de par documento-query usando tf-idf
-				double tf = termFrequency(components[j], i);
-				double idf = inverseDocumentFrequency(components[j]);
+				double tf = CosineSimilarity.termFrequency(this.index, components[j], i);
+				double idf = CosineSimilarity.inverseDocumentFrequency(this.index, components[j]);
 
 				sum += (tf * idf);
-				System.out.println("\tTFIDF DE " + components[j] + ", docid: " + i + " es: " + (tf * idf));
 			}
 
-			System.out.println("sum tfidf's de doc " + i + ", y query: " + query + " es :" + sum);
+			String line = modReader.readLine();
+			String[] mod = line.split("\t");
 
-			// sumatorio de arriba del coseno de similitud
-			if (sum > 0) {
+			// Aplicamos la definicion de similitud coseno por tf-idf,
+			// incluyendo la longitud (modulo) del vector query
+			sum = (double) sum / (Double.valueOf(mod[1]) * (Math.sqrt(components.length)));
+
+			if (sum > 0) { // sumatorio de arriba del coseno de similitud
 				matches.add(new ImplRankedDoc(i, sum));
 			}
-
 		}
-
 
 		// devolvemos los resultados ordenados
 		Collections.sort(matches);
+		
+		modReader.close();
 
 		if (matches.size() >= cutoff)
 			return new ImplRanking(index, matches.subList(0, cutoff));
@@ -74,34 +68,9 @@ public class VSMEngine extends AbstractEngine {
 
 	}
 
-	private double termFrequency(String term, int docID) throws IOException {
-
-		long frec = this.index.getTermFreq(term, docID);
-		if (frec <= 0)
-			return 0;
-
-		double tf = 1 + (Math.log(frec) / Math.log(2));
-		// System.out.println("VSMEngine.termFrequency() - tf " + tf);
-
-		return tf;
-	}
-
-	private double inverseDocumentFrequency(String term) throws IOException {
-		double idf = (double) this.index.getIndexReader().numDocs() / this.index.getTermDocFreq(term);
-
-		// System.out.println("VSMEngine.inverseDocumentFrequency() - idf " +
-		// idf);
-
-		return idf;
-	}
-
 	@Override
 	public void loadIndex(String path) throws IOException {
-
 		this.index = new LuceneIndex(path);
-
-		if (this.index != null && this.index.getIndexReader() != null)
-			this.idxSearcher = new IndexSearcher(this.index.getIndexReader());
 	}
 
 }

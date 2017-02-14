@@ -3,21 +3,18 @@ package es.uam.eps.bmi.search.index.lucene;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Store;
@@ -29,10 +26,10 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
 import org.jsoup.Jsoup;
 
 import es.uam.eps.bmi.search.index.IndexBuilder;
+import es.uam.eps.bmi.utils.CosineSimilarity;
 
 public class LuceneIndexBuilder implements IndexBuilder {
 
@@ -62,15 +59,11 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		 * instanciamos el IndexWriter para poder escribir los Documents en el
 		 * Index
 		 */
+		this.indexPath = indexPath;
 		Path path = Paths.get(indexPath);
 		Directory indexDir = FSDirectory.open(path);
 
-		// this.idxwriter = new IndexWriter(indexDir, new IndexWriterConfig(new
-		// StandardAnalyzer()));
-
 		this.idxwriter = new IndexWriter(indexDir, new IndexWriterConfig());
-
-		System.out.println(this.idxwriter.getAnalyzer().toString());
 
 		/*
 		 * leemos los archivos de disco y cargamos sus rutas, despues creamos un
@@ -121,6 +114,52 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		}
 
 		this.idxwriter.close();
+
+		/* Generamos los modulos */
+		storeVectorMod();
+	}
+
+	/**
+	 * mod vector doc TODO
+	 * 
+	 * @throws IOException
+	 */
+	private void storeVectorMod() throws IOException {
+
+		LuceneIndex index = new LuceneIndex(indexPath);
+
+		List<String> terms = index.getAllTerms();
+		double tf;
+		double idf;
+
+		FileWriter modWriter = new FileWriter("index/modulos.txt");
+		PrintWriter pw = new PrintWriter(modWriter);
+
+		for (int i = 0; i < index.getIndexReader().numDocs(); i++) {
+
+			double mod = 0;
+			for (String term : terms) {
+
+				tf = 0;
+				idf = 0;
+
+				tf = CosineSimilarity.termFrequency(index, term, i);
+
+				if (tf > 0) {
+					idf = CosineSimilarity.inverseDocumentFrequency(index, term);
+					mod += Math.pow(tf * idf, 2);
+				}
+			}
+
+			mod = Math.sqrt(mod); // raiz del sumatorio de todos los tf-idf
+									// elevados a 2 (es decir, el modulo de d)
+
+			// escribimos en el archivo
+			pw.println(i + "\t" + mod);
+		}
+
+		modWriter.close();
+		pw.close();
 	}
 
 	/**
@@ -181,6 +220,7 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		 * filepath
 		 */
 		idxwriter.updateDocument(new Term("filepath", d.getField("filepath").stringValue()), d);
+
 	}
 
 	/**
