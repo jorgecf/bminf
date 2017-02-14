@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.apache.lucene.index.MultiFields;
 import org.apache.lucene.search.IndexSearcher;
@@ -27,25 +28,25 @@ public class VSMEngine extends AbstractEngine {
 
 	@Override
 	public SearchRanking search(String query, int cutoff) throws IOException {
-		// TODO Auto-generated method stub
-
-		ImplRankedDoc[] scoreDocs = new ImplRankedDoc[this.index.getIndexReader().numDocs()];
-
+		
+		
+		ArrayList<ImplRankedDoc> matches = new ArrayList<>();
 		String[] components = query.split(" ");
 
-		// recorrer cada documento del index
-		// int numberOfIndexed = 0;
+		// recorremos cada documento del indice
 		for (int i = 0; i < this.index.getIndexReader().numDocs(); i++) {
 
-			// comprobar si isDeleted
+			// TODO comprobar si isDeleted
 
-			// recorrer cada termino_i de la query
+			// recorremos cada palabra de la query
 			double sum = 0;
 			for (int j = 0; j < components.length; j++) {
 
 				System.out.println(
 						"doc: " + i + ", term_i: " + components[j] + "  " + this.index.getTermFreq(components[j], i));
 
+				
+				// calculamos el producto escalar de par documento-query usando tf-idf
 				double tf = termFrequency(components[j], i);
 				double idf = inverseDocumentFrequency(components[j]);
 
@@ -53,22 +54,23 @@ public class VSMEngine extends AbstractEngine {
 				System.out.println("\tTFIDF DE " + components[j] + ", docid: " + i + " es: " + (tf * idf));
 			}
 
-			// sumatorio de arriba del coseno de similitud
 			System.out.println("sum tfidf's de doc " + i + ", y query: " + query + " es :" + sum);
 
-			scoreDocs[i] = new ImplRankedDoc(i, sum);
+			// sumatorio de arriba del coseno de similitud
+			if (sum > 0) {
+				matches.add(new ImplRankedDoc(i, sum));
+			}
 
 		}
 
-		// TODO SOLO MOSTRAR CUTOFF RESULTADOS
 
-		// Collections.sort(scoreDocs);
-		Arrays.sort(scoreDocs);
+		// devolvemos los resultados ordenados
+		Collections.sort(matches);
 
-		// ranking
-		ImplRanking rank = new ImplRanking(index, Arrays.copyOfRange(scoreDocs, 0, cutoff));
-
-		return rank;
+		if (matches.size() >= cutoff)
+			return new ImplRanking(index, matches.subList(0, cutoff));
+		else
+			return new ImplRanking(index, matches);
 
 	}
 

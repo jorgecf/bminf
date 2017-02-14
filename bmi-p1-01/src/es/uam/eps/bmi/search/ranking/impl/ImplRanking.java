@@ -1,6 +1,8 @@
 package es.uam.eps.bmi.search.ranking.impl;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import es.uam.eps.bmi.search.index.lucene.LuceneIndex;
 import es.uam.eps.bmi.search.ranking.SearchRanking;
@@ -10,8 +12,8 @@ public class ImplRanking implements SearchRanking {
 
 	private ImplRankingIterator iter;
 
-	public ImplRanking(LuceneIndex index, ImplRankedDoc[] scoreDocs) {
-		this.iter = new ImplRankingIterator(index, scoreDocs);
+	public ImplRanking(LuceneIndex index, List<ImplRankedDoc> list) {
+		this.iter = new ImplRankingIterator(index, list);
 	}
 
 	@Override

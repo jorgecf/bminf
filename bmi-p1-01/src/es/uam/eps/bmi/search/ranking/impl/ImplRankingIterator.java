@@ -1,9 +1,10 @@
 package es.uam.eps.bmi.search.ranking.impl;
 
+import java.util.List;
+
 import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.ranking.SearchRankingDoc;
 import es.uam.eps.bmi.search.ranking.SearchRankingIterator;
-import es.uam.eps.bmi.search.ranking.lucene.LuceneRankingDoc;
 
 public class ImplRankingIterator implements SearchRankingIterator {
 
@@ -11,9 +12,9 @@ public class ImplRankingIterator implements SearchRankingIterator {
 	Index index;
 	int n = 0;
 
-	public ImplRankingIterator(Index index, ImplRankedDoc[] results) {
+	public ImplRankingIterator(Index index, List<ImplRankedDoc> list) {
 		this.index = index;
-		this.results = results;
+		this.results = list.toArray(new ImplRankedDoc[list.size()]);
 	}
 
 	// lista vacia
