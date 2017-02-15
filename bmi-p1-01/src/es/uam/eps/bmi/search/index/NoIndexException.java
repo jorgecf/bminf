@@ -7,7 +7,6 @@ import java.io.IOException;
  * @author pablo
  */
 public class NoIndexException extends IOException {
-
 	String folder;
 
 	public NoIndexException(String f) {

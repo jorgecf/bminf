@@ -5,6 +5,12 @@ import java.util.List;
 
 import es.uam.eps.bmi.search.index.freq.FreqVector;
 
+/**
+ * 
+ * @author 
+ * @author
+ *
+ */
 public interface Index {
 
 	public abstract void load(String s) throws IOException, NoIndexException;
@@ -20,5 +26,5 @@ public interface Index {
 	public abstract long getTermFreq(String word, int docID) throws IOException;
 
 	public abstract long getTermDocFreq(String word) throws IOException;
-	
+
 }

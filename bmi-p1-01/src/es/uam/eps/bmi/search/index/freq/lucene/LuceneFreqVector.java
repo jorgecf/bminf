@@ -11,11 +11,11 @@ import org.apache.lucene.index.Terms;
  * @author pablo
  */
 public class LuceneFreqVector implements FreqVector {
-
 	LuceneFreqVectorIterator iterator;
 
 	public LuceneFreqVector(Terms terms) throws IOException {
 		iterator = new LuceneFreqVectorIterator(terms);
+
 	}
 
 	public long size() throws IOException {
@@ -28,10 +28,5 @@ public class LuceneFreqVector implements FreqVector {
 
 	public long getFreq(String term) throws IOException {
 		return iterator.getFreq(term);
-	}
-
-	@Override
-	public String toString() {
-		return "ruta-del-archivo-aqui";
 	}
 }

@@ -9,7 +9,6 @@ import org.apache.lucene.index.TermsEnum;
  * @author pablo
  */
 public class LuceneTermFreq implements TermFreq {
-
 	TermsEnum terms;
 
 	public LuceneTermFreq(TermsEnum t) {

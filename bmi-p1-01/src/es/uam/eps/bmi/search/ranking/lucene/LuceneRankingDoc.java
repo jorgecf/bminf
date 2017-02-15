@@ -17,8 +17,7 @@ public class LuceneRankingDoc extends SearchRankingDoc {
         index = idx;
         rankedDoc = r;
     }
-    
-    public double getScore() {
+    public double getScore() throws IOException {
         return rankedDoc.score;
     }
 

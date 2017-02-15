@@ -25,11 +25,10 @@ import java.util.List;
 public class TestEngine {
 	public static void main(String a[]) throws IOException {
 		// testCollection("collections/hockey", "indexhockey", "hierba", "liga street hockey");
-		testSearch(new VSMEngine("indexhockey"), "liga street hockey", 8);
+		//testSearch(new VSMEngine("indexhockey"), "liga street hockey", 8);
 
-		// testCollection("src/es/uam/eps/bmi/search/ranking", "index", "size", "public abstract");
-		// testCollection("collections/docs.zip", "index", "seat", "obama family
-		// tree");
+		//testCollection("src/es/uam/eps/bmi/search/ranking", "index", "size", "public abstract");
+		 testCollection("collections/docs.zip", "index", "seat", "obama family tree");
 		// testCollection("collections/urls.txt", "index", "wikipedia", "information probability");
 		// testSearch(new VSMEngine("index"), "information probability", 5);
 	}

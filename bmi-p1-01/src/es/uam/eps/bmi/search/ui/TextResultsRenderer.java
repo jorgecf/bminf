@@ -16,7 +16,6 @@ public class TextResultsRenderer extends ResultsRenderer {
 	}
 
 	public String toString() {
-
 		StringBuilder str = new StringBuilder();
 		try {
 			if (ranking.size() == 0)
@@ -31,7 +30,6 @@ public class TextResultsRenderer extends ResultsRenderer {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
-
 		return str.toString();
 	}
 }

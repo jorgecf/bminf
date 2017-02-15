@@ -23,6 +23,8 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
+import org.apache.lucene.index.NoMergeScheduler;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -63,7 +65,9 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		Path path = Paths.get(indexPath);
 		Directory indexDir = FSDirectory.open(path);
 
-		this.idxwriter = new IndexWriter(indexDir, new IndexWriterConfig());
+		IndexWriterConfig config = new IndexWriterConfig();
+	//	config.setMergeScheduler(NoMergeScheduler.INSTANCE);
+		this.idxwriter = new IndexWriter(indexDir, config);
 
 		/*
 		 * leemos los archivos de disco y cargamos sus rutas, despues creamos un
@@ -86,7 +90,6 @@ public class LuceneIndexBuilder implements IndexBuilder {
 			for (File f : zipCollectionFile.listFiles()) {
 				this.indexDocument((this.getDocument(Jsoup.parse(f, "UTF-8", f.getAbsolutePath()))));
 			}
-
 		}
 		/* Si es un directorio de html's cargamos cada archivo */
 		else if (collectionFile.isDirectory() == true) {
@@ -116,7 +119,7 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		this.idxwriter.close();
 
 		/* Generamos los modulos */
-		storeVectorMod();
+		this.storeVectorMod();
 	}
 
 	/**
@@ -219,8 +222,7 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		 * updateDocument conseguimos que se actualicen pasandole el Field
 		 * filepath
 		 */
-		idxwriter.updateDocument(new Term("filepath", d.getField("filepath").stringValue()), d);
-
+		this.idxwriter.updateDocument(new Term("filepath", d.getField("filepath").stringValue()), d);
 	}
 
 	/**

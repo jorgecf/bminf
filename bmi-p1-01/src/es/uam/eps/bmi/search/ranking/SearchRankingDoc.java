@@ -42,7 +42,7 @@ public class SearchRankingDoc implements Comparable<SearchRankingDoc> {
 		return path;
 	}
 
-	public double getScore() {
+	public double getScore() throws IOException {
 		return this.rankedDoc.score;
 	}
 
