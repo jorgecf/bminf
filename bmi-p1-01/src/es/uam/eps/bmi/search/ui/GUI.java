@@ -1,48 +1,23 @@
 package es.uam.eps.bmi.search.ui;
 
-import java.awt.EventQueue;
+import java.io.File;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JSpinner;
-import javax.swing.JTable;
-import javax.swing.BoxLayout;
-import javax.swing.JDialog;
-
-import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.FormSpecs;
-import com.jgoodies.forms.layout.RowSpec;
 
 public class GUI extends JFrame {
 
-	// private JFrame frame;
 	private JTextField textField;
 	private JSpinner spinner;
 	private JTable table;
-	private JDialog dialog;
+	private JFileChooser fileChooser;
+	private File collectionFile;
 
-	/**
-	 * Launch the application.
-	 */
-	/*
-	 * public static void main(String[] args) { EventQueue.invokeLater(new
-	 * Runnable() { public void run() { try { GUI window = new GUI();
-	 * window.setVisible(true); } catch (Exception e) { e.printStackTrace(); } }
-	 * }); }
-	 */
 	/**
 	 * Create the application.
 	 */
@@ -56,11 +31,15 @@ public class GUI extends JFrame {
 	private void initialize() {
 
 		this.setBounds(100, 100, 934, 521);
-
 		getContentPane().setLayout(null);
 
+		// file chooser
+		fileChooser = new JFileChooser();
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+
+		// table
 		String[] columns = new String[] { "score", "filepath" };
-		Object[][] data = new Object[][] { { 0, "no results found" } };
+		Object[][] data = new Object[][] {};
 
 		DefaultTableModel tmodel = new DefaultTableModel(data, columns) {
 
@@ -74,6 +53,7 @@ public class GUI extends JFrame {
 		table.setBounds(12, 113, 914, 375);
 		getContentPane().add(table);
 
+		// textfield
 		textField = new JTextField();
 		textField.setBounds(465, 12, 449, 63);
 		this.getContentPane().add(textField);
@@ -84,8 +64,6 @@ public class GUI extends JFrame {
 		spinner = new JSpinner(model);
 		spinner.setBounds(369, 12, 84, 63);
 		getContentPane().add(spinner);
-
-		dialog = new JDialog();
 
 	}
 
@@ -101,8 +79,11 @@ public class GUI extends JFrame {
 		return table;
 	}
 
-	public JDialog getDialog() {
-		return dialog;
+	public JFileChooser getFileChooser() {
+		return fileChooser;
 	}
 
+	public File getCollectionFile() {
+		return collectionFile;
+	}
 }
