@@ -103,9 +103,7 @@ public class LuceneIndex extends AbstractIndex {
 	@Override
 	public String getDocPath(int docID) throws IOException {
 		// devolvemos la ruta fisica del documento pasado
-		org.apache.lucene.document.Document d = this.idxReader.document(docID);
-		return d.getValues("filepath")[0];
-
+		return this.idxReader.document(docID).get("filepath");
 	}
 
 	@Override

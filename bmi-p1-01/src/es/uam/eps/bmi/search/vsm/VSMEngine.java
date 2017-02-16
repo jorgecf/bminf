@@ -1,6 +1,7 @@
 package es.uam.eps.bmi.search.vsm;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,12 +29,21 @@ public class VSMEngine extends AbstractEngine {
 		String[] components = query.split(" ");
 
 		// abrimos el archivo con los modulos almacenados
-		FileReader r = new FileReader("index/modulos.txt");
-		BufferedReader modReader = new BufferedReader(r);
-
+		File f = new File("index/modulos.txt");
+		
+		boolean flag_mod=false;
+		FileReader r;
+		BufferedReader modReader = null;
+		if (f.exists()){
+			r = new FileReader("index/modulos.txt");
+			 modReader = new BufferedReader(r);
+			 flag_mod=true;
+		}
+		
 		// recorremos cada documento del indice
 		for (int i = 0; i < this.index.getIndexReader().numDocs(); i++) {
 
+			double mod_d=1; //default
 			// recorremos cada palabra de la query
 			double sum = 0;
 			for (int j = 0; j < components.length; j++) {
@@ -44,12 +54,15 @@ public class VSMEngine extends AbstractEngine {
 				sum += (tf * idf);
 			}
 
-			String line = modReader.readLine();
-			String[] mod = line.split("\t");
-
+			if(flag_mod==true){
+				String line = modReader.readLine();
+				String[] mod = line.split("\t");
+				mod_d=Double.valueOf(mod[1]);
+			}
+			
 			// Aplicamos la definicion de similitud coseno por tf-idf,
 			// incluyendo la longitud (modulo) del vector query
-			sum = (double) sum / (Double.valueOf(mod[1]) * (Math.sqrt(components.length)));
+			sum = (double) sum / (mod_d * (Math.sqrt(components.length)));
 
 			if (sum > 0) { // sumatorio de arriba del coseno de similitud
 				matches.add(new ImplRankedDoc(i, sum));
@@ -59,8 +72,10 @@ public class VSMEngine extends AbstractEngine {
 		// devolvemos los resultados ordenados
 		Collections.sort(matches);
 		
-		modReader.close();
-
+		if(flag_mod==true){
+			modReader.close();
+		}
+		
 		if (matches.size() >= cutoff)
 			return new ImplRanking(index, matches.subList(0, cutoff));
 		else

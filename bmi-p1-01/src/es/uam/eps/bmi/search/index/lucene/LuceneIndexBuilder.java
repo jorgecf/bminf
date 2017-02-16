@@ -63,9 +63,11 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		Path path = Paths.get(indexPath);
 		Directory indexDir = FSDirectory.open(path);
 
-		IndexWriterConfig config = new IndexWriterConfig();
+	//	IndexWriterConfig config = new IndexWriterConfig();
 	//	config.setMergeScheduler(NoMergeScheduler.INSTANCE);
-		this.idxwriter = new IndexWriter(indexDir, config);
+	//	this.idxwriter = new IndexWriter(indexDir, config);
+		this.idxwriter = new IndexWriter(indexDir, new IndexWriterConfig());
+
 
 		/*
 		 * leemos los archivos de disco y cargamos sus rutas, despues creamos un
@@ -77,6 +79,7 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		 * Si es un zip, lo descomprimimos y leemos de manera normal los
 		 * archivos html que obtengamos
 		 */
+		int num_docs=0;
 		if (collectionPath.endsWith(".zip")) {
 
 			ZipFile zipFile = new ZipFile(collectionPath);
@@ -87,6 +90,7 @@ public class LuceneIndexBuilder implements IndexBuilder {
 			File zipCollectionFile = new File("tmp/");
 			for (File f : zipCollectionFile.listFiles()) {
 				this.indexDocument((this.getDocument(Jsoup.parse(f, "UTF-8", f.getAbsolutePath()))));
+				num_docs++;
 			}
 		}
 		/* Si es un directorio de html's cargamos cada archivo */
@@ -95,30 +99,43 @@ public class LuceneIndexBuilder implements IndexBuilder {
 			for (File f : collectionFile.listFiles()) {
 				if (f.isDirectory() == false) { // no entramos en subdirectorios
 					this.indexDocument((this.getDocument(Jsoup.parse(f, "UTF-8", f.getAbsolutePath()))));
+					num_docs++;
 				}
 			}
 		}
 		/* Si es un txt con webs, descargamos cada web */
 		else if (collectionFile.isFile() == true) {
 
-			Stream<String> stream = Files.lines(Paths.get(collectionPath));
+			List<String> stream = Files.readAllLines(Paths.get(collectionPath));
 
+			/*
 			stream.forEach(line -> {
 				try {
-					this.indexDocument((this.getDocument(Jsoup.connect(line).get())));
+					final int j =i;
+					this.indexDocument((this.getDocument(Jsoup.connect(line).get())),  j);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			});
+			i++;
+			*/
+			for (String line:stream) {
+				this.indexDocument((this.getDocument(Jsoup.connect(line).get())));
+				num_docs++;
+			}
+						
 
-			stream.close();
+
+			//stream.close();
 		}
 
 		this.idxwriter.close();
 
 		/* Generamos los modulos */
-		this.storeVectorMod();
-	}
+			//System.out.println("Storing vector mod");
+			//	this.storeVectorMod();
+		
+		}
 
 	/**
 	 * mod vector doc TODO
@@ -161,6 +178,7 @@ public class LuceneIndexBuilder implements IndexBuilder {
 
 		modWriter.close();
 		pw.close();
+		index.getIndexReader().close();
 	}
 
 	/**
@@ -209,7 +227,7 @@ public class LuceneIndexBuilder implements IndexBuilder {
 	 *            documento lucene a indexar
 	 * 
 	 * @throws IOException
-	 *             si falla al aÃ±adir un documento al indice
+	 *             si falla al añadir un documento al indice
 	 */
 	private void indexDocument(Document d) throws IOException {
 
@@ -221,7 +239,7 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		 * filepath
 		 */
 		this.idxwriter.updateDocument(new Term("filepath", d.getField("filepath").stringValue()), d);
-	}
+			}
 
 	/**
 	 * Descomprime un archivo zip (solo los archivos al primer nivel)
