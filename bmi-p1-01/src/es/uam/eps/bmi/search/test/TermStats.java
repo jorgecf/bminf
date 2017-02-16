@@ -68,7 +68,7 @@ public class TermStats {
 			}
 		});
 
-		for (String term : terms1) {
+		for (String term : terms2) {
 			pw2.println(term + "\t" + index.getTermDocFreq(term));
 		}
 
