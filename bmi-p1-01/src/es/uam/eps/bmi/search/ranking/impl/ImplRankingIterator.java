@@ -6,6 +6,12 @@ import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.ranking.SearchRankingDoc;
 import es.uam.eps.bmi.search.ranking.SearchRankingIterator;
 
+/**
+ * Iterador implementado: un array de ImplRankedDoc's sobre el que se itera.
+ *
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ */
 public class ImplRankingIterator implements SearchRankingIterator {
 
 	ImplRankedDoc results[];

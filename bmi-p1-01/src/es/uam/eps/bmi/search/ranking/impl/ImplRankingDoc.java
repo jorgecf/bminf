@@ -5,6 +5,12 @@ import java.io.IOException;
 import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.ranking.SearchRankingDoc;
 
+/**
+ * Documento de un ranking.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ */
 public class ImplRankingDoc extends SearchRankingDoc {
 
 	private Index index;

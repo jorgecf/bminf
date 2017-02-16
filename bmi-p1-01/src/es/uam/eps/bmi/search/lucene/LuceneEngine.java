@@ -15,6 +15,13 @@ import es.uam.eps.bmi.search.index.lucene.LuceneIndex;
 import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.lucene.LuceneRanking;
 
+/**
+ * La LuceneEngine se compone de un indice y un buscador, construye querys
+ * booleanas.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ */
 public class LuceneEngine extends AbstractEngine {
 
 	private LuceneIndex index;

@@ -26,12 +26,18 @@ import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.SearchRankingDoc;
 import es.uam.eps.bmi.search.vsm.VSMEngine;
 
+/**
+ * Controlador de la interfaz. Punto medio entre vista y modelo.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ */
 public class Controller {
 
 	private static GUI interfaz;
 
 	/**
-	 * Launch the application.
+	 * Lanza la aplicacion.
 	 * 
 	 * @throws IOException
 	 */
@@ -84,6 +90,9 @@ public class Controller {
 
 		// listener del textfield
 		Action action = new AbstractAction() {
+
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 

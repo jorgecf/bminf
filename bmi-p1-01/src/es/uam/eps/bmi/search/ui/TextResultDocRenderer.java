@@ -4,6 +4,12 @@ import java.io.IOException;
 
 import es.uam.eps.bmi.search.ranking.SearchRankingDoc;
 
+/**
+ * Convierte cualquier objeto que herede de SearchRankingDoc en texto.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ */
 public class TextResultDocRenderer extends ResultsRenderer {
 
 	private SearchRankingDoc doc;

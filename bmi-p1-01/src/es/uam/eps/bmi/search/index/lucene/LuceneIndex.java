@@ -22,6 +22,13 @@ import es.uam.eps.bmi.search.index.freq.FreqVector;
 import es.uam.eps.bmi.search.index.freq.lucene.LuceneFreqVector;
 import es.uam.eps.bmi.search.index.freq.lucene.LuceneFreqVectorIterator;
 
+/**
+ * Wrap del indice de lucene, compuesto por el lector del propio indice en
+ * disco.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ */
 public class LuceneIndex extends AbstractIndex {
 
 	private IndexReader idxReader;
@@ -37,10 +44,8 @@ public class LuceneIndex extends AbstractIndex {
 		Path path = Paths.get(iPath);
 		this.indexPath = iPath;
 
-		/*
-		 * Creamos un FSDirectory a partir de la ruta pasada y lo abrimos en el
-		 * indexReader
-		 */
+		// creamos un FSDirectory a partir de la ruta pasada y lo abrimos en el
+		// indexReader
 		Directory directory = FSDirectory.open(path);
 
 		if (DirectoryReader.indexExists(directory) == false) {
@@ -51,8 +56,9 @@ public class LuceneIndex extends AbstractIndex {
 	}
 
 	/**
+	 * Obtiene todos los terminos del indice, incluyendo repeticiones.
 	 * 
-	 * @return
+	 * @return Lista de terminos
 	 * @throws IOException
 	 */
 	private List<String> getRawTerms() throws IOException {
@@ -66,12 +72,11 @@ public class LuceneIndex extends AbstractIndex {
 		for (int i = 0; i < idxReader.numDocs(); i++) {
 
 			TermsEnum terms = this.idxReader.getTermVector(i, "content").iterator();
-			BytesRef indexed;
 
+			BytesRef indexed;
 			while ((indexed = terms.next()) != null) {
 				ret.add(indexed.utf8ToString());
 			}
-
 		}
 
 		return ret;
@@ -135,5 +140,4 @@ public class LuceneIndex extends AbstractIndex {
 	public IndexReader getIndexReader() {
 		return idxReader;
 	}
-
 }

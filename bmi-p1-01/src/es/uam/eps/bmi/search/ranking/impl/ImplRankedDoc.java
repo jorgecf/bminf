@@ -1,6 +1,13 @@
 package es.uam.eps.bmi.search.ranking.impl;
 
-public class ImplRankedDoc implements Comparable<ImplRankedDoc> { // scoredoc
+/**
+ * Funciona como scoreDoc, modela un documento con un score en nuestro modelo
+ * implementado.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ */
+public class ImplRankedDoc implements Comparable<ImplRankedDoc> {
 
 	private int docID;
 	private double score;
@@ -30,5 +37,4 @@ public class ImplRankedDoc implements Comparable<ImplRankedDoc> { // scoredoc
 	public int compareTo(ImplRankedDoc o) {
 		return Double.compare(o.score, this.score);
 	}
-
 }

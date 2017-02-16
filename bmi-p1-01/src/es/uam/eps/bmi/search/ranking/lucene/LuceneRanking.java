@@ -9,10 +9,10 @@ import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.SearchRankingDoc;
 
 /**
- * El LuceneRanking se compone de una lista de SearchRankingDocs.
+ * El LuceneRanking se compone de una lista de un iterador de lucene ranking.
  * 
- * @author
- * @author
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
  *
  */
 public class LuceneRanking implements SearchRanking {
@@ -20,7 +20,7 @@ public class LuceneRanking implements SearchRanking {
 	private LuceneRankingIterator iter;
 
 	public LuceneRanking(LuceneIndex index, ScoreDoc[] scoreDocs) {
-		iter = new LuceneRankingIterator(index,  scoreDocs);
+		iter = new LuceneRankingIterator(index, scoreDocs);
 	}
 
 	@Override

@@ -7,6 +7,12 @@ import es.uam.eps.bmi.search.index.lucene.LuceneIndex;
 import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.SearchRankingDoc;
 
+/**
+ * Ranking de busqueda propio.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ */
 public class ImplRanking implements SearchRanking {
 
 	private ImplRankingIterator iter;
@@ -24,5 +30,4 @@ public class ImplRanking implements SearchRanking {
 	public int size() {
 		return this.iter.results.length;
 	}
-
 }

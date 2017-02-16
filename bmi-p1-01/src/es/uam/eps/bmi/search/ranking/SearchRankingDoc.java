@@ -8,9 +8,8 @@ import org.apache.lucene.search.ScoreDoc;
  * El SearchRankingDoc se compone de un scoreDoc (documento resultado de una
  * busqueda y su score) y la ruta al archivo correpondiente.
  * 
- * @author
- * @author
- *
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
  */
 public class SearchRankingDoc implements Comparable<SearchRankingDoc> {
 

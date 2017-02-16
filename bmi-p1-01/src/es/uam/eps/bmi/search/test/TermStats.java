@@ -13,6 +13,13 @@ import es.uam.eps.bmi.search.index.IndexBuilder;
 import es.uam.eps.bmi.search.index.lucene.LuceneIndex;
 import es.uam.eps.bmi.search.index.lucene.LuceneIndexBuilder;
 
+/**
+ * Tester que crea dos archivos de frecuencias.
+ * 
+ * @author Alejandro Martin
+ * @author Jorge Cifuentes
+ *
+ */
 public class TermStats {
 
 	public static void main(String a[]) throws IOException {
@@ -20,20 +27,20 @@ public class TermStats {
 		File txtDir = new File("txt/");
 		txtDir.mkdir();
 
-		// Las frecuencias totales en la colección de los términos, ordenadas de
+		// las frecuencias totales en la colección de los terminos, ordenadas de
 		// mayor a menor
 		FileWriter txtTermFreq = new FileWriter("txt/termfreq.txt");
 		PrintWriter pw1 = new PrintWriter(txtTermFreq);
 
 		IndexBuilder builder = new LuceneIndexBuilder();
+
 		// builder.build("collections/urls.txt", "index");
 		builder.build("src/es/uam/eps/bmi/search/ranking", "index");
 
 		Index index = new LuceneIndex("index");
-
 		List<String> terms1 = index.getAllTerms();
 
-		Collections.sort(terms1, new Comparator<String>() {
+		Comparator<String> termComparator = new Comparator<String>() {
 			public int compare(String t1, String t2) {
 				try {
 					return (int) Math.signum(index.getTermTotalFreq(t2) - index.getTermTotalFreq(t1));
@@ -42,7 +49,9 @@ public class TermStats {
 					return 0;
 				}
 			}
-		});
+		};
+
+		Collections.sort(terms1, termComparator);
 
 		for (String term : terms1) {
 			pw1.println(term + "\t" + index.getTermTotalFreq(term));
@@ -50,30 +59,19 @@ public class TermStats {
 
 		txtTermFreq.close();
 
-		// El número de documentos que contiene cada término, igualmente de
+		// el numero de documentos que contiene cada termino, igualmente de
 		// mayor a menor
 		FileWriter txtTermDocFreq = new FileWriter("txt/termdocfreq.txt");
 		PrintWriter pw2 = new PrintWriter(txtTermDocFreq);
 
 		List<String> terms2 = index.getAllTerms();
 
-		Collections.sort(terms2, new Comparator<String>() {
-			public int compare(String t1, String t2) {
-				try {
-					return (int) Math.signum(index.getTermDocFreq(t2) - index.getTermDocFreq(t1));
-				} catch (IOException ex) {
-					ex.printStackTrace();
-					return 0;
-				}
-			}
-		});
+		Collections.sort(terms2, termComparator);
 
 		for (String term : terms1) {
 			pw2.println(term + "\t" + index.getTermDocFreq(term));
 		}
 
 		txtTermDocFreq.close();
-
 	}
-
 }

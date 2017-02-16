@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -23,6 +22,7 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -33,6 +33,12 @@ import org.jsoup.Jsoup;
 import es.uam.eps.bmi.search.index.IndexBuilder;
 import es.uam.eps.bmi.utils.CosineSimilarity;
 
+/**
+ * Crea en disco un indice de lucene a partir de documentos.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ */
 public class LuceneIndexBuilder implements IndexBuilder {
 
 	private IndexWriter idxwriter;
@@ -44,7 +50,7 @@ public class LuceneIndexBuilder implements IndexBuilder {
 	 * @param collectionPath
 	 *            ruta de los archivos a indexar, puede ser una lista con una
 	 *            web por linea que se descargara, o un zip/carpeta con archivos
-	 *            html ya descargados
+	 *            html ya descargados, o un archivo pdf
 	 * @param indexPath
 	 *            ruta del indice a crear
 	 * 
@@ -57,31 +63,24 @@ public class LuceneIndexBuilder implements IndexBuilder {
 			throw new IOException();
 		}
 
-		/*
-		 * instanciamos el IndexWriter para poder escribir los Documents en el
-		 * Index
-		 */
+		// instanciamos el IndexWriter para poder escribir los Documents en el
+		// Index
 		this.indexPath = indexPath;
+
 		Path path = Paths.get(indexPath);
 		Directory indexDir = FSDirectory.open(path);
 
-	//	IndexWriterConfig config = new IndexWriterConfig();
-	//	config.setMergeScheduler(NoMergeScheduler.INSTANCE);
-	//	this.idxwriter = new IndexWriter(indexDir, config);
-		this.idxwriter = new IndexWriter(indexDir, new IndexWriterConfig());
+		// abrimos el indice de manera que borre indices anteriores
+		IndexWriterConfig config = new IndexWriterConfig();
+		config.setOpenMode(OpenMode.CREATE);
+		this.idxwriter = new IndexWriter(indexDir, config);
 
+		// leemos los archivos de disco y cargamos sus rutas, despues creamos un
+		// objeto Document con sus Fields a partir de cada ruta almacenada y lo
+		// indexamos
 
-		/*
-		 * leemos los archivos de disco y cargamos sus rutas, despues creamos un
-		 * objeto Document con sus Fields a partir de cada ruta almacenada y lo
-		 * indexamos
-		 */
-
-		/*
-		 * Si es un zip, lo descomprimimos y leemos de manera normal los
-		 * archivos html que obtengamos
-		 */
-		int num_docs=0;
+		// si es un zip, lo descomprimimos y leemos de manera normal los
+		// archivos html que obtengamos
 		if (collectionPath.endsWith(".zip")) {
 
 			ZipFile zipFile = new ZipFile(collectionPath);
@@ -92,64 +91,56 @@ public class LuceneIndexBuilder implements IndexBuilder {
 			File zipCollectionFile = new File("tmp/");
 			for (File f : zipCollectionFile.listFiles()) {
 				this.indexDocument((this.getDocument(Jsoup.parse(f, "UTF-8", f.getAbsolutePath()))));
-				num_docs++;
 			}
 		}
+		// si es un archivo pdf, lo parseamos con pdfbox
 		else if (collectionPath.endsWith(".pdf")) {
-			
+
 			PDDocument pddDocument = PDDocument.load(new File(collectionPath));
 			PDFTextStripper stripper = new PDFTextStripper();
 			String pdfContent = stripper.getText(pddDocument);
-			
+
 			FileWriter pdfFileWriter = new FileWriter("pdfFile.txt");
 			PrintWriter pw = new PrintWriter(pdfFileWriter);
-			
+
 			pw.println(pdfContent);
-			
+
 			pdfFileWriter.close();
 			pw.close();
-			
+
 			File pdfFile = new File("pdfFile.txt");
-			
+
 			this.indexDocument((this.getDocument(Jsoup.parse(pdfFile, "UTF-8", pdfFile.getAbsolutePath()))));
 
-			
 		}
-		/* Si es un directorio de html's cargamos cada archivo */
+		// si es un directorio de html's cargamos cada archivo
 		else if (collectionFile.isDirectory() == true) {
 
 			for (File f : collectionFile.listFiles()) {
 				if (f.isDirectory() == false) { // no entramos en subdirectorios
 					this.indexDocument((this.getDocument(Jsoup.parse(f, "UTF-8", f.getAbsolutePath()))));
-					num_docs++;
 				}
 			}
 		}
-		/* Si es un txt con webs, descargamos cada web */
+		// si es un txt con webs, descargamos cada web
 		else if (collectionFile.isFile() == true) {
 
-			List<String> stream = Files.readAllLines(Paths.get(collectionPath));
+			List<String> urls = Files.readAllLines(Paths.get(collectionPath));
 
-			for (String line:stream) {
+			for (String line : urls) {
 				this.indexDocument((this.getDocument(Jsoup.connect(line).get())));
-				num_docs++;
 			}
-						
 
-
-			//stream.close();
 		}
 
 		this.idxwriter.close();
 
-		/* Generamos los modulos */
-			//System.out.println("Storing vector mod");
-			//	this.storeVectorMod();
-		
-		}
+		// generamos los modulos
+		// this.storeVectorMod(); ---> lento para indices largos
+	}
 
 	/**
-	 * mod vector doc TODO
+	 * Guarda en un arhchivo de texto el modulo de cada documento segun tf-idf.
 	 * 
 	 * @throws IOException
 	 */
@@ -189,11 +180,10 @@ public class LuceneIndexBuilder implements IndexBuilder {
 
 		modWriter.close();
 		pw.close();
-		index.getIndexReader().close();
 	}
 
 	/**
-	 * Obtiene un Document de Apache Lucene a partir de uno de jsoup
+	 * Obtiene un Document de Apache Lucene a partir de uno de jsoup.
 	 * 
 	 * @param d
 	 *            documento jsoup valido
@@ -205,7 +195,7 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		if (d == null)
 			return null;
 
-		/* queremos que con el contenido se puedan crear TermVectors */
+		// queremos que con el contenido se puedan crear TermVectors
 		FieldType ft = new FieldType(TextField.TYPE_STORED);
 		ft.setStored(true);
 		ft.setStoreTermVectors(true);
@@ -213,15 +203,13 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		ft.setStoreTermVectorPayloads(true);
 		ft.setStoreTermVectorPositions(true);
 
-		/* Creamos los campos del documento */
-
-		/* Normalizamos el texto */
+		// normalizamos el texto
 		String normalized = d.body().text().replaceAll("[^A-Za-z]+", " ");
 
 		Field filePathField = new StringField("filepath", d.baseUri(), Store.YES);
 		Field contentField = new Field("content", normalized, ft);
 
-		/* Creamos el documento */
+		// creamos el documento
 		Document document = new Document();
 
 		document.add(contentField);
@@ -232,28 +220,26 @@ public class LuceneIndexBuilder implements IndexBuilder {
 
 	/**
 	 * Indexa (escribe en disco) un documento usando el indexwriter propio del
-	 * LuceneIndexBuilder
+	 * LuceneIndexBuilder.
 	 * 
 	 * @param d
 	 *            documento lucene a indexar
 	 * 
 	 * @throws IOException
-	 *             si falla al a�adir un documento al indice
+	 *             si falla al agregar un documento al indice
 	 */
 	private void indexDocument(Document d) throws IOException {
 
 		System.out.println("Indexing (" + this.idxwriter.numDocs() + "): " + d.getField("filepath").stringValue());
 
-		/*
-		 * No usamos addDocument, ya que agregaria elementos repetidos. Con
-		 * updateDocument conseguimos que se actualicen pasandole el Field
-		 * filepath
-		 */
+		// no usamos addDocument, ya que agregaria elementos repetidos. Con
+		// updateDocument conseguimos que se actualicen pasandole el Field
+		// filepath
 		this.idxwriter.updateDocument(new Term("filepath", d.getField("filepath").stringValue()), d);
 	}
 
 	/**
-	 * Descomprime un archivo zip (solo los archivos al primer nivel)
+	 * Descomprime un archivo zip (solo los archivos al primer nivel).
 	 * 
 	 * @param zipPath
 	 *            ruta del archivo zip
@@ -262,24 +248,25 @@ public class LuceneIndexBuilder implements IndexBuilder {
 	 */
 	private void unzipFile(String zipPath, String destPath) {
 
-		// TODO comprobar parametros
+		if (zipPath == null || destPath == null)
+			return;
 
 		File dir = new File(destPath);
 		if (!dir.exists()) // creacion de directorio destino
 			dir.mkdirs();
 
 		FileInputStream fis;
-		int BUFFER = 2048;
-		byte[] buffer = new byte[BUFFER];
+		int buff = 2048;
+		byte[] buffer = new byte[buff];
 
 		try {
 
-			/* leemos el zip origen y extraemos la primera entrada */
+			// leemos el zip origen y extraemos la primera entrada
 			fis = new FileInputStream(zipPath);
 			ZipInputStream zis = new ZipInputStream(fis);
 			ZipEntry zEntry = zis.getNextEntry();
 
-			/* iteramos sobre las entradas del archivo zip */
+			// iteramos sobre las entradas del archivo zip
 			while (zEntry != null) {
 
 				String fileName = zEntry.getName();
@@ -291,20 +278,19 @@ public class LuceneIndexBuilder implements IndexBuilder {
 					fos.write(buffer, 0, len);
 				}
 
-				/* liberamos recursos */
+				// liberamos recursos
 				fos.close();
 				zis.closeEntry();
 
 				zEntry = zis.getNextEntry();
 			}
 
-			/* liberamos recursos finales */
+			// liberamos recursos finales
 			zis.closeEntry();
 			zis.close();
 			fis.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 }

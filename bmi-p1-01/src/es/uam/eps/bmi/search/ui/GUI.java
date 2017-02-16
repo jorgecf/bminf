@@ -10,23 +10,27 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableModel;
 
+/**
+ * GUI de nuestra interfaz.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ */
 public class GUI extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private JTextField textField;
 	private JSpinner spinner;
 	private JTable table;
 	private JFileChooser fileChooser;
 	private File collectionFile;
 
-	/**
-	 * Create the application.
-	 */
 	public GUI() {
 		initialize();
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Inicializa los componentes con sus acciones ligadas al modelo.
 	 */
 	private void initialize() {
 
@@ -42,6 +46,8 @@ public class GUI extends JFrame {
 		Object[][] data = new Object[][] {};
 
 		DefaultTableModel tmodel = new DefaultTableModel(data, columns) {
+
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
