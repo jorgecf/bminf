@@ -24,13 +24,14 @@ import java.util.List;
  */
 public class TestEngine {
 	public static void main(String a[]) throws IOException {
-		// testCollection("collections/hockey", "indexhockey", "hierba", "liga street hockey");
-		//testSearch(new VSMEngine("indexhockey"), "liga street hockey", 8);
+		// testCollection("collections/hockey", "indexhockey", "hierba", "liga
+		// street hockey");
+		// testSearch(new VSMEngine("indexhockey"), "liga street hockey", 8);
 
-		//testCollection("src/es/uam/eps/bmi/search/ranking", "index", "size", "public abstract");
-		 testCollection("collections/docs.zip", "index", "seat", "obama family tree");
-		// testCollection("collections/urls.txt", "index", "wikipedia", "information probability");
-		// testSearch(new VSMEngine("index"), "information probability", 5);
+	testCollection("src/es/uam/eps/bmi/search/ranking", "index", "size", "public abstract");
+		testCollection("collections/docs.zip", "index", "seat", "obama family tree");
+		testCollection("collections/urls.txt", "index", "wikipedia", "information probability");
+		testSearch(new VSMEngine("index"), "information probability", 5);
 	}
 
 	static void testCollection(String collectionPath, String indexPath, String word, String query) throws IOException {
@@ -97,7 +98,7 @@ public class TestEngine {
 	}
 
 	static void testSearch(SearchEngine engine, String query, int cutoff) throws IOException {
-		
+
 		SearchRanking ranking = engine.search(query, cutoff);
 
 		System.out.println("  Top " + cutoff + " results for query \"" + query + "\"");
