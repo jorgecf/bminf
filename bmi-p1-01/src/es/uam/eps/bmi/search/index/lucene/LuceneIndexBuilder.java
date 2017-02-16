@@ -26,6 +26,8 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.jsoup.Jsoup;
 
 import es.uam.eps.bmi.search.index.IndexBuilder;
@@ -93,6 +95,26 @@ public class LuceneIndexBuilder implements IndexBuilder {
 				num_docs++;
 			}
 		}
+		else if (collectionPath.endsWith(".pdf")) {
+			
+			PDDocument pddDocument = PDDocument.load(new File(collectionPath));
+			PDFTextStripper stripper = new PDFTextStripper();
+			String pdfContent = stripper.getText(pddDocument);
+			
+			FileWriter pdfFileWriter = new FileWriter("pdfFile.txt");
+			PrintWriter pw = new PrintWriter(pdfFileWriter);
+			
+			pw.println(pdfContent);
+			
+			pdfFileWriter.close();
+			pw.close();
+			
+			File pdfFile = new File("pdfFile.txt");
+			
+			this.indexDocument((this.getDocument(Jsoup.parse(pdfFile, "UTF-8", pdfFile.getAbsolutePath()))));
+
+			
+		}
 		/* Si es un directorio de html's cargamos cada archivo */
 		else if (collectionFile.isDirectory() == true) {
 
@@ -108,17 +130,6 @@ public class LuceneIndexBuilder implements IndexBuilder {
 
 			List<String> stream = Files.readAllLines(Paths.get(collectionPath));
 
-			/*
-			stream.forEach(line -> {
-				try {
-					final int j =i;
-					this.indexDocument((this.getDocument(Jsoup.connect(line).get())),  j);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
-			i++;
-			*/
 			for (String line:stream) {
 				this.indexDocument((this.getDocument(Jsoup.connect(line).get())));
 				num_docs++;
@@ -227,7 +238,7 @@ public class LuceneIndexBuilder implements IndexBuilder {
 	 *            documento lucene a indexar
 	 * 
 	 * @throws IOException
-	 *             si falla al añadir un documento al indice
+	 *             si falla al aï¿½adir un documento al indice
 	 */
 	private void indexDocument(Document d) throws IOException {
 
@@ -239,7 +250,7 @@ public class LuceneIndexBuilder implements IndexBuilder {
 		 * filepath
 		 */
 		this.idxwriter.updateDocument(new Term("filepath", d.getField("filepath").stringValue()), d);
-			}
+	}
 
 	/**
 	 * Descomprime un archivo zip (solo los archivos al primer nivel)
