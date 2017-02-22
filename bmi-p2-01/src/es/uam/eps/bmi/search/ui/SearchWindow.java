@@ -2,8 +2,12 @@ package es.uam.eps.bmi.search.ui;
 
 import es.uam.eps.bmi.search.SearchEngine;
 import es.uam.eps.bmi.search.index.Index;
+import es.uam.eps.bmi.search.index.IndexBuilder;
 import es.uam.eps.bmi.search.index.NoIndexException;
+import es.uam.eps.bmi.search.index.lucene.LuceneIndex;
+import es.uam.eps.bmi.search.index.lucene.LuceneIndexBuilder;
 import es.uam.eps.bmi.search.lucene.LuceneEngine;
+import es.uam.eps.bmi.search.vsm.DocBasedVSMEngine;
 import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
@@ -68,7 +72,7 @@ public class SearchWindow extends JFrame {
         content.add("South", indexPanel);
         
         indexDialog = new IndexDialog(this, indexFolder);
-        engine = createEngine(indexFolder); 
+        createEngine(indexFolder); 
 
         // Interactions
         ActionListener searchListener = new ActionListener() {
@@ -77,10 +81,10 @@ public class SearchWindow extends JFrame {
                 else {
                     try {
                         renderer.setResults(engine.search(searchBox.getText(), resultsPerPage));
+                        resultsPanel.setText(renderer.toString());
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
-                    resultsPanel.setText(renderer.toString());
                 } 
             }
         };
@@ -115,17 +119,21 @@ public class SearchWindow extends JFrame {
         indexDialog.setVisible(true);
     }
     
-    SearchEngine createEngine(String indexFolder) throws IOException {
+    void createEngine(String indexFolder) throws IOException {
         try {
-            return new LuceneEngine(indexFolder);
+//        engine = new LuceneEngine(indexFolder);
+        engine = new DocBasedVSMEngine(createIndex(indexFolder));
         } catch (NoIndexException ex) {
             missingIndexError();
-            return null;
         }
     }
-    
-    SearchEngine createEngine(Index index) throws IOException {
-        return createEngine(index.getFolder());
+
+    static Index createIndex(String folder) throws IOException {
+        return new LuceneIndex(folder);
+    }
+
+    static IndexBuilder createIndexBuilder() {
+        return new LuceneIndexBuilder();
     }
 
     public static void main (String a[]) throws IOException {

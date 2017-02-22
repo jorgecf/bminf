@@ -30,24 +30,40 @@ public class LuceneIndex extends AbstractIndex {
     }
 
     public String getDocPath(int docID) throws IOException {
+        return index.document(docID).get("path");
     }
     
     public Collection<String> getAllTerms() throws IOException {
+        List<String> termList = new ArrayList<String>();
+        TermsEnum terms = MultiFields.getFields(index).terms("content").iterator();
+        while (terms.next() != null) 
+            termList.add(terms.term().utf8ToString());
+        return termList;
     }
     
     public int numDocs() {
+        return index.numDocs();
     }
 
     public long getDocFreq(String term) throws IOException {
+        return index.docFreq(new Term("content", term));
     }
 
     public long getTotalFreq(String term) throws IOException {
+        return index.totalTermFreq(new Term("content", term));
     }
     
     public void load(String path) throws IOException {
+        try {
+            index = DirectoryReader.open(FSDirectory.open(Paths.get(path)));
+            loadNorms(path);
+        } catch (IndexNotFoundException ex) {
+            throw new NoIndexException(path);
+        }
     }
     
     public double getDocNorm(int docID) throws IOException {
+        return docNorms[docID];
     }
 
     public PostingsList getPostings(String term) throws IOException {

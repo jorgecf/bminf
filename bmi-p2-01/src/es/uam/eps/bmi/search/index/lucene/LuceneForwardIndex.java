@@ -15,8 +15,10 @@ public class LuceneForwardIndex extends LuceneIndex implements ForwardIndex {
     }
 
     public FreqVector getDocVector(int docID) throws IOException {
+        return new LuceneFreqVector(index.getTermVector(docID, "content"));
     }
     
     public long getTermFreq(String term, int docID) throws IOException {
+        return getDocVector(docID).getFreq(term);
     }
 }

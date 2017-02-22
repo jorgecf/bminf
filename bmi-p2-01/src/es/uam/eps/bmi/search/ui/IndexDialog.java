@@ -3,8 +3,6 @@ package es.uam.eps.bmi.search.ui;
 import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.index.IndexBuilder;
 import es.uam.eps.bmi.search.index.NoIndexException;
-import es.uam.eps.bmi.search.index.lucene.LuceneIndex;
-import es.uam.eps.bmi.search.index.lucene.LuceneIndexBuilder;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -30,9 +28,8 @@ public class IndexDialog extends JDialog {
     
     public IndexDialog(SearchWindow mainWindow, String indexFolder) throws IOException {
         super(mainWindow, false);
-        builder = createIndexBuilder();
+        builder = mainWindow.createIndexBuilder();
         
-//        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setBounds(mainWindow.getX() + mainWindow.getWidth(), mainWindow.getY(), 700, 200);
         
         Container content = getContentPane();
@@ -75,15 +72,6 @@ public class IndexDialog extends JDialog {
          collectionChooser = new JFileChooser("./");
          collectionChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
          
-        // Default index folder
-//        try {
-//            mainWindow.engine.loadIndex();
-//        } catch (NoIndexException ex) {
-//            missingIndexError(ex.getFolder());
-//        }
-        
-//        pack();
-        
         // Interactions
         browseFolderButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -95,8 +83,7 @@ public class IndexDialog extends JDialog {
         ActionListener connectionListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Index index = createIndex(indexFolderPath.getText());
-                    mainWindow.createEngine(index);
+                    mainWindow.createEngine(indexFolderPath.getText());
                     msgArea.setText("");
                 } catch (NoIndexException ex) {
                     missingIndexError(ex.getFolder());
@@ -119,7 +106,7 @@ public class IndexDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 try {
                     builder.build(collectionPath.getText(), indexFolderPath.getText());
-                    mainWindow.createEngine(createIndex(indexFolderPath.getText()));
+                    mainWindow.createEngine(indexFolderPath.getText());
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -131,12 +118,5 @@ public class IndexDialog extends JDialog {
         msgArea.setText("<html><center>No index found in " + folder + ", please configure index connection:<br/><br/>"
                 + "build some index into " + folder + ", or connect to an index in a different folder.</center></html>");
         setVisible(true);
-    }
-    
-    static Index createIndex(String folder) throws IOException {
-        return new LuceneIndex(folder);
-    }
-    static IndexBuilder createIndexBuilder() {
-        return new LuceneIndexBuilder();
     }
 }

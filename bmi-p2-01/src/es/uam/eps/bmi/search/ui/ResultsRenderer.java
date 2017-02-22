@@ -11,6 +11,8 @@ public abstract class ResultsRenderer {
 
     public ResultsRenderer() {}
 
+    public abstract String toString();
+
     public ResultsRenderer(SearchRanking r) {
         setResults(r);
     }
@@ -18,6 +20,4 @@ public abstract class ResultsRenderer {
     public void setResults (SearchRanking r) {
         ranking = r;
     }
-
-    public abstract String toString();
 }

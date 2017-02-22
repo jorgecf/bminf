@@ -22,7 +22,7 @@ public class TextResultDocRenderer {
             return result.getScore() + "\t" + uri;
         } catch ( IOException ex) {
             ex.printStackTrace();
+            return "";
         }
-        return "";
     }
 }

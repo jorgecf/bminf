@@ -1,7 +1,6 @@
 package es.uam.eps.bmi.search.vsm;
 
 import es.uam.eps.bmi.search.index.freq.FreqVector;
-import es.uam.eps.bmi.search.index.lucene.LuceneForwardIndex;
 import es.uam.eps.bmi.search.index.ForwardIndex;
 import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.ranking.SearchRanking;

@@ -22,19 +22,39 @@ import org.apache.lucene.store.FSDirectory;
 public class LuceneIndexBuilder extends AbstractIndexBuilder {
     IndexWriter builder;
     protected static FieldType type;
+    String indexFolder;
 
     public LuceneIndexBuilder() {
         type = new FieldType();
         type.setIndexOptions (IndexOptions.DOCS_AND_FREQS);
     }
     
-    public void build (String collectionPath, String indexPath) throws IOException {
+    public void build (String collectionPath, String path) throws IOException {
+        indexFolder = path;
+        clear(indexFolder);
+        IndexWriterConfig iwc = new IndexWriterConfig(new StandardAnalyzer()); 
+        iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+        builder = new IndexWriter(FSDirectory.open(Paths.get(indexFolder)), iwc);
+
+        File f = new File(collectionPath);
+        if (f.isDirectory()) indexFolder(f);                // A directory containing text files.
+        else if (f.getName().endsWith(".zip")) indexZip(f); // A zip file containing compressed text files.
+        else indexURLs(f);                                  // A file containing a list of URLs.
+
+        builder.close();
+        saveDocNorms(indexFolder);
     }
     
     public void indexText(String text, String path) throws IOException {
+        Document doc = new Document();
+        Field pathField = new StringField("path", path, Field.Store.YES);
+        doc.add(pathField);
+        Field field = new Field("content", text, type);
+        doc.add(field); 
+        builder.addDocument(doc);
     }
 
-    protected Index openIndex(String path) throws IOException {
-        return new LuceneIndex(path);
+    protected Index getCoreIndex() throws IOException {
+        return new LuceneIndex(indexFolder);
     }
 }
