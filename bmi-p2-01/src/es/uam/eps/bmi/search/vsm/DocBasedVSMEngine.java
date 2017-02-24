@@ -13,6 +13,13 @@ import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.impl.RankingImpl;
 import es.uam.eps.bmi.search.vsm.AbstractVSMEngine;
 
+/**
+ * Engine de busqueda implementada por el metodo de modelo vectorial orientado a
+ * documentos.
+ * 
+ * @author Alejandro Martin
+ * @author Jorge Cifuentes
+ */
 public class DocBasedVSMEngine extends AbstractVSMEngine {
 
 	public DocBasedVSMEngine(Index idx) {
@@ -21,56 +28,55 @@ public class DocBasedVSMEngine extends AbstractVSMEngine {
 
 	@Override
 	public SearchRanking search(String query, int cutoff) throws IOException {
-		
+
 		String[] terms = query.split(" ");
-		
-		// en acum se iran guardando la suma del tfidf para cada doc, por lo que al final
-		//	tendra toda la parte de arriba del coseno de similitud
+
+		// en acum se iran guardando la suma del tfidf para cada doc, por lo que
+		// al final
+		// tendra toda la parte de arriba del coseno de similitud
 		Hashtable<Integer, Double> acum = new Hashtable<>();
 		RankingImpl ranking = new RankingImpl(index, cutoff);
-		
-		ArrayList<PostingsList> pls = new ArrayList<PostingsList> ();
-		ArrayList<Iterator<Posting>> pls_iter = new ArrayList<Iterator<Posting>> ();
-		
-		// Obtenemos los postings y los iteradores para cada termino
+
+		ArrayList<PostingsList> pls = new ArrayList<PostingsList>();
+		ArrayList<Iterator<Posting>> pls_iter = new ArrayList<Iterator<Posting>>();
+
+		// obtenemos los postings y los iteradores para cada termino
 		for (int i = 0; i < terms.length; i++) {
-			
 			PostingsList pl = this.index.getPostings(terms[i]);
+
 			pls.add(pl);
 			pls_iter.add(pl.iterator());
-			
 		}
-		
-		// Tabla hash para mantener los postings activos
-		Hashtable<Integer, Posting> ps = new Hashtable<Integer, Posting> ();
-		
-		// Obtener primeros postings
-		for (int i = 0; i < pls_iter.size(); i ++) {
+
+		// tabla hash para mantener los postings activos
+		Hashtable<Integer, Posting> ps = new Hashtable<Integer, Posting>();
+
+		// obtenemos los primeros postings
+		for (int i = 0; i < pls_iter.size(); i++) {
 			Posting p = (Posting) pls_iter.get(i).next();
 			ps.put(i, p);
 		}
-		
-		int minDocID = this.index.numDocs(); // Minimo docID
-		int numQ = 0; // Numero de Query correspondiente al minimo docID
-		
-		// Se recorren los postings hasta que todos queden vacíos
+
+		int minDocID = this.index.numDocs(); // minimo docID
+		int numQ = 0; // numero de Query correspondiente al minimo docID
+
+		// se recorren los postings hasta que todos queden vacios
 		while (ps.size() != 0) {
-			
-			// Obtener documento y query con menor docID
+
+			// obtener documento y query con menor docID
 			for (int key : ps.keySet()) {
-				
+
 				int aux_minDocID = ps.get(key).getDocID();
-				
+
 				if (aux_minDocID <= minDocID) {
 					minDocID = aux_minDocID;
 					numQ = key;
 				}
-				
 			}
-			
+
 			// calculamos el tfidf para cada posting (doc, frec)
 			Posting p = ps.get(numQ);
-			
+
 			double tfidf = tfidf(p.getFreq(), pls.get(numQ).size(), this.index.numDocs());
 
 			if (acum.containsKey(p.getDocID())) {
@@ -78,31 +84,30 @@ public class DocBasedVSMEngine extends AbstractVSMEngine {
 			} else {
 				acum.put(p.getDocID(), tfidf);
 			}
-			
-			// Si quedan postings por recorrer se itera con next,
+
+			// si quedan postings por recorrer se itera con next,
 			// en caso contrario se borra la entrada de la hash del "heap"
 			if (pls_iter.get(numQ).hasNext())
 				ps.put(numQ, pls_iter.get(numQ).next());
 			else
 				ps.remove(numQ);
-			
-			// Se asigna como "menor" el mayor documento para que se vuelva a iterar
+
+			// se asigna como "menor" el mayor documento para que se vuelva a
+			// iterar
 			// y coger el menor docID de nuevo
 			minDocID = this.index.numDocs();
-			
 		}
-		
+
 		// dividismos cada valor entre el modulo del documento
 		Enumeration<Integer> e = acum.keys();
 		while (e.hasMoreElements()) {
 			int key = (int) e.nextElement();
-			
-			Double n = this.index.getDocNorm(key);
-			Double sc = acum.get(key) / n;
-			
-			ranking.add(key, sc);
+
+			Double score = acum.get(key) / this.index.getDocNorm(key);
+
+			ranking.add(key, score);
 		}
-		
+
 		return ranking;
 	}
 

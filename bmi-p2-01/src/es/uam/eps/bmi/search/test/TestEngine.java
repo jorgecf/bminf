@@ -77,7 +77,7 @@ public class TestEngine {
       //  testSearch(new TermBasedVSMEngine(ramIndex), query, 5);
       //  testSearch(new TermBasedVSMEngine(diskIndex), query, 5);
 
-  //      testSearch(new DocBasedVSMEngine(luceneIndex), query, 5);
+        testSearch(new DocBasedVSMEngine(luceneIndex), query, 5);
    //     testSearch(new DocBasedVSMEngine(ramIndex), query, 5);
    //     testSearch(new DocBasedVSMEngine(diskIndex), query, 5);
         
