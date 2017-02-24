@@ -2,10 +2,10 @@ package es.uam.eps.bmi.search.vsm;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import es.uam.eps.bmi.search.AbstractEngine;
 import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.index.structure.Posting;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
@@ -13,7 +13,7 @@ import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.impl.RankingImpl;
 import es.uam.eps.bmi.search.vsm.AbstractVSMEngine;
 
-public class DocBasedVSMEngine extends AbstractEngine {
+public class DocBasedVSMEngine extends AbstractVSMEngine {
 
 	public DocBasedVSMEngine(Index idx) {
 		super(idx);
@@ -32,6 +32,7 @@ public class DocBasedVSMEngine extends AbstractEngine {
 		ArrayList<PostingsList> pls = new ArrayList<PostingsList> ();
 		ArrayList<Iterator<Posting>> pls_iter = new ArrayList<Iterator<Posting>> ();
 		
+		// Obtenemos los postings y los iteradores para cada termino
 		for (int i = 0; i < terms.length; i++) {
 			
 			PostingsList pl = this.index.getPostings(terms[i]);
@@ -40,45 +41,69 @@ public class DocBasedVSMEngine extends AbstractEngine {
 			
 		}
 		
-		int max = pls.get(0).size();
-		for (int i = 0; i < pls.size(); i ++) {
-			if (pls.get(i).size() > max)
-				max = i;
+		// Tabla hash para mantener los postings activos
+		Hashtable<Integer, Posting> ps = new Hashtable<Integer, Posting> ();
+		
+		// Obtener primeros postings
+		for (int i = 0; i < pls_iter.size(); i ++) {
+			Posting p = (Posting) pls_iter.get(i).next();
+			ps.put(i, p);
 		}
 		
-		int minDocID = max;
+		int minDocID = this.index.numDocs(); // Minimo docID
+		int numQ = 0; // Numero de Query correspondiente al minimo docID
 		
-		while (pls_iter.get(max).hasNext()) {
+		// Se recorren los postings hasta que todos queden vacíos
+		while (ps.size() != 0) {
 			
-			Posting p1 = (Posting) pls_iter.get(max).next();
-			
-			for (int i = 0; i < terms.length; i ++) {
+			// Obtener documento y query con menor docID
+			for (int key : ps.keySet()) {
 				
-				if (i == max)
-					continue;
+				int aux_minDocID = ps.get(key).getDocID();
 				
-				if (pls_iter.get(i).hasNext()) {
-					Posting p2 = (Posting) pls_iter.get(i).next();
-					if (p1.getDocID() <= p2.getDocID())
-						break;
-					else
-						minDocID = i;
+				if (aux_minDocID <= minDocID) {
+					minDocID = aux_minDocID;
+					numQ = key;
 				}
 				
 			}
 			
-			Posting pMin = (Posting) pls_iter.get(minDocID);
-			double tfidf = tfidf(pMin.getFreq(), pls.get(minDocID).size(), this.index.numDocs());
+			// calculamos el tfidf para cada posting (doc, frec)
+			Posting p = ps.get(numQ);
+			
+			double tfidf = tfidf(p.getFreq(), pls.get(numQ).size(), this.index.numDocs());
 
-			if (acum.containsKey(pMin.getDocID())) {
-				acum.put(pMin.getDocID(), acum.get(pMin.getDocID()) + tfidf);
+			if (acum.containsKey(p.getDocID())) {
+				acum.put(p.getDocID(), acum.get(p.getDocID()) + tfidf);
 			} else {
-				acum.put(pMin.getDocID(), tfidf);
+				acum.put(p.getDocID(), tfidf);
 			}
 			
-		} 
+			// Si quedan postings por recorrer se itera con next,
+			// en caso contrario se borra la entrada de la hash del "heap"
+			if (pls_iter.get(numQ).hasNext())
+				ps.put(numQ, pls_iter.get(numQ).next());
+			else
+				ps.remove(numQ);
+			
+			// Se asigna como "menor" el mayor documento para que se vuelva a iterar
+			// y coger el menor docID de nuevo
+			minDocID = this.index.numDocs();
+			
+		}
 		
-		return null;
+		// dividismos cada valor entre el modulo del documento
+		Enumeration<Integer> e = acum.keys();
+		while (e.hasMoreElements()) {
+			int key = (int) e.nextElement();
+			
+			Double n = this.index.getDocNorm(key);
+			Double sc = acum.get(key) / n;
+			
+			ranking.add(key, sc);
+		}
+		
+		return ranking;
 	}
 
 }
