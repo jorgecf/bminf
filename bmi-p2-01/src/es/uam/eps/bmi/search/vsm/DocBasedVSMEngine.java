@@ -98,17 +98,15 @@ public class DocBasedVSMEngine extends AbstractVSMEngine {
 			minDocID = this.index.numDocs();
 		}
 
-		// dividismos cada valor entre el modulo del documento
+		// dividimos cada valor entre el modulo del documento
 		Enumeration<Integer> e = acum.keys();
 		while (e.hasMoreElements()) {
 			int key = (int) e.nextElement();
 
 			Double score = acum.get(key) / this.index.getDocNorm(key);
-
 			ranking.add(key, score);
 		}
 
 		return ranking;
 	}
-
 }

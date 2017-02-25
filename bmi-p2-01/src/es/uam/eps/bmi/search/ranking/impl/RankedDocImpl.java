@@ -1,5 +1,9 @@
 package es.uam.eps.bmi.search.ranking.impl;
 
+import java.io.IOException;
+
+import es.uam.eps.bmi.search.ranking.SearchRankingDoc;
+
 /**
  * Funciona como scoreDoc, modela un documento con un score en nuestro modelo
  * implementado.
@@ -7,14 +11,16 @@ package es.uam.eps.bmi.search.ranking.impl;
  * @author Jorge Cifuentes
  * @author Alejandro Martin
  */
-public class RankedDocImpl implements Comparable<RankedDocImpl> {
+public class RankedDocImpl extends SearchRankingDoc {
 
 	private int docID;
 	private double score;
+	private String path;
 
-	public RankedDocImpl(int docID, double sum) {
+	public RankedDocImpl(int docID, double sum, String path) {
 		this.docID = docID;
 		this.score = sum;
+		this.path = path;
 	}
 
 	public int getDocID() {
@@ -34,7 +40,7 @@ public class RankedDocImpl implements Comparable<RankedDocImpl> {
 	}
 
 	@Override
-	public int compareTo(RankedDocImpl o) {
-		return Double.compare(o.score, this.score);
+	public String getPath() throws IOException {
+		return this.path;
 	}
 }

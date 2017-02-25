@@ -12,8 +12,8 @@ import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.impl.RankingImpl;
 
 /**
- * Engine de busqueda implementada por el metodo de modelo vectorial
- * orientado a terminos.
+ * Engine de busqueda implementada por el metodo de modelo vectorial orientado a
+ * terminos.
  * 
  * @author Jorge Cifuentes
  * @author Alejandro Martin
@@ -56,7 +56,7 @@ public class TermBasedVSMEngine extends AbstractVSMEngine {
 			}
 		}
 
-		// dividismos cada valor entre el modulo del documento
+		// dividimos cada valor entre el modulo del documento
 		Enumeration<Integer> e = acum.keys();
 		while (e.hasMoreElements()) {
 			int key = (int) e.nextElement();
