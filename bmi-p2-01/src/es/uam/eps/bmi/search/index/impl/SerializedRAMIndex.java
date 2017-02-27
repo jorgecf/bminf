@@ -1,63 +1,99 @@
 package es.uam.eps.bmi.search.index.impl;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Hashtable;
+
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexNotFoundException;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.PostingsEnum;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.store.FSDirectory;
 
 import es.uam.eps.bmi.search.index.AbstractIndex;
+import es.uam.eps.bmi.search.index.NoIndexException;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
+import es.uam.eps.bmi.search.index.structure.lucene.LucenePostingsList;
+import es.uam.eps.bmi.search.index.structure.ram.RAMPostingsList;
 
 public class SerializedRAMIndex extends AbstractIndex {
 
-	public SerializedRAMIndex(String string) {
-		// TODO Auto-generated constructor stub
+	private IndexReader index;
+	private Hashtable<String, PostingsList> dictionary;
+
+	public SerializedRAMIndex(String path) throws IOException {
+		super(path);
+		dictionary = new Hashtable<String, PostingsList>();
+	}
+
+	public Hashtable<String, PostingsList> getDictionary() {
+		return dictionary;
 	}
 
 	@Override
 	public int numDocs() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.index.numDocs();
 	}
 
 	@Override
 	public PostingsList getPostings(String term) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return this.dictionary.get(term);
 	}
 
 	@Override
 	public Collection<String> getAllTerms() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return this.dictionary.keySet();
 	}
 
 	@Override
 	public long getTotalFreq(String term) throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return index.totalTermFreq(new Term("content", term));
 	}
 
 	@Override
 	public long getDocFreq(String term) throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return index.docFreq(new Term("content", term));
 	}
 
 	@Override
 	public void load(String path) throws IOException {
-		// TODO Auto-generated method stub
-		
+		try {
+			index = DirectoryReader.open(FSDirectory.open(Paths.get(path)));
+			loadNorms(path);
+		} catch (IndexNotFoundException ex) {
+			throw new NoIndexException(path);
+		}
 	}
 
 	@Override
 	public String getDocPath(int docID) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return index.document(docID).get("path");
 	}
 
 	@Override
 	public double getDocNorm(int docID) throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return docNorms[docID];
+	}
+
+	public void putDictionary(String term, int docID) {
+		
+		if (this.dictionary.containsKey(term) == false){
+			
+			RAMPostingsList pl = new RAMPostingsList();
+			
+			// hacer cosas PL TODO
+			pl.add(docID, 1);
+			
+			
+			// meter termino, frecuencia=1
+			this.dictionary.put(term, pl);
+		} else {
+			
+		
+			
+		}
 	}
 
 }
