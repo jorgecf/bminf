@@ -1,7 +1,6 @@
-package es.uam.eps.bmi.search.index.structure.ram;
+package es.uam.eps.bmi.search.index.structure.impl;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class RAMPostingsList implements PostingsList {
 		String s = "";
 
 		for (Posting p : pl) {
-			s += "[" + p.getDocID() + " " + p.getFreq() + "]";
+			s += p.getDocID() + " " + p.getFreq() + " ";
 		}
 
 		return s;

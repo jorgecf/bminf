@@ -46,6 +46,7 @@ public class TermBasedVSMEngine extends AbstractVSMEngine {
 				Posting p = (Posting) iter.next();
 
 				double tfidf = tfidf(p.getFreq(), pl.size(), this.index.numDocs());
+
 				int docid = p.getDocID();
 
 				if (acum.containsKey(docid)) {

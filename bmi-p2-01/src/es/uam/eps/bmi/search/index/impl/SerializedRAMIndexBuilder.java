@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -12,19 +16,17 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
-import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.RAMDirectory;
 
 import es.uam.eps.bmi.search.index.AbstractIndexBuilder;
+import es.uam.eps.bmi.search.index.Config;
 import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
-import es.uam.eps.bmi.search.index.structure.ram.RAMPostingsList;
+import es.uam.eps.bmi.search.index.structure.impl.RAMPostingsList;
 
 public class SerializedRAMIndexBuilder extends AbstractIndexBuilder {
 
@@ -49,6 +51,10 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder {
 		// creamos el indice
 		// this.index = this.getCoreIndex();
 
+		// creamos las carpetas necesarias
+		File indexDir = new File(indexPath);
+		indexDir.mkdir();
+
 		// abrimos un Directory en RAM
 		RAMDirectory dir = new RAMDirectory();
 
@@ -69,6 +75,55 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder {
 		// saveDocNorms(indexFolder);
 
 		this.serializeIndex(indexPath);
+
+		saveDocNorms(indexFolder);
+	}
+
+	@Override
+	protected void indexText(String text, String path) throws IOException {
+		/*
+		 * Document doc = new Document(); Field pathField = new
+		 * StringField("path", path, Field.Store.YES); doc.add(pathField); Field
+		 * field = new Field("content", text, type); doc.add(field);
+		 * builder.addDocument(doc);
+		 */
+
+		List<String> terms = Arrays.asList(text.replaceAll("[^A-Za-z0-9 ]", " ").toLowerCase().split(" "));
+		// List<String> terms = Arrays.asList(text.split(" "));
+
+		// set de no repetidos
+		Set<String> set = new HashSet<String>(terms);
+		String[] termsUnique = set.toArray(new String[0]);
+
+		for (String term : termsUnique) {
+			this.putDictionary(term, docId, Collections.frequency(terms, term));
+		}
+
+		docId++;
+
+		// guardamos su ruta
+		File pathFile = new File(this.indexFolder + Config.pathsFileName);
+
+		if (pathFile.exists() == false) {
+			pathFile.createNewFile();
+		}
+
+		//System.out.println("Escribiendo path " + indexFolder + " ----- " + path);
+
+		//FileWriter file = null;
+		try {
+			// file = new FileWriter(this.indexFolder + Config.pathsFileName,
+			// true);
+			// file.append(path + "\n");
+
+			Path p = Paths.get(pathFile.toURI());
+			path += System.lineSeparator();
+			Files.write(p, path.getBytes(), StandardOpenOption.APPEND);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	private void serializeIndex(String indexPath) {
@@ -85,32 +140,14 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder {
 		}
 		PrintWriter pw = new PrintWriter(file);
 
+		// numero de documentos
+		//pw.println(this.docId - 1);
+
 		for (String term : this.dictionary.keySet()) {
-			pw.println(term + " -> " + this.dictionary.get(term));
+			pw.println(term + " " + this.dictionary.get(term));
 		}
 
 		pw.close();
-	}
-
-	@Override
-	protected void indexText(String text, String path) throws IOException {
-		/*
-		 * Document doc = new Document(); Field pathField = new
-		 * StringField("path", path, Field.Store.YES); doc.add(pathField); Field
-		 * field = new Field("content", text, type); doc.add(field);
-		 * builder.addDocument(doc);
-		 */
-
-		List<String> terms = Arrays.asList(text.split(" "));
-
-		// set de no repetidos
-		Set<String> set = new HashSet<String>(terms);
-		String[] termsUnique = set.toArray(new String[0]);
-
-		for (String term : termsUnique) {
-			this.putDictionary(term, ++docId, Collections.frequency(terms, term));
-		}
-
 	}
 
 	public void putDictionary(String term, int docID, int freq) {
