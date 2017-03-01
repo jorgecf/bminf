@@ -8,9 +8,6 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
-
 import es.uam.eps.bmi.search.index.AbstractIndex;
 import es.uam.eps.bmi.search.index.Config;
 import es.uam.eps.bmi.search.index.structure.Posting;
@@ -19,7 +16,6 @@ import es.uam.eps.bmi.search.index.structure.impl.RAMPostingsList;
 
 public class SerializedRAMIndex extends AbstractIndex {
 
-	// private IndexReader index;
 	private Hashtable<String, PostingsList> dictionary;
 	private int numDocs;
 	private List<String> paths;
@@ -34,7 +30,6 @@ public class SerializedRAMIndex extends AbstractIndex {
 
 	@Override
 	public int numDocs() {
-		// return this.index.numDocs();
 		return this.numDocs;
 	}
 
@@ -50,10 +45,8 @@ public class SerializedRAMIndex extends AbstractIndex {
 
 	@Override
 	public long getTotalFreq(String term) throws IOException {
-		// return index.totalTermFreq(new Term("content", term));
 
 		// numero de veces que aparece "word" en todos los documentos
-
 		RAMPostingsList pl = (RAMPostingsList) this.dictionary.get(term);
 
 		int res = 0;
@@ -66,94 +59,64 @@ public class SerializedRAMIndex extends AbstractIndex {
 
 	@Override
 	public long getDocFreq(String term) throws IOException {
-		// return index.docFreq(new Term("content", term));
-
-		// numero de documentos donde aparece: longitud de su posting list
+		// numero de documentos donde aparece term: longitud de su posting list
 		return this.dictionary.get(term).size();
 	}
 
 	@Override
 	public void load(String path) throws IOException {
-		/*
-		 * try { index =
-		 * DirectoryReader.open(FSDirectory.open(Paths.get(path)));
-		 * loadNorms(path); } catch (IndexNotFoundException ex) { throw new
-		 * NoIndexException(path); }
-		 */
 
 		this.dictionary = new Hashtable<String, PostingsList>();
 		this.paths = new ArrayList<>();
 
-		BufferedReader br = null;
-		FileReader fr = null;
-
-		try {
-
-			// fr = new FileReader(path + "/index.txt");
-			// br = new BufferedReader(fr);
-
-			String sCurrentLine;
-
-			br = new BufferedReader(new FileReader(path + "/index.txt"));
-
-			// this.numDocs = Integer.valueOf(br.readLine());
-
-			while ((sCurrentLine = br.readLine()) != null) {
-				this.deserializeIndex(sCurrentLine);
-				// if (sCurrentLine.contains("information"))
-				// System.out.println("leido= " + sCurrentLine);
-
-			}
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-
-		} finally {
-
-			try {
-
-				if (br != null)
-					br.close();
-
-				if (fr != null)
-					fr.close();
-
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-
-		}
+		// cargamos el indice
+		this.readIndex(path);
 
 		// cargamos los paths
 		BufferedReader br2 = null;
-		FileReader fr2 = null;
 
 		try {
-
-			// fr2 = new FileReader(path + Config.pathsFileName);
-			// br2 = new BufferedReader(fr2);
-
 			String sCurrentLine;
 
 			br2 = new BufferedReader(new FileReader(path + Config.pathsFileName));
 
 			while ((sCurrentLine = br2.readLine()) != null) {
-				// System.out.println("leido= " + sCurrentLine);
 				this.paths.add(sCurrentLine);
-				this.numDocs++;
+				this.numDocs++; // numero de docs leidos
 			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		// cargamos las normas
+		// por ultimo, cargamos las normas
 		this.loadNorms(path);
+	}
+
+	private void readIndex(String indexPath) {
+
+		// cargamos los terminos del diccionario y las posting list
+		BufferedReader brdicc = null;
+		BufferedReader brpost = null;
+
+		try {
+			String sCurrentLineDicc;
+			String sCurrentLinePost;
+			brdicc = new BufferedReader(new FileReader(this.indexFolder + Config.dictionaryFileName));
+			brpost = new BufferedReader(new FileReader(this.indexFolder + Config.postingsFileName));
+
+			while (((sCurrentLineDicc = brdicc.readLine()) != null)
+					&& ((sCurrentLinePost = brpost.readLine()) != null)) {
+				this.readIndexAux(sCurrentLineDicc + " " + sCurrentLinePost);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 
-	private void deserializeIndex(String indexLine) {
+	private void readIndexAux(String indexLine) {
 
 		String[] l = indexLine.split(" ");
 		RAMPostingsList pl = new RAMPostingsList();
@@ -173,6 +136,14 @@ public class SerializedRAMIndex extends AbstractIndex {
 
 		// lo restablecemos en el diccionario
 		this.dictionary.put(l[0], pl);
+	}
+
+	private void deserializeIndex(String indexPath) {
+		// abrir archivo en path + Config.dictionaryfilename-> terminos
+		// serializado
+		// abrir archivo en path + Config.postingfilename-> postings serializado
+
+		// meter en hashtable
 
 	}
 

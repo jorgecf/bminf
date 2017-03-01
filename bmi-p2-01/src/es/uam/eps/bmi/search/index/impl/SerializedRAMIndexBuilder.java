@@ -32,9 +32,10 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder {
 
 	private static FieldType type;
 	private IndexWriter builder;
+
 	private String indexFolder;
-	// private Index index;
 	private int docId = 0;
+
 	private Hashtable<String, PostingsList> dictionary;
 
 	public SerializedRAMIndexBuilder() {
@@ -47,9 +48,6 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder {
 	public void build(String collectionPath, String indexPath) throws IOException {
 
 		this.indexFolder = indexPath;
-
-		// creamos el indice
-		// this.index = this.getCoreIndex();
 
 		// creamos las carpetas necesarias
 		File indexDir = new File(indexPath);
@@ -65,33 +63,24 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder {
 
 		File f = new File(collectionPath);
 		if (f.isDirectory())
-			indexFolder(f); // A directory containing text files.
+			indexFolder(f);
 		else if (f.getName().endsWith(".zip"))
-			indexZip(f); // A zip file containing compressed text files.
+			indexZip(f);
 		else
-			indexURLs(f); // A file containing a list of URLs.
+			indexURLs(f);
 
 		builder.close();
-		// saveDocNorms(indexFolder);
 
-		this.serializeIndex(indexPath);
-
+		// serializamos el indice
+		this.writeIndex(indexPath);
 		saveDocNorms(indexFolder);
 	}
 
 	@Override
 	protected void indexText(String text, String path) throws IOException {
-		/*
-		 * Document doc = new Document(); Field pathField = new
-		 * StringField("path", path, Field.Store.YES); doc.add(pathField); Field
-		 * field = new Field("content", text, type); doc.add(field);
-		 * builder.addDocument(doc);
-		 */
 
 		List<String> terms = Arrays.asList(text.replaceAll("[^A-Za-z0-9 ]", " ").toLowerCase().split(" "));
-		// List<String> terms = Arrays.asList(text.split(" "));
 
-		// set de no repetidos
 		Set<String> set = new HashSet<String>(terms);
 		String[] termsUnique = set.toArray(new String[0]);
 
@@ -108,51 +97,54 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder {
 			pathFile.createNewFile();
 		}
 
-		//System.out.println("Escribiendo path " + indexFolder + " ----- " + path);
-
-		//FileWriter file = null;
 		try {
-			// file = new FileWriter(this.indexFolder + Config.pathsFileName,
-			// true);
-			// file.append(path + "\n");
-
 			Path p = Paths.get(pathFile.toURI());
 			path += System.lineSeparator();
 			Files.write(p, path.getBytes(), StandardOpenOption.APPEND);
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	private void serializeIndex(String indexPath) {
+	private void writeIndex(String indexPath) {
 
-		// creamos la carpeta
-		File txtDir = new File(indexPath);
-		txtDir.mkdir();
+		// creamos la carpeta del indice
+		File indexDir = new File(indexPath);
+		indexDir.mkdir();
 
+		// escribimos los terminos y los postings
 		FileWriter file = null;
+		FileWriter file2 = null;
+
 		try {
-			file = new FileWriter(indexPath + "/index.txt");
+			file = new FileWriter(indexPath + Config.dictionaryFileName);
+			file2 = new FileWriter(indexPath + Config.postingsFileName);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		PrintWriter pw = new PrintWriter(file);
-
-		// numero de documentos
-		//pw.println(this.docId - 1);
+		PrintWriter pw2 = new PrintWriter(file2);
 
 		for (String term : this.dictionary.keySet()) {
-			pw.println(term + " " + this.dictionary.get(term));
+			pw.println(term);
+			pw2.println(this.dictionary.get(term));
 		}
 
 		pw.close();
+		pw2.close();
+
+	}
+	
+	private void serializeIndex(String indexPath) {
+		// serializar terms a archivo de terms
+		// serializar postings a archivo de postings
 	}
 
 	public void putDictionary(String term, int docID, int freq) {
 
 		if (this.dictionary.containsKey(term) == false) {
+			
 			RAMPostingsList pl = new RAMPostingsList();
 
 			pl.add(docID, freq);
