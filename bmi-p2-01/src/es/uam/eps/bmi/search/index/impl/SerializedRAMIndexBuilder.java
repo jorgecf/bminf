@@ -1,7 +1,15 @@
 package es.uam.eps.bmi.search.index.impl;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -15,17 +23,22 @@ import org.apache.lucene.store.RAMDirectory;
 
 import es.uam.eps.bmi.search.index.AbstractIndexBuilder;
 import es.uam.eps.bmi.search.index.Index;
+import es.uam.eps.bmi.search.index.structure.PostingsList;
+import es.uam.eps.bmi.search.index.structure.ram.RAMPostingsList;
 
 public class SerializedRAMIndexBuilder extends AbstractIndexBuilder {
 
 	private static FieldType type;
 	private IndexWriter builder;
 	private String indexFolder;
-	private Index index;
+	// private Index index;
+	private int docId = 0;
+	private Hashtable<String, PostingsList> dictionary;
 
 	public SerializedRAMIndexBuilder() {
 		type = new FieldType();
 		type.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
+		this.dictionary = new Hashtable<String, PostingsList>();
 	}
 
 	@Override
@@ -34,7 +47,7 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder {
 		this.indexFolder = indexPath;
 
 		// creamos el indice
-		this.index = this.getCoreIndex();
+		// this.index = this.getCoreIndex();
 
 		// abrimos un Directory en RAM
 		RAMDirectory dir = new RAMDirectory();
@@ -54,18 +67,63 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder {
 
 		builder.close();
 		// saveDocNorms(indexFolder);
+
+		this.serializeIndex(indexPath);
+	}
+
+	private void serializeIndex(String indexPath) {
+
+		// creamos la carpeta
+		File txtDir = new File(indexPath);
+		txtDir.mkdir();
+
+		FileWriter file = null;
+		try {
+			file = new FileWriter(indexPath + "/index.txt");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		PrintWriter pw = new PrintWriter(file);
+
+		for (String term : this.dictionary.keySet()) {
+			pw.println(term + " -> " + this.dictionary.get(term));
+		}
+
+		pw.close();
 	}
 
 	@Override
 	protected void indexText(String text, String path) throws IOException {
-		Document doc = new Document();
-		Field pathField = new StringField("path", path, Field.Store.YES);
-		doc.add(pathField);
-		Field field = new Field("content", text, type);
-		doc.add(field);
-		builder.addDocument(doc);
+		/*
+		 * Document doc = new Document(); Field pathField = new
+		 * StringField("path", path, Field.Store.YES); doc.add(pathField); Field
+		 * field = new Field("content", text, type); doc.add(field);
+		 * builder.addDocument(doc);
+		 */
 
-		((SerializedRAMIndex) this.index).putDictionary();
+		List<String> terms = Arrays.asList(text.split(" "));
+
+		// set de no repetidos
+		Set<String> set = new HashSet<String>(terms);
+		String[] termsUnique = set.toArray(new String[0]);
+
+		for (String term : termsUnique) {
+			this.putDictionary(term, ++docId, Collections.frequency(terms, term));
+		}
+
+	}
+
+	public void putDictionary(String term, int docID, int freq) {
+
+		if (this.dictionary.containsKey(term) == false) {
+			RAMPostingsList pl = new RAMPostingsList();
+
+			pl.add(docID, freq);
+			this.dictionary.put(term, pl);
+		} else {
+			RAMPostingsList pl = (RAMPostingsList) this.dictionary.get(term);
+			pl.add(docID, freq);
+		}
 	}
 
 	@Override

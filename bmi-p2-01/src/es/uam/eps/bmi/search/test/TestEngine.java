@@ -47,7 +47,7 @@ public class TestEngine {
         System.out.println("Checking index correction on URL collection");
      //   testIndex(new LuceneForwardIndex(baseIndexPath + "/lucene/forward"), "information");
         testIndex(new LuceneIndex(baseIndexPath + "/lucene"), "information");
-     //   testIndex(new SerializedRAMIndex(baseIndexPath + "/ram"), "information");
+        testIndex(new SerializedRAMIndex(baseIndexPath + "/ram"), "information");
      //   testIndex(new DiskIndex(baseIndexPath + "/disk"), "information");
 
         /////////////////////////////////////

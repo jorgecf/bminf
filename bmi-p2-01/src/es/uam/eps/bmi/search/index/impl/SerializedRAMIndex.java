@@ -25,7 +25,7 @@ public class SerializedRAMIndex extends AbstractIndex {
 
 	public SerializedRAMIndex(String path) throws IOException {
 		super(path);
-		dictionary = new Hashtable<String, PostingsList>();
+		this.dictionary = new Hashtable<String, PostingsList>();
 	}
 
 	public Hashtable<String, PostingsList> getDictionary() {
@@ -77,23 +77,8 @@ public class SerializedRAMIndex extends AbstractIndex {
 		return docNorms[docID];
 	}
 
-	public void putDictionary(String term, int docID) {
-		
-		if (this.dictionary.containsKey(term) == false){
-			
-			RAMPostingsList pl = new RAMPostingsList();
-			
-			// hacer cosas PL TODO
-			pl.add(docID, 1);
-			
-			
-			// meter termino, frecuencia=1
-			this.dictionary.put(term, pl);
-		} else {
-			
-		
-			
-		}
-	}
+	
+	
+	
 
 }

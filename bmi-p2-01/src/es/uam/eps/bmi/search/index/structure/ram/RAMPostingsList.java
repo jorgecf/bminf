@@ -11,19 +11,17 @@ import es.uam.eps.bmi.search.index.structure.PostingsList;
 public class RAMPostingsList implements PostingsList {
 
 	private List<Posting> pl;
-	//private int size;
+	// private int size;
 
 	public RAMPostingsList() {
 		super();
 		this.pl = new ArrayList<Posting>();
 	}
-	
+
 	public void add(int docID, int freq) {
 		Posting p = new Posting(docID, freq);
 		pl.add(p);
 	}
-
-
 
 	@Override
 	public Iterator<Posting> iterator() {
@@ -33,6 +31,17 @@ public class RAMPostingsList implements PostingsList {
 	@Override
 	public int size() {
 		return this.pl.size();
+	}
+
+	@Override
+	public String toString() {
+		String s = "";
+
+		for (Posting p : pl) {
+			s += "[" + p.getDocID() + " " + p.getFreq() + "]";
+		}
+
+		return s;
 	}
 
 }
