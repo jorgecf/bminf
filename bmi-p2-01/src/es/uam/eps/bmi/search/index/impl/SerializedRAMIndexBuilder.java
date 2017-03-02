@@ -1,13 +1,17 @@
 package es.uam.eps.bmi.search.index.impl;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -28,7 +32,7 @@ import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
 import es.uam.eps.bmi.search.index.structure.impl.RAMPostingsList;
 
-public class SerializedRAMIndexBuilder extends AbstractIndexBuilder {
+public class SerializedRAMIndexBuilder extends AbstractIndexBuilder implements Serializable {
 
 	private static FieldType type;
 	private IndexWriter builder;
@@ -72,7 +76,7 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder {
 		builder.close();
 
 		// serializamos el indice
-		this.writeIndex(indexPath);
+		this.serializeIndex(indexPath);
 		saveDocNorms(indexFolder);
 	}
 
@@ -139,6 +143,33 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder {
 	private void serializeIndex(String indexPath) {
 		// serializar terms a archivo de terms
 		// serializar postings a archivo de postings
+		
+		try {
+			
+			// serializar los terminos del diccionario
+			FileOutputStream fileOut = new FileOutputStream(indexPath + Config.dictionaryFileName);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			
+			// cast de Object[] a String[], para serializar los terminos
+			String[] temrSer = this.dictionary.keySet().toArray(new String[this.dictionary.keySet().size()]);
+			out.writeObject(temrSer);
+			out.close();
+			fileOut.close();
+			
+			// serializar las postingslist del diccionario
+			FileOutputStream fileOut2 = new FileOutputStream(indexPath + Config.postingsFileName);
+			ObjectOutputStream out2 = new ObjectOutputStream(fileOut2);
+			
+			// cast de Object[] a RAMPostingsList[], para serializar las postingslist del diccionario
+			RAMPostingsList[] plsSer = this.dictionary.values().toArray(new RAMPostingsList[this.dictionary.values().size()]);
+			out2.writeObject(plsSer);
+			out2.close();
+			fileOut2.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	public void putDictionary(String term, int docID, int freq) {

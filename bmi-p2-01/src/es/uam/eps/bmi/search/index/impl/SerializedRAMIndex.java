@@ -1,12 +1,19 @@
 package es.uam.eps.bmi.search.index.impl;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
+
+import javax.naming.SizeLimitExceededException;
 
 import es.uam.eps.bmi.search.index.AbstractIndex;
 import es.uam.eps.bmi.search.index.Config;
@@ -70,7 +77,7 @@ public class SerializedRAMIndex extends AbstractIndex {
 		this.paths = new ArrayList<>();
 
 		// cargamos el indice
-		this.readIndex(path);
+		this.deserializeIndex(path);
 
 		// cargamos los paths
 		BufferedReader br2 = null;
@@ -144,6 +151,37 @@ public class SerializedRAMIndex extends AbstractIndex {
 		// abrir archivo en path + Config.postingfilename-> postings serializado
 
 		// meter en hashtable
+		try {
+			
+			// deserialiar los terminos del diccionario
+			FileInputStream fileIn = new FileInputStream(indexPath + Config.dictionaryFileName);
+	        ObjectInputStream in = new ObjectInputStream(fileIn);
+	        String[] termsA = (String[]) in.readObject();
+	        in.close();
+	        fileIn.close();
+	        
+	        // deserializar las postingslist del diccionario
+	        FileInputStream fileIn2 = new FileInputStream(indexPath + Config.postingsFileName);
+	        ObjectInputStream in2 = new ObjectInputStream(fileIn2);
+	        RAMPostingsList[] plsA = (RAMPostingsList[]) in2.readObject();
+	        in2.close();
+	        fileIn2.close();
+	        
+	        // si ambos arrays tienen la misma longitud,
+	        // se introducen terminos y postingslists en el diccionario
+	        if (termsA.length == plsA.length) {
+	        	for (int i = 0; i < termsA.length; i++) {
+	        		this.dictionary.put(termsA[i], plsA[i]);
+	        	}
+			} else {
+				throw new SizeLimitExceededException
+					("Las dimensiones de terminos y postingslists son distintas.");
+			}
+			
+		} catch (IOException | ClassNotFoundException | SizeLimitExceededException e) {
+			e.printStackTrace();
+		}
+		
 
 	}
 
