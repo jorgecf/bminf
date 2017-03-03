@@ -7,11 +7,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Set;
 
 import javax.naming.SizeLimitExceededException;
 
@@ -100,6 +97,7 @@ public class SerializedRAMIndex extends AbstractIndex {
 		this.loadNorms(path);
 	}
 
+	@SuppressWarnings("unused")
 	private void readIndex(String indexPath) {
 
 		// cargamos los terminos del diccionario y las posting list
@@ -146,11 +144,6 @@ public class SerializedRAMIndex extends AbstractIndex {
 	}
 
 	private void deserializeIndex(String indexPath) {
-		// abrir archivo en path + Config.dictionaryfilename-> terminos
-		// serializado
-		// abrir archivo en path + Config.postingfilename-> postings serializado
-
-		// meter en hashtable
 		try {
 			
 			// deserialiar los terminos del diccionario
@@ -187,8 +180,6 @@ public class SerializedRAMIndex extends AbstractIndex {
 
 	@Override
 	public String getDocPath(int docID) throws IOException {
-		// return index.document(docID).get("path");
-
 		return this.paths.get(docID);
 	}
 

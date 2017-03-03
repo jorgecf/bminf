@@ -11,7 +11,6 @@ import es.uam.eps.bmi.search.index.structure.PostingsList;
 public class RAMPostingsList implements PostingsList, Serializable {
 
 	private List<Posting> pl;
-	// private int size;
 
 	public RAMPostingsList() {
 		super();

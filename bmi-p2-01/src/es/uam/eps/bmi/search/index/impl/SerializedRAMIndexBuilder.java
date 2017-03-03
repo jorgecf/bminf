@@ -11,20 +11,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.FieldType;
-import org.apache.lucene.index.IndexOptions;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.store.RAMDirectory;
 
 import es.uam.eps.bmi.search.index.AbstractIndexBuilder;
 import es.uam.eps.bmi.search.index.Config;
@@ -34,17 +26,13 @@ import es.uam.eps.bmi.search.index.structure.impl.RAMPostingsList;
 
 public class SerializedRAMIndexBuilder extends AbstractIndexBuilder implements Serializable {
 
-	private static FieldType type;
-	private IndexWriter builder;
-
+	private static final long serialVersionUID = 1L;
 	private String indexFolder;
 	private int docId = 0;
 
 	private Hashtable<String, PostingsList> dictionary;
 
 	public SerializedRAMIndexBuilder() {
-		type = new FieldType();
-		type.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
 		this.dictionary = new Hashtable<String, PostingsList>();
 	}
 
@@ -57,14 +45,6 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder implements S
 		File indexDir = new File(indexPath);
 		indexDir.mkdir();
 
-		// abrimos un Directory en RAM
-		RAMDirectory dir = new RAMDirectory();
-
-		IndexWriterConfig iwc = new IndexWriterConfig(new StandardAnalyzer());
-		iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-
-		builder = new IndexWriter(dir, iwc);
-
 		File f = new File(collectionPath);
 		if (f.isDirectory())
 			indexFolder(f);
@@ -72,8 +52,6 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder implements S
 			indexZip(f);
 		else
 			indexURLs(f);
-
-		builder.close();
 
 		// serializamos el indice
 		this.serializeIndex(indexPath);
@@ -111,6 +89,7 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder implements S
 
 	}
 
+	@SuppressWarnings("unused")
 	private void writeIndex(String indexPath) {
 
 		// creamos la carpeta del indice
@@ -139,43 +118,43 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder implements S
 		pw2.close();
 
 	}
-	
+
 	private void serializeIndex(String indexPath) {
-		// serializar terms a archivo de terms
-		// serializar postings a archivo de postings
-		
 		try {
-			
+
 			// serializar los terminos del diccionario
 			FileOutputStream fileOut = new FileOutputStream(indexPath + Config.dictionaryFileName);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			
+
 			// cast de Object[] a String[], para serializar los terminos
 			String[] temrSer = this.dictionary.keySet().toArray(new String[this.dictionary.keySet().size()]);
 			out.writeObject(temrSer);
 			out.close();
 			fileOut.close();
-			
+
 			// serializar las postingslist del diccionario
 			FileOutputStream fileOut2 = new FileOutputStream(indexPath + Config.postingsFileName);
 			ObjectOutputStream out2 = new ObjectOutputStream(fileOut2);
-			
-			// cast de Object[] a RAMPostingsList[], para serializar las postingslist del diccionario
-			RAMPostingsList[] plsSer = this.dictionary.values().toArray(new RAMPostingsList[this.dictionary.values().size()]);
+
+			// cast de Object[] a RAMPostingsList[], para serializar las
+			// postingslist del diccionario
+			RAMPostingsList[] plsSer = this.dictionary.values()
+					.toArray(new RAMPostingsList[this.dictionary.values().size()]);
+
 			out2.writeObject(plsSer);
 			out2.close();
 			fileOut2.close();
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void putDictionary(String term, int docID, int freq) {
 
 		if (this.dictionary.containsKey(term) == false) {
-			
+
 			RAMPostingsList pl = new RAMPostingsList();
 
 			pl.add(docID, freq);
