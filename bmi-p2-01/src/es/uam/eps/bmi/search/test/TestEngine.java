@@ -38,17 +38,17 @@ public class TestEngine {
 
         // Construcción
     //   new LuceneForwardIndexBuilder().build(collPath, baseIndexPath + "/lucene/forward");
-        new LuceneIndexBuilder().build(collPath, baseIndexPath + "/lucene");
-        new SerializedRAMIndexBuilder().build(collPath, baseIndexPath + "/ram");
-     //   new DiskIndexBuilder().build(collPath, baseIndexPath + "/disk");
+      //  new LuceneIndexBuilder().build(collPath, baseIndexPath + "/lucene");
+      //  new SerializedRAMIndexBuilder().build(collPath, baseIndexPath + "/ram");
+        new DiskIndexBuilder().build(collPath, baseIndexPath + "/disk");
         
         // Inspección
         System.out.println("-----------------------");
         System.out.println("Checking index correction on URL collection");
      //   testIndex(new LuceneForwardIndex(baseIndexPath + "/lucene/forward"), "information");
-        testIndex(new LuceneIndex(baseIndexPath + "/lucene"), "information");
-        testIndex(new SerializedRAMIndex(baseIndexPath + "/ram"), "information");
-     //   testIndex(new DiskIndex(baseIndexPath + "/disk"), "information");
+      //  testIndex(new LuceneIndex(baseIndexPath + "/lucene"), "information");
+     //   testIndex(new SerializedRAMIndex(baseIndexPath + "/ram"), "information");
+        testIndex(new DiskIndex(baseIndexPath + "/disk"), "information");
 
         /////////////////////////////////////
         // Índices: pruebas de rendimiento //

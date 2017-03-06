@@ -76,7 +76,7 @@ public class SerializedRAMIndex extends AbstractIndex {
 		// cargamos el indice
 		this.deserializeIndex(path);
 
-		// cargamos los paths
+		// cargamos los paths TODO sacar a funcion
 		BufferedReader br2 = null;
 
 		try {
@@ -121,7 +121,7 @@ public class SerializedRAMIndex extends AbstractIndex {
 
 	}
 
-	private void readIndexAux(String indexLine) {
+	private void readIndexAux(String indexLine) { //TODO cutrada y repetido
 
 		String[] l = indexLine.split(" ");
 		RAMPostingsList pl = new RAMPostingsList();

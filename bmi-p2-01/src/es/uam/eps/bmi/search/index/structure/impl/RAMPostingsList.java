@@ -43,4 +43,25 @@ public class RAMPostingsList implements PostingsList, Serializable {
 		return s;
 	}
 
+	public void stringToPosting(String input) {
+
+		//RAMPostingsList pl = new RAMPostingsList();
+		String[] l = input.split(" ");
+
+		// 3 2 4 87
+		int i = 2;
+		int docId = -1;
+		int freq = -1;
+
+		while (l.length >= i) {
+
+			docId = Integer.parseInt(l[i - 2]);
+			freq = Integer.parseInt(l[i - 1]);
+			i += 2;
+
+			this.add(docId, freq);
+		}
+
+		
+	}
 }
