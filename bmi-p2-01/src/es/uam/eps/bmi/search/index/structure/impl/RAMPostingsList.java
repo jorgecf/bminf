@@ -10,6 +10,7 @@ import es.uam.eps.bmi.search.index.structure.PostingsList;
 
 public class RAMPostingsList implements PostingsList, Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private List<Posting> pl;
 
 	public RAMPostingsList() {
@@ -45,10 +46,8 @@ public class RAMPostingsList implements PostingsList, Serializable {
 
 	public void stringToPosting(String input) {
 
-		// RAMPostingsList pl = new RAMPostingsList();
 		String[] l = input.split(" ");
 
-		// 3 2 4 87
 		int i = 2;
 		int docId = -1;
 		int freq = -1;

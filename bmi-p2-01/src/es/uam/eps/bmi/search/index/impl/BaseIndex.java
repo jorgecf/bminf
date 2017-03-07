@@ -12,15 +12,35 @@ import java.util.Map;
 import es.uam.eps.bmi.search.index.AbstractIndex;
 import es.uam.eps.bmi.search.index.Config;
 import es.uam.eps.bmi.search.index.structure.Posting;
-import es.uam.eps.bmi.search.index.structure.PostingsList;
 import es.uam.eps.bmi.search.index.structure.impl.RAMPostingsList;
 
+/**
+ * Representa un Indice base para los indices implementados, agrupando las
+ * funciones basicas para evitar repeticion de codigo.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ * @param <K>
+ *            Clase que representa el termino. Usualmente sera String, pero
+ *            puede ser cualquiera que extienda de CharSequence.
+ * @param <V>
+ *            Tipo de almacenamiento para la lista de Postings (la propia lista
+ *            toda en memoria, un offset al archivo de postings en disco,
+ *            etc...).
+ */
 public abstract class BaseIndex<K extends CharSequence, V> extends AbstractIndex {
 
 	private int numDocs;
 	private List<String> paths;
 	protected Map<K, V> dictionary;
 
+	/**
+	 * Dado un indice, lo carga al dictionary, de acuerdo a la estrategia
+	 * seguida para los parametros <K, V>.
+	 * 
+	 * @param indexPath
+	 */
 	protected abstract void deserializeIndex(String indexPath);
 
 	public Map<K, V> getDictionary() {
@@ -42,7 +62,7 @@ public abstract class BaseIndex<K extends CharSequence, V> extends AbstractIndex
 		// cargamos el indice
 		this.deserializeIndex(this.indexFolder);
 
-		// cargamos los paths TODO sacar a funcion
+		// cargamos los paths
 		BufferedReader br2 = null;
 
 		try {

@@ -5,10 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 
 import es.uam.eps.bmi.search.index.Config;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
@@ -16,28 +12,30 @@ import es.uam.eps.bmi.search.index.structure.impl.RAMPostingsList;
 
 public class DiskIndex extends BaseIndex<String, Integer> {
 
-	// private Hashtable<String, PostingsList> dictionary;
-	// private List<String> dictionary;
-	// private HashMap<String, Integer> dictionary;
-	// private int numDocs;
-	// private List<String> paths;
+	private RandomAccessFile pf;
 
 	public DiskIndex(String path) throws IOException {
 		super(path);
 	}
 
 	@Override
+	public void load(String path) throws IOException {
+		super.load(path);
+
+		pf = new RandomAccessFile(new File(this.indexFolder + Config.postingsFileName), "r");
+	}
+
+	@Override
 	public PostingsList getPostings(String term) throws IOException {
-		RandomAccessFile pf = new RandomAccessFile(new File(this.indexFolder + Config.postingsFileName), "r");
+
 		RAMPostingsList pl = new RAMPostingsList();
 
+		// cargamos la postings list de disco a partir del offset
 		int pos = this.dictionary.get(term);
 		pf.seek(pos);
 		pl.stringToPosting(pf.readLine());
 
-		pf.close();
 		return pl;
-
 	}
 
 	@Override

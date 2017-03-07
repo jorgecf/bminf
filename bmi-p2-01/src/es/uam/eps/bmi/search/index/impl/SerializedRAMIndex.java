@@ -5,25 +5,14 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
 
 import javax.naming.SizeLimitExceededException;
 
-import es.uam.eps.bmi.search.index.AbstractIndex;
 import es.uam.eps.bmi.search.index.Config;
-import es.uam.eps.bmi.search.index.structure.Posting;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
 import es.uam.eps.bmi.search.index.structure.impl.RAMPostingsList;
 
 public class SerializedRAMIndex extends BaseIndex<String, PostingsList> {
-
-	// private HashMap<String, PostingsList> dictionary;
-	// private int numDocs;
-	// private List<String> paths;
 
 	public SerializedRAMIndex(String path) throws IOException {
 		super(path);
@@ -58,25 +47,13 @@ public class SerializedRAMIndex extends BaseIndex<String, PostingsList> {
 
 	}
 
-	private void readIndexAux(String indexLine) { // TODO cutrada y repetido
+	private void readIndexAux(String indexLine) {
 
 		String[] l = indexLine.split(" ");
 		RAMPostingsList pl = new RAMPostingsList();
 
-		int i = 3;
-		int docId = -1;
-		int freq = -1;
+		pl.stringToPosting(indexLine.substring(1));
 
-		while (l.length >= i) {
-
-			docId = Integer.parseInt(l[i - 2]);
-			freq = Integer.parseInt(l[i - 1]);
-			i += 2;
-
-			pl.add(docId, freq);
-		}
-
-		// lo restablecemos en el diccionario
 		this.dictionary.put(l[0], pl);
 	}
 
@@ -84,14 +61,14 @@ public class SerializedRAMIndex extends BaseIndex<String, PostingsList> {
 	protected void deserializeIndex(String indexPath) {
 		try {
 
-			// deserialiar los terminos del diccionario
+			// deserializar los terminos del diccionario
 			FileInputStream fileIn = new FileInputStream(indexPath + Config.dictionaryFileName);
 			ObjectInputStream in = new ObjectInputStream(fileIn);
 			String[] termsA = (String[]) in.readObject();
 			in.close();
 			fileIn.close();
 
-			// deserializar las postingslist del diccionario
+			// deserializar las postings list del diccionario
 			FileInputStream fileIn2 = new FileInputStream(indexPath + Config.postingsFileName);
 			ObjectInputStream in2 = new ObjectInputStream(fileIn2);
 			RAMPostingsList[] plsA = (RAMPostingsList[]) in2.readObject();
