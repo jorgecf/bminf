@@ -51,7 +51,7 @@ public class SerializedRAMIndex extends AbstractIndex {
 	public long getTotalFreq(String term) throws IOException {
 
 		// numero de veces que aparece "word" en todos los documentos
-		RAMPostingsList pl = (RAMPostingsList) this.dictionary.get(term);
+		RAMPostingsList pl = (RAMPostingsList) this.getPostings(term);
 
 		int res = 0;
 		for (Posting p : pl) {

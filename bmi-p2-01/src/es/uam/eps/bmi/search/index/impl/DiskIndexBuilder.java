@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import es.uam.eps.bmi.search.index.AbstractIndexBuilder;
@@ -31,7 +32,7 @@ public class DiskIndexBuilder extends AbstractIndexBuilder implements Serializab
 	private PrintStream psDicc;
 	private PrintStream psPosting;
 
-	//private Hashtable<String, PostingsList> dictionary;
+	// private Hashtable<String, PostingsList> dictionary;
 	private LinkedHashMap<String, PostingsList> dictionary;
 
 	public DiskIndexBuilder() {
@@ -77,8 +78,11 @@ public class DiskIndexBuilder extends AbstractIndexBuilder implements Serializab
 			indexURLs(f);
 
 		// printeamos las postings list
-		for (String t : this.dictionary.keySet()) { //TODO quitar
-			psPosting.println(this.dictionary.get(t));
+		int offset = 0;
+		for (Entry<String, PostingsList> t : this.dictionary.entrySet()) {
+			psDicc.println(t.getKey() + " " + offset); // termino y su offset
+			offset += 1 + t.getValue().toString().getBytes().length;
+			psPosting.println(t.getValue());
 		}
 
 		psDicc.close();
@@ -100,14 +104,14 @@ public class DiskIndexBuilder extends AbstractIndexBuilder implements Serializab
 
 		for (String term : termsUnique) {
 
-			if (term.equals("information")) {
-				System.out.println("TEST");
-			}
+			// if (term.equals("information")) {
+			// System.out.println("TEST");
+			// }
 
 			// guardamos el termino
-			if (this.dictionary.containsKey(term) == false) {
-				psDicc.println(term);
-			}
+			// if (this.dictionary.containsKey(term) == false) {
+			// psDicc.println(term);
+			// }
 
 			// guardamos su lista de postings
 

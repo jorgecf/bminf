@@ -76,6 +76,7 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder implements S
 		File pathFile = new File(this.indexFolder + Config.pathsFileName);
 
 		if (pathFile.exists() == false) {
+			pathFile.getParentFile().mkdirs();
 			pathFile.createNewFile();
 		}
 

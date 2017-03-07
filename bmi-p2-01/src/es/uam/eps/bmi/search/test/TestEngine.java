@@ -39,7 +39,7 @@ public class TestEngine {
         // Construcción
     //   new LuceneForwardIndexBuilder().build(collPath, baseIndexPath + "/lucene/forward");
       //  new LuceneIndexBuilder().build(collPath, baseIndexPath + "/lucene");
-      //  new SerializedRAMIndexBuilder().build(collPath, baseIndexPath + "/ram");
+        new SerializedRAMIndexBuilder().build(collPath, baseIndexPath + "/ram");
         new DiskIndexBuilder().build(collPath, baseIndexPath + "/disk");
         
         // Inspección
@@ -47,7 +47,7 @@ public class TestEngine {
         System.out.println("Checking index correction on URL collection");
      //   testIndex(new LuceneForwardIndex(baseIndexPath + "/lucene/forward"), "information");
       //  testIndex(new LuceneIndex(baseIndexPath + "/lucene"), "information");
-     //   testIndex(new SerializedRAMIndex(baseIndexPath + "/ram"), "information");
+       testIndex(new SerializedRAMIndex(baseIndexPath + "/ram"), "information");
         testIndex(new DiskIndex(baseIndexPath + "/disk"), "information");
 
         /////////////////////////////////////
@@ -67,18 +67,18 @@ public class TestEngine {
         String query = "information probability";
       //  Index luceneFwdIndex = new LuceneForwardIndex(baseIndexPath + "/lucene/forward");
       //  Index luceneIndex = new LuceneIndex(baseIndexPath + "/lucene");
-      //  Index ramIndex = new SerializedRAMIndex(baseIndexPath + "/ram");
+        Index ramIndex = new SerializedRAMIndex(baseIndexPath + "/ram");
         Index diskIndex = new DiskIndex(baseIndexPath + "/disk");
         
      //   testSearch(new LuceneEngine(baseIndexPath + "/lucene"), query, 5);
     //    testSearch(new SlowVSMEngine(luceneFwdIndex), query, 5);
         
      //   testSearch(new TermBasedVSMEngine(luceneIndex), query, 5);
-     //   testSearch(new TermBasedVSMEngine(ramIndex), query, 5);
+       testSearch(new TermBasedVSMEngine(ramIndex), query, 5);
         testSearch(new TermBasedVSMEngine(diskIndex), query, 5);
 
     //  testSearch(new DocBasedVSMEngine(luceneIndex), query, 5);
-   //     testSearch(new DocBasedVSMEngine(ramIndex), query, 5);
+        testSearch(new DocBasedVSMEngine(ramIndex), query, 5);
         testSearch(new DocBasedVSMEngine(diskIndex), query, 5);
         
         //////////////////////////////////////

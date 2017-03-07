@@ -40,12 +40,12 @@ public class RAMPostingsList implements PostingsList, Serializable {
 			s += p.getDocID() + " " + p.getFreq() + " ";
 		}
 
-		return s;
+		return s.substring(0, s.length() - 1); // delete trailing space
 	}
 
 	public void stringToPosting(String input) {
 
-		//RAMPostingsList pl = new RAMPostingsList();
+		// RAMPostingsList pl = new RAMPostingsList();
 		String[] l = input.split(" ");
 
 		// 3 2 4 87
@@ -62,6 +62,5 @@ public class RAMPostingsList implements PostingsList, Serializable {
 			this.add(docId, freq);
 		}
 
-		
 	}
 }

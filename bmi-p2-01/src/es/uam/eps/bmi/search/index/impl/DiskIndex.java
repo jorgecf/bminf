@@ -1,24 +1,29 @@
 package es.uam.eps.bmi.search.index.impl;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 
 import es.uam.eps.bmi.search.index.AbstractIndex;
 import es.uam.eps.bmi.search.index.Config;
+import es.uam.eps.bmi.search.index.structure.Posting;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
 import es.uam.eps.bmi.search.index.structure.impl.RAMPostingsList;
 
 public class DiskIndex extends AbstractIndex {
 
 	// private Hashtable<String, PostingsList> dictionary;
-	private List<String> dictionary;
+	// private List<String> dictionary;
+	private HashMap<String, Integer> dictionary;
 	private int numDocs;
 	private List<String> paths;
 
@@ -33,52 +38,47 @@ public class DiskIndex extends AbstractIndex {
 
 	@Override
 	public PostingsList getPostings(String term) throws IOException {
-		// return this.dictionary.get(term);
-
-		int line = this.dictionary.indexOf(term);
+		RandomAccessFile pf = new RandomAccessFile(new File(this.indexFolder + Config.postingsFileName), "r");
 		RAMPostingsList pl = new RAMPostingsList();
 
-		Stream<String> lines = Files.lines(Paths.get(indexFolder + Config.postingsFileName));
-		// line32 = lines.skip(31).findFirst().get();
-		String parse = lines.skip(line).findFirst().get();
-		pl.stringToPosting(parse);
-		
-		lines.close();
+		int pos = this.dictionary.get(term);
+		pf.seek(pos);
+		pl.stringToPosting(pf.readLine());
+
+		pf.close();
 		return pl;
 
 	}
 
 	@Override
 	public Collection<String> getAllTerms() throws IOException {
-		// return this.dictionary.keySet();
-		return this.dictionary;
+		return this.dictionary.keySet();
 	}
 
 	@Override
 	public long getTotalFreq(String term) throws IOException {
 
-		/*
-		 * // numero de veces que aparece "word" en todos los documentos
-		 * RAMPostingsList pl = (RAMPostingsList) this.dictionary.get(term);
-		 * 
-		 * int res = 0; for (Posting p : pl) { res += p.getFreq(); }
-		 * 
-		 * return res;
-		 */
-		return -1;
+		// numero de veces que aparece "word" en todos los documentos
+		RAMPostingsList pl = (RAMPostingsList) this.getPostings(term);
+
+		int res = 0;
+		for (Posting p : pl) {
+			res += p.getFreq();
+		}
+
+		return res;
 	}
 
 	@Override
 	public long getDocFreq(String term) throws IOException {
 		// numero de documentos donde aparece term: longitud de su posting list
-		// return this.dictionary.get(term).size();
 		return this.getPostings(term).size();
 	}
 
 	@Override
 	public void load(String path) throws IOException {
 
-		this.dictionary = new ArrayList<String>();
+		this.dictionary = new HashMap<>();
 		this.paths = new ArrayList<>();
 
 		this.indexFolder = path;
@@ -115,7 +115,10 @@ public class DiskIndex extends AbstractIndex {
 			brdicc = new BufferedReader(new FileReader(this.indexFolder + Config.dictionaryFileName));
 
 			while ((sCurrentLineDicc = brdicc.readLine()) != null) {
-				this.dictionary.add(sCurrentLineDicc);
+				String[] data = sCurrentLineDicc.split(" ");
+				this.dictionary.put(data[0], Integer.valueOf(data[1]));
+
+				// TODO if data size no es 2 error
 			}
 
 		} catch (IOException e) {
