@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -18,83 +19,19 @@ import es.uam.eps.bmi.search.index.structure.Posting;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
 import es.uam.eps.bmi.search.index.structure.impl.RAMPostingsList;
 
-public class SerializedRAMIndex extends AbstractIndex {
+public class SerializedRAMIndex extends BaseIndex<String, PostingsList> {
 
-	private Hashtable<String, PostingsList> dictionary;
-	private int numDocs;
-	private List<String> paths;
+	// private HashMap<String, PostingsList> dictionary;
+	// private int numDocs;
+	// private List<String> paths;
 
 	public SerializedRAMIndex(String path) throws IOException {
 		super(path);
 	}
 
-	public Hashtable<String, PostingsList> getDictionary() {
-		return dictionary;
-	}
-
-	@Override
-	public int numDocs() {
-		return this.numDocs;
-	}
-
 	@Override
 	public PostingsList getPostings(String term) throws IOException {
 		return this.dictionary.get(term);
-	}
-
-	@Override
-	public Collection<String> getAllTerms() throws IOException {
-		return this.dictionary.keySet();
-	}
-
-	@Override
-	public long getTotalFreq(String term) throws IOException {
-
-		// numero de veces que aparece "word" en todos los documentos
-		RAMPostingsList pl = (RAMPostingsList) this.getPostings(term);
-
-		int res = 0;
-		for (Posting p : pl) {
-			res += p.getFreq();
-		}
-
-		return res;
-	}
-
-	@Override
-	public long getDocFreq(String term) throws IOException {
-		// numero de documentos donde aparece term: longitud de su posting list
-		return this.dictionary.get(term).size();
-	}
-
-	@Override
-	public void load(String path) throws IOException {
-
-		this.dictionary = new Hashtable<String, PostingsList>();
-		this.paths = new ArrayList<>();
-
-		// cargamos el indice
-		this.deserializeIndex(path);
-
-		// cargamos los paths TODO sacar a funcion
-		BufferedReader br2 = null;
-
-		try {
-			String sCurrentLine;
-
-			br2 = new BufferedReader(new FileReader(path + Config.pathsFileName));
-
-			while ((sCurrentLine = br2.readLine()) != null) {
-				this.paths.add(sCurrentLine);
-				this.numDocs++; // numero de docs leidos
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// por ultimo, cargamos las normas
-		this.loadNorms(path);
 	}
 
 	@SuppressWarnings("unused")
@@ -121,7 +58,7 @@ public class SerializedRAMIndex extends AbstractIndex {
 
 	}
 
-	private void readIndexAux(String indexLine) { //TODO cutrada y repetido
+	private void readIndexAux(String indexLine) { // TODO cutrada y repetido
 
 		String[] l = indexLine.split(" ");
 		RAMPostingsList pl = new RAMPostingsList();
@@ -143,49 +80,38 @@ public class SerializedRAMIndex extends AbstractIndex {
 		this.dictionary.put(l[0], pl);
 	}
 
-	private void deserializeIndex(String indexPath) {
+	@Override
+	protected void deserializeIndex(String indexPath) {
 		try {
-			
+
 			// deserialiar los terminos del diccionario
 			FileInputStream fileIn = new FileInputStream(indexPath + Config.dictionaryFileName);
-	        ObjectInputStream in = new ObjectInputStream(fileIn);
-	        String[] termsA = (String[]) in.readObject();
-	        in.close();
-	        fileIn.close();
-	        
-	        // deserializar las postingslist del diccionario
-	        FileInputStream fileIn2 = new FileInputStream(indexPath + Config.postingsFileName);
-	        ObjectInputStream in2 = new ObjectInputStream(fileIn2);
-	        RAMPostingsList[] plsA = (RAMPostingsList[]) in2.readObject();
-	        in2.close();
-	        fileIn2.close();
-	        
-	        // si ambos arrays tienen la misma longitud,
-	        // se introducen terminos y postingslists en el diccionario
-	        if (termsA.length == plsA.length) {
-	        	for (int i = 0; i < termsA.length; i++) {
-	        		this.dictionary.put(termsA[i], plsA[i]);
-	        	}
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			String[] termsA = (String[]) in.readObject();
+			in.close();
+			fileIn.close();
+
+			// deserializar las postingslist del diccionario
+			FileInputStream fileIn2 = new FileInputStream(indexPath + Config.postingsFileName);
+			ObjectInputStream in2 = new ObjectInputStream(fileIn2);
+			RAMPostingsList[] plsA = (RAMPostingsList[]) in2.readObject();
+			in2.close();
+			fileIn2.close();
+
+			// si ambos arrays tienen la misma longitud,
+			// se introducen terminos y postingslists en el diccionario
+			if (termsA.length == plsA.length) {
+				for (int i = 0; i < termsA.length; i++) {
+					this.dictionary.put(termsA[i], plsA[i]);
+				}
 			} else {
-				throw new SizeLimitExceededException
-					("Las dimensiones de terminos y postingslists son distintas.");
+				throw new SizeLimitExceededException("Las dimensiones de terminos y postingslists son distintas.");
 			}
-			
+
 		} catch (IOException | ClassNotFoundException | SizeLimitExceededException e) {
 			e.printStackTrace();
 		}
-		
 
-	}
-
-	@Override
-	public String getDocPath(int docID) throws IOException {
-		return this.paths.get(docID);
-	}
-
-	@Override
-	public double getDocNorm(int docID) throws IOException {
-		return this.docNorms[docID];
 	}
 
 }
