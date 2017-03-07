@@ -185,7 +185,7 @@ public class SerializedRAMIndex extends AbstractIndex {
 
 	@Override
 	public double getDocNorm(int docID) throws IOException {
-		return docNorms[docID];
+		return this.docNorms[docID];
 	}
 
 }

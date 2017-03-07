@@ -7,14 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.stream.Stream;
 
 import es.uam.eps.bmi.search.index.AbstractIndex;
 import es.uam.eps.bmi.search.index.Config;
-import es.uam.eps.bmi.search.index.Index;
-import es.uam.eps.bmi.search.index.structure.Posting;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
 import es.uam.eps.bmi.search.index.structure.impl.RAMPostingsList;
 
@@ -45,6 +42,8 @@ public class DiskIndex extends AbstractIndex {
 		// line32 = lines.skip(31).findFirst().get();
 		String parse = lines.skip(line).findFirst().get();
 		pl.stringToPosting(parse);
+		
+		lines.close();
 		return pl;
 
 	}
@@ -127,14 +126,12 @@ public class DiskIndex extends AbstractIndex {
 
 	@Override
 	public String getDocPath(int docID) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return this.paths.get(docID);
 	}
 
 	@Override
 	public double getDocNorm(int docID) throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.docNorms[docID];
 	}
 
 }

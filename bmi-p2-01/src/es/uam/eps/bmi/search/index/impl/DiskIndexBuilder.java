@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -30,10 +31,11 @@ public class DiskIndexBuilder extends AbstractIndexBuilder implements Serializab
 	private PrintStream psDicc;
 	private PrintStream psPosting;
 
-	private Hashtable<String, PostingsList> dictionary;
+	//private Hashtable<String, PostingsList> dictionary;
+	private LinkedHashMap<String, PostingsList> dictionary;
 
 	public DiskIndexBuilder() {
-		this.dictionary = new Hashtable<String, PostingsList>();
+		this.dictionary = new LinkedHashMap<String, PostingsList>();
 	}
 
 	public void build(String collectionPath, String indexPath) throws IOException {
@@ -84,7 +86,7 @@ public class DiskIndexBuilder extends AbstractIndexBuilder implements Serializab
 
 		// serializamos el indice
 		// this.serializeIndex(indexPath);
-		// saveDocNorms(indexFolder);
+		this.saveDocNorms(indexFolder);
 
 	}
 

@@ -55,7 +55,7 @@ public class SerializedRAMIndexBuilder extends AbstractIndexBuilder implements S
 
 		// serializamos el indice
 		this.serializeIndex(indexPath);
-		saveDocNorms(indexFolder);
+		this.saveDocNorms(indexFolder);
 	}
 
 	@Override
