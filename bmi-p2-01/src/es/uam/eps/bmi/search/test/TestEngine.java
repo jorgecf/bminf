@@ -4,6 +4,7 @@ import es.uam.eps.bmi.search.SearchEngine;
 import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.index.impl.DiskIndex;
 import es.uam.eps.bmi.search.index.impl.DiskIndexBuilder;
+import es.uam.eps.bmi.search.index.impl.EfficientIndexBuilder;
 import es.uam.eps.bmi.search.index.impl.SerializedRAMIndex;
 import es.uam.eps.bmi.search.index.impl.SerializedRAMIndexBuilder;
 import es.uam.eps.bmi.search.index.lucene.LuceneForwardIndex;
@@ -37,7 +38,10 @@ public class TestEngine {
         String baseIndexPath = "index/urls";
 
         // Construcción
-       new LuceneForwardIndexBuilder().build(collPath, baseIndexPath + "/lucene/forward");
+        new EfficientIndexBuilder().build(collPath, baseIndexPath + "/disk/eff");
+
+/*
+        new LuceneForwardIndexBuilder().build(collPath, baseIndexPath + "/lucene/forward");
         new LuceneIndexBuilder().build(collPath, baseIndexPath + "/lucene");
         new SerializedRAMIndexBuilder().build(collPath, baseIndexPath + "/ram");
         new DiskIndexBuilder().build(collPath, baseIndexPath + "/disk");
@@ -49,12 +53,12 @@ public class TestEngine {
         testIndex(new LuceneIndex(baseIndexPath + "/lucene"), "information");
        testIndex(new SerializedRAMIndex(baseIndexPath + "/ram"), "information");
         testIndex(new DiskIndex(baseIndexPath + "/disk"), "information");
-
+*/
         /////////////////////////////////////
         // Índices: pruebas de rendimiento //
         /////////////////////////////////////
         
-        testIndexPerformance("1k", "collections/docs1k.zip", "index/1k");
+    //    testIndexPerformance("1k", "collections/docs1k.zip", "index/1k");
      //   testIndexPerformance("10k", "collections/docs10k.zip", "index/10k");
      //   testIndexPerformance("100k", "collections/docs100k.zip", "index/100k");
 
@@ -62,7 +66,7 @@ public class TestEngine {
         // Búsqueda: pruebas de corrección //
         /////////////////////////////////////
 
-        System.out.println("-----------------------");
+   /*     System.out.println("-----------------------");
         System.out.println("Checking engine results on URL collection");
         String query = "information probability";
        Index luceneFwdIndex = new LuceneForwardIndex(baseIndexPath + "/lucene/forward");
@@ -81,6 +85,7 @@ public class TestEngine {
         testSearch(new DocBasedVSMEngine(ramIndex), query, 5);
         testSearch(new DocBasedVSMEngine(diskIndex), query, 5);
         
+      */
         //////////////////////////////////////
         // Búsqueda: pruebas de rendimiento //
         //////////////////////////////////////

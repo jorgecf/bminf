@@ -11,8 +11,8 @@ import es.uam.eps.bmi.search.index.structure.PostingsList;
 
 public class DiskIndexBuilder extends BaseIndexBuilder {
 
-	private PrintStream psDicc;
-	private PrintStream psPosting;
+	protected PrintStream psDicc;
+	protected PrintStream psPosting;
 
 	@Override
 	protected void serializeIndex(String indexPath) throws IOException {
