@@ -1,7 +1,9 @@
 package es.uam.eps.bmi.search.index.impl;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -79,11 +81,18 @@ public abstract class BaseIndexBuilder extends AbstractIndexBuilder {
 
 	@Override
 	protected void indexText(String text, String path) throws IOException {
+		
+		FileWriter txtHeapLaw = new FileWriter("heapLaw.txt", true);
+		PrintWriter pw = new PrintWriter(txtHeapLaw);
 
 		List<String> terms = Arrays.asList(text.replaceAll("[^A-Za-z0-9 ]", " ").toLowerCase().split(" "));
 
 		Set<String> set = new HashSet<String>(terms);
 		String[] termsUnique = set.toArray(new String[0]);
+		
+		pw.println(terms.size() + "\t" + termsUnique.length);
+		txtHeapLaw.close();
+		pw.close();
 
 		for (String term : termsUnique) {
 			this.putDictionary(term, docId, Collections.frequency(terms, term));
