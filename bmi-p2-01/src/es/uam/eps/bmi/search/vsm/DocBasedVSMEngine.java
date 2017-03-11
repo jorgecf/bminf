@@ -63,7 +63,7 @@ public class DocBasedVSMEngine extends AbstractVSMEngine {
 		// se recorren los postings hasta que todos queden vacios
 		while (ps.size() != 0) {
 
-			// obtener documento y query con menor docID
+			// obtenemos documento y query con menor docID
 			for (int key : ps.keySet()) {
 
 				int aux_minDocID = ps.get(key).getDocID();
@@ -86,7 +86,7 @@ public class DocBasedVSMEngine extends AbstractVSMEngine {
 			}
 
 			// si quedan postings por recorrer se itera con next,
-			// en caso contrario se borra la entrada de la hash del "heap"
+			// en caso contrario se borra la entrada de la hash
 			if (pls_iter.get(numQ).hasNext())
 				ps.put(numQ, pls_iter.get(numQ).next());
 			else

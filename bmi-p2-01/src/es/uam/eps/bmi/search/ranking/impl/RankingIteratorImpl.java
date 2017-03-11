@@ -1,6 +1,7 @@
 package es.uam.eps.bmi.search.ranking.impl;
 
-import org.apache.lucene.util.PriorityQueue;
+import java.util.Comparator;
+import java.util.TreeSet;
 
 import es.uam.eps.bmi.search.ranking.SearchRankingDoc;
 import es.uam.eps.bmi.search.ranking.SearchRankingIterator;
@@ -13,24 +14,29 @@ import es.uam.eps.bmi.search.ranking.SearchRankingIterator;
  */
 public class RankingIteratorImpl implements SearchRankingIterator {
 
-	private PriorityQueue<RankedDocImpl> results; // MinHeap de Lucene
+	private int cuttoff;
+	private TreeSet<RankedDocImpl> results; // MaxHeap
 
 	// lista vacia
 	public RankingIteratorImpl(int cutoff) {
+		this.cuttoff = cutoff;
 
-		this.results = new PriorityQueue<RankedDocImpl>(cutoff) {
+		this.results = new TreeSet<>(new Comparator<RankedDocImpl>() {
 
 			@Override
-			protected boolean lessThan(RankedDocImpl arg0, RankedDocImpl arg1) {
-				if (arg0.compareTo(arg1) < 0)
-					return true;
-				return false;
+			public int compare(RankedDocImpl o1, RankedDocImpl o2) {
+				return o1.compareTo(o2);
 			}
-		};
+		});
 	}
 
 	public void add(RankedDocImpl r) {
+
 		this.results.add(r);
+		
+		if (this.results.size() > this.cuttoff) {
+			this.results.pollLast();
+		}
 	}
 
 	@Override
@@ -40,7 +46,7 @@ public class RankingIteratorImpl implements SearchRankingIterator {
 
 	@Override
 	public SearchRankingDoc next() {
-		return results.pop();
+		return this.results.pollFirst();
 	}
 
 	public int getSize() {

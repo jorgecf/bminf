@@ -10,6 +10,14 @@ import es.uam.eps.bmi.search.index.Config;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
 import es.uam.eps.bmi.search.index.structure.impl.RAMPostingsList;
 
+/**
+ * Carga un indice de disco, el cual accede a las listas de postings mediante
+ * offsets a su archivo de PostingsList.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class DiskIndex extends BaseIndex<String, Integer> {
 
 	private RandomAccessFile pf;
@@ -49,16 +57,19 @@ public class DiskIndex extends BaseIndex<String, Integer> {
 			brdicc = new BufferedReader(new FileReader(this.indexFolder + Config.dictionaryFileName));
 
 			while ((sCurrentLineDicc = brdicc.readLine()) != null) {
-				String[] data = sCurrentLineDicc.split(" ");
-				this.dictionary.put(data[0], Integer.valueOf(data[1]));
 
-				// TODO if data size no es 2 error
+				String[] data = sCurrentLineDicc.split(" ");
+
+				if (data.length != 2) {
+					brdicc.close();
+					throw new IOException("archivo " + Config.dictionaryFileName + " mal formado");
+				}
+
+				this.dictionary.put(data[0], Integer.valueOf(data[1]));
 			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
-
 }

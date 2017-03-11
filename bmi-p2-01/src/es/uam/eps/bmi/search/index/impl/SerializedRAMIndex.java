@@ -12,6 +12,14 @@ import es.uam.eps.bmi.search.index.Config;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
 import es.uam.eps.bmi.search.index.structure.impl.RAMPostingsList;
 
+/**
+ * Indice que carga los terminos y listas de postings desde disco enteramente en
+ * ram.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class SerializedRAMIndex extends BaseIndex<String, PostingsList> {
 
 	public SerializedRAMIndex(String path) throws IOException {
@@ -64,14 +72,18 @@ public class SerializedRAMIndex extends BaseIndex<String, PostingsList> {
 			// deserializar los terminos del diccionario
 			FileInputStream fileIn = new FileInputStream(indexPath + Config.dictionaryFileName);
 			ObjectInputStream in = new ObjectInputStream(fileIn);
+			
 			String[] termsA = (String[]) in.readObject();
+			
 			in.close();
 			fileIn.close();
 
 			// deserializar las postings list del diccionario
 			FileInputStream fileIn2 = new FileInputStream(indexPath + Config.postingsFileName);
 			ObjectInputStream in2 = new ObjectInputStream(fileIn2);
+			
 			RAMPostingsList[] plsA = (RAMPostingsList[]) in2.readObject();
+			
 			in2.close();
 			fileIn2.close();
 
@@ -82,7 +94,7 @@ public class SerializedRAMIndex extends BaseIndex<String, PostingsList> {
 					this.dictionary.put(termsA[i], plsA[i]);
 				}
 			} else {
-				throw new SizeLimitExceededException("Las dimensiones de terminos y postingslists son distintas.");
+				throw new SizeLimitExceededException("Las dimensiones de terminos y postingslists son distintas");
 			}
 
 		} catch (IOException | ClassNotFoundException | SizeLimitExceededException e) {

@@ -40,6 +40,7 @@ public abstract class BaseIndex<K extends CharSequence, V> extends AbstractIndex
 	 * seguida para los parametros <K, V>.
 	 * 
 	 * @param indexPath
+	 *            ruta del indice almacenado por algun Builder
 	 */
 	protected abstract void deserializeIndex(String indexPath);
 

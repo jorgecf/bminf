@@ -42,6 +42,7 @@ public class TermBasedVSMEngine extends AbstractVSMEngine {
 
 			Iterator<Posting> iter = pl.iterator();
 			while (iter.hasNext()) {
+				
 				// calculamos el tfidf para cada posting (doc, frec)
 				Posting p = (Posting) iter.next();
 

@@ -56,7 +56,8 @@ public abstract class BaseIndexBuilder extends AbstractIndexBuilder {
 
 		// creamos las carpetas necesarias
 		File indexDir = new File(indexPath);
-		indexDir.mkdir();
+		this.deleteDirectory(indexDir);
+		indexDir.mkdirs();
 
 		File dic = new File(indexPath + Config.dictionaryFileName);
 		dic.getParentFile().mkdirs();
@@ -81,7 +82,8 @@ public abstract class BaseIndexBuilder extends AbstractIndexBuilder {
 
 	@Override
 	protected void indexText(String text, String path) throws IOException {
-		
+
+		// guardamos los datos para calcular la ley de Heap
 		FileWriter txtHeapLaw = new FileWriter("heapLaw.txt", true);
 		PrintWriter pw = new PrintWriter(txtHeapLaw);
 
@@ -89,16 +91,17 @@ public abstract class BaseIndexBuilder extends AbstractIndexBuilder {
 
 		Set<String> set = new HashSet<String>(terms);
 		String[] termsUnique = set.toArray(new String[0]);
-		
+
+		// ley de Heap
 		pw.println(terms.size() + "\t" + termsUnique.length);
 		txtHeapLaw.close();
 		pw.close();
 
 		for (String term : termsUnique) {
-			this.putDictionary(term, docId, Collections.frequency(terms, term));
+			this.putDictionary(term, this.docId, Collections.frequency(terms, term));
 		}
 
-		docId++;
+		this.docId++;
 
 		// guardamos su ruta
 		File pathFile = new File(this.indexFolder + Config.pathsFileName);
@@ -118,14 +121,40 @@ public abstract class BaseIndexBuilder extends AbstractIndexBuilder {
 
 	}
 
+	/**
+	 * Borra un directorio recursivamente junto a su contenido.
+	 * 
+	 * @param f
+	 *            File del directorio a borrar
+	 */
+	void deleteDirectory(File f) {
+		File[] contents = f.listFiles();
+		if (contents != null) {
+			for (File f2 : contents) {
+				deleteDirectory(f2);
+			}
+		}
+		f.delete();
+	}
+
+	/**
+	 * Inserta un par <termino, posting list> en el diccionario.
+	 * 
+	 * @param term
+	 *            String del termino
+	 * @param docID
+	 *            Id del documento donde aparece el termino
+	 * @param freq
+	 *            Frecuencia de term en el doc docID
+	 */
 	public void putDictionary(String term, int docID, int freq) {
 
 		if (this.dictionary.containsKey(term) == false) {
-
 			RAMPostingsList pl = new RAMPostingsList();
 
 			pl.add(docID, freq);
 			this.dictionary.put(term, pl);
+
 		} else {
 			RAMPostingsList pl = (RAMPostingsList) this.dictionary.get(term);
 			pl.add(docID, freq);

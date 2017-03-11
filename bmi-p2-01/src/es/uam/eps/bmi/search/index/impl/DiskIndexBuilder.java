@@ -9,6 +9,14 @@ import es.uam.eps.bmi.search.index.Config;
 import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
 
+/**
+ * Builder de indice en disco, crea el indice en ram y guarda en disco su
+ * diccionario con offsets a su archivo de listas de postings.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class DiskIndexBuilder extends BaseIndexBuilder {
 
 	protected PrintStream psDicc;
@@ -29,6 +37,7 @@ public class DiskIndexBuilder extends BaseIndexBuilder {
 		for (Entry<String, PostingsList> t : this.dictionary.entrySet()) {
 			psDicc.println(t.getKey() + " " + offset); // termino y su offset
 			offset += 1 + t.getValue().toString().getBytes().length;
+
 			psPosting.println(t.getValue());
 		}
 

@@ -12,6 +12,14 @@ import es.uam.eps.bmi.search.index.Config;
 import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.index.structure.impl.RAMPostingsList;
 
+/**
+ * Indice que guarda los terminos y listas de postings en disco, despues de
+ * crearlos enteramente en ram.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class SerializedRAMIndexBuilder extends BaseIndexBuilder implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -41,7 +49,6 @@ public class SerializedRAMIndexBuilder extends BaseIndexBuilder implements Seria
 		out2.writeObject(plsSer);
 		out2.close();
 		fileOut2.close();
-
 	}
 
 	@SuppressWarnings("unused")
@@ -71,7 +78,6 @@ public class SerializedRAMIndexBuilder extends BaseIndexBuilder implements Seria
 
 		pw.close();
 		pw2.close();
-
 	}
 
 	@Override
