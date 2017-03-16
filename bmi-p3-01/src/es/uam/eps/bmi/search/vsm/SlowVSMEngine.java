@@ -19,7 +19,7 @@ public class SlowVSMEngine extends AbstractVSMEngine {
     
     public SearchRanking search(String q, int cutoff) throws IOException {
         RankingImpl ranking = new RankingImpl(index, cutoff);
-        String query[] = q.split(" ");
+        String query[] = parse(q);
         for (int doc = 0; doc < index.numDocs(); doc++) {
             double score = score(doc, query);
             if (score > Double.NEGATIVE_INFINITY) ranking.add(doc, score);

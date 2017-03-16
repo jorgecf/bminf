@@ -121,9 +121,9 @@ public class TestEngine {
                 System.out.print(" ( ");
                 for (int pos : ((PositionalPosting) posting))
                     System.out.print(pos + " ");
-                System.out.println(")");
+                System.out.print(")");
             }
-            else System.out.println(") ");
+            System.out.println(") ");
             if (++n > 5) {
                 System.out.println("\t\t...and so on up to " + (index.getDocFreq(word) - 10) + " more documents.");
                 break;

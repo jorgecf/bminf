@@ -17,4 +17,8 @@ public abstract class AbstractEngine implements SearchEngine {
     public DocumentMap getDocMap() {
         return index;
     }
+	
+    public String[] parse (String query) {
+        return query.split("\\P{Alpha}+");
+    }
 }
