@@ -6,8 +6,6 @@ import java.util.Iterator;
 
 import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.index.structure.Posting;
-import es.uam.eps.bmi.search.index.structure.PostingsList;
-import es.uam.eps.bmi.search.index.structure.impl.ProximalPostingsList;
 import es.uam.eps.bmi.search.index.structure.positional.PositionalPosting;
 import es.uam.eps.bmi.search.index.structure.positional.PositionsIterator;
 import es.uam.eps.bmi.search.index.structure.positional.lucene.LucenePositionalPostingsList;

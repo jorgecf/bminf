@@ -4,7 +4,7 @@ package es.uam.eps.bmi.search.test;
 import es.uam.eps.bmi.search.SearchEngine;
 //import es.uam.eps.bmi.search.graph.PageRank;
 import es.uam.eps.bmi.search.index.Index;
-//import es.uam.eps.bmi.search.index.impl.PositionalIndexBuilderImpl;
+import es.uam.eps.bmi.search.index.impl.PositionalIndexBuilderImpl;
 //import es.uam.eps.bmi.search.index.impl.PositionalIndexImpl;
 import es.uam.eps.bmi.search.index.lucene.LuceneIndex;
 import es.uam.eps.bmi.search.index.lucene.LuceneIndexBuilder;
@@ -34,9 +34,9 @@ public class TestEngine {
         System.out.println("Toy collection");
         new LuceneIndexBuilder().build("collections/toy", "index/toy/lucene/regular");
         new LucenePositionalIndexBuilder().build("collections/toy", "index/toy/lucene/positional");
-        /*
+        
         new PositionalIndexBuilderImpl().build("collections/toy", "index/toy/positional");
-
+/*
         System.out.println("-----------------------");
         System.out.println("URLs collection");
         new LuceneIndexBuilder().build("collections/urls.txt", "index/urls/lucene/regular");

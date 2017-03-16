@@ -13,19 +13,24 @@ import java.io.RandomAccessFile;
  */
 public class DiskIndexBuilder extends BaseIndexBuilder {
     public void save(String indexFolder) throws IOException {
-        DiskHashDictionary dict = new DiskHashDictionary(indexFolder);
+        
+    	DiskHashDictionary dict = new DiskHashDictionary(indexFolder);
         RandomAccessFile postingsFile = new RandomAccessFile(indexFolder + Config.postingsFileName, "rw");
+        
         long address = 0;
         for (String term : dictionary.getAllTerms()) {
             PostingsList postings = dictionary.getPostings(term);
             postingsFile.writeInt(postings.size());
+        
             for (Posting p : postings) {
                 postingsFile.writeInt(p.getDocID());
                 postingsFile.writeLong(p.getFreq());
             }
+            
             dict.add(term, address);
             address = postingsFile.getFilePointer();
         }
+        
         postingsFile.close();
         dict.save();
     }

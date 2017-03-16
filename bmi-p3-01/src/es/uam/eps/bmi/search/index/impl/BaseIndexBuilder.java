@@ -20,7 +20,7 @@ public abstract class BaseIndexBuilder extends AbstractIndexBuilder {
     EditableDictionary dictionary;
     List<String> docPaths;
 
-    public abstract void save(String indexPath) throws IOException;
+	public abstract void save(String indexPath) throws IOException;
     
     public void build (String collectionPath, String indexPath) throws IOException {
         clear(indexPath);
