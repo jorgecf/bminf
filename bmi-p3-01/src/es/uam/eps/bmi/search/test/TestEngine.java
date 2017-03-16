@@ -1,11 +1,11 @@
 package es.uam.eps.bmi.search.test;
 
-import es.uam.eps.bmi.search.CombinedEngine;
+//import es.uam.eps.bmi.search.CombinedEngine;
 import es.uam.eps.bmi.search.SearchEngine;
-import es.uam.eps.bmi.search.graph.PageRank;
+//import es.uam.eps.bmi.search.graph.PageRank;
 import es.uam.eps.bmi.search.index.Index;
-import es.uam.eps.bmi.search.index.impl.PositionalIndexBuilderImpl;
-import es.uam.eps.bmi.search.index.impl.PositionalIndexImpl;
+//import es.uam.eps.bmi.search.index.impl.PositionalIndexBuilderImpl;
+//import es.uam.eps.bmi.search.index.impl.PositionalIndexImpl;
 import es.uam.eps.bmi.search.index.lucene.LuceneIndex;
 import es.uam.eps.bmi.search.index.lucene.LuceneIndexBuilder;
 import es.uam.eps.bmi.search.index.lucene.LucenePositionalIndex;
@@ -34,6 +34,7 @@ public class TestEngine {
         System.out.println("Toy collection");
         new LuceneIndexBuilder().build("collections/toy", "index/toy/lucene/regular");
         new LucenePositionalIndexBuilder().build("collections/toy", "index/toy/lucene/positional");
+        /*
         new PositionalIndexBuilderImpl().build("collections/toy", "index/toy/positional");
 
         System.out.println("-----------------------");
@@ -74,12 +75,14 @@ public class TestEngine {
         testIndex(new LucenePositionalIndex("index/1k/lucene/positional"), "kansas");
         testIndex(new PositionalIndexImpl("index/1k/positional"), "kansas");
          
+         */
+        
         System.out.println("=======================");
-        System.out.println("Checking serch...");
+        System.out.println("Checking search...");
         
         testSearch("toy", new LuceneEngine("index/toy/lucene/regular"), "and to sleep", 5);
         testSearch("toy", new ProximalEngine(new LucenePositionalIndex("index/toy/lucene/positional")), "and to sleep", 5);
-        testSearch("toy", new LuceneEngine("index/toy/lucene/regular"), "a b c", 5);
+       /* testSearch("toy", new LuceneEngine("index/toy/lucene/regular"), "a b c", 5);
         testSearch("toy", new ProximalEngine(new LucenePositionalIndex("index/toy/lucene/positional")), "a b c", 5);
         testSearch("toy", new ProximalEngine(new LucenePositionalIndex("index/toy/lucene/positional")), "\"a b c\"", 5);
         testSearch("toy", new ProximalEngine(new LucenePositionalIndex("index/toy/lucene/positional")), "b c a", 5);
@@ -108,6 +111,7 @@ public class TestEngine {
                                             },
                                             new double[] {0.7,0.2,0.1}),
                 "\"obama family tree\"", 5);
+                */
     }
     
     static void testIndex(Index index, String word) throws IOException {
