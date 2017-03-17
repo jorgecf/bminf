@@ -4,8 +4,9 @@ package es.uam.eps.bmi.search.test;
 import es.uam.eps.bmi.search.SearchEngine;
 //import es.uam.eps.bmi.search.graph.PageRank;
 import es.uam.eps.bmi.search.index.Index;
+import es.uam.eps.bmi.search.index.impl.DiskIndexBuilder;
 import es.uam.eps.bmi.search.index.impl.PositionalIndexBuilderImpl;
-//import es.uam.eps.bmi.search.index.impl.PositionalIndexImpl;
+import es.uam.eps.bmi.search.index.impl.PositionalIndexImpl;
 import es.uam.eps.bmi.search.index.lucene.LuceneIndex;
 import es.uam.eps.bmi.search.index.lucene.LuceneIndexBuilder;
 import es.uam.eps.bmi.search.index.lucene.LucenePositionalIndex;
@@ -34,7 +35,7 @@ public class TestEngine {
         System.out.println("Toy collection");
         new LuceneIndexBuilder().build("collections/toy", "index/toy/lucene/regular");
         new LucenePositionalIndexBuilder().build("collections/toy", "index/toy/lucene/positional");
-        
+                
         new PositionalIndexBuilderImpl().build("collections/toy", "index/toy/positional");
 /*
         System.out.println("-----------------------");
@@ -52,13 +53,13 @@ public class TestEngine {
 
         System.out.println("=======================");
         System.out.println("Checking indices...");
-        
+        */
         System.out.println("-----------------------");
         System.out.println("Toy collection");
         testIndex(new LuceneIndex("index/toy/lucene/regular"), "a");
         testIndex(new LucenePositionalIndex("index/toy/lucene/positional"), "a");
         testIndex(new PositionalIndexImpl("index/toy/positional"), "a");
-
+/*
         testIndex(new LuceneIndex("index/toy/lucene/regular"), "sleep");
         testIndex(new LucenePositionalIndex("index/toy/lucene/positional"), "sleep");
         testIndex(new PositionalIndexImpl("index/toy/positional"), "sleep");

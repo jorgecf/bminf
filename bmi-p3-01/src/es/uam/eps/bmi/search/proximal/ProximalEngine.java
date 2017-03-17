@@ -110,7 +110,6 @@ public class ProximalEngine extends AbstractVSMEngine {
 			if (score > 0)
 				ranking.add(doc, score);
 
-			System.out.println("ProximalEngine.search() score doc " + doc + " = " + score);
 		}
 
 		return ranking;
