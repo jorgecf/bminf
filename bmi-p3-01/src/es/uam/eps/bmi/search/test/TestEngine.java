@@ -37,7 +37,7 @@ public class TestEngine {
         new LucenePositionalIndexBuilder().build("collections/toy", "index/toy/lucene/positional");
                 
         new PositionalIndexBuilderImpl().build("collections/toy", "index/toy/positional");
-/*
+
         System.out.println("-----------------------");
         System.out.println("URLs collection");
         new LuceneIndexBuilder().build("collections/urls.txt", "index/urls/lucene/regular");
@@ -53,7 +53,7 @@ public class TestEngine {
 
         System.out.println("=======================");
         System.out.println("Checking indices...");
-        */
+        
         System.out.println("-----------------------");
         System.out.println("Toy collection");
         testIndex(new LuceneIndex("index/toy/lucene/regular"), "a");

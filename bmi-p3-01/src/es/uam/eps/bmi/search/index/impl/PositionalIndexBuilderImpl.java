@@ -66,6 +66,7 @@ public class PositionalIndexBuilderImpl extends BaseIndexBuilder {
 		}
 
 		postingsFile.close();
+		psDicc.close();
 
 	}
 

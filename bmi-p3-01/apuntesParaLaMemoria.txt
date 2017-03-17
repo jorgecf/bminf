@@ -1,0 +1,13 @@
+Para la memoria
+
+EJERCICIO 2
+
+ PositionalIndexBuilderImpl
+	 Usa:
+	 PositionalDictionary (diccionario de PositionalPostingsList) para la creacion. Esta es una lista de PositionalPostingImpl.
+
+
+ PositionalIndexImpl
+	 Usa:
+	 PositionalDiskHashDictionary: Como DiskHashDictionary, pero carga tambien la lista de posiciones al obtener un posting.
+
