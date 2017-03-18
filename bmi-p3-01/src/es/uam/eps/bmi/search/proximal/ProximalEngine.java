@@ -22,7 +22,16 @@ public class ProximalEngine extends AbstractVSMEngine {
 	@Override
 	public SearchRanking search(String query, int cutoff) throws IOException {
 
-		String[] terms = query.split(" ");
+		String[] terms;
+		
+		// primero comprobamos si es una consulta literal
+		if (query.charAt(0) == '"' && query.charAt(query.length() - 1) == '"') {
+			// TODO BUSQUEDA LITERAL -->los terminos tiene que estar en orden (es decir las posiciones en orden una en cada posting list)
+			terms = query.replace('"', ' ').split(" ");
+		} else {
+			terms = query.split(" ");
+		}
+
 		RankingImpl ranking = new RankingImpl(index, cutoff);
 
 		for (int doc = 0; doc < index.numDocs(); doc++) {
@@ -36,7 +45,6 @@ public class ProximalEngine extends AbstractVSMEngine {
 
 			int i = 1;
 
-			// TODO loop
 			while (true) {
 				// TODO sacar fuera y reset iter??
 				ArrayList<LucenePositionalPostingsList> pl = new ArrayList<>();
@@ -68,10 +76,10 @@ public class ProximalEngine extends AbstractVSMEngine {
 
 				}
 
-				if (max_b >= Integer.MAX_VALUE) { // b.get(i - 1)) {
+				if (max_b >= Integer.MAX_VALUE) {
 					b.add(-1); // "infinito"
 					break;
-				} else if (max_b == -1) {
+				} else if (max_b == -1) { // no encontrado
 					break;
 				} else {
 					b.add(max_b);
