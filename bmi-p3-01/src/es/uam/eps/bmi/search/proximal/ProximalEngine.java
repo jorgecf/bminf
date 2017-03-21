@@ -23,10 +23,11 @@ public class ProximalEngine extends AbstractVSMEngine {
 	public SearchRanking search(String query, int cutoff) throws IOException {
 
 		String[] terms;
-		
+
 		// primero comprobamos si es una consulta literal
 		if (query.charAt(0) == '"' && query.charAt(query.length() - 1) == '"') {
-			// TODO BUSQUEDA LITERAL -->los terminos tiene que estar en orden (es decir las posiciones en orden una en cada posting list)
+			// TODO BUSQUEDA LITERAL -->los terminos tiene que estar en orden
+			// (es decir las posiciones en orden una en cada posting list)
 			terms = query.replace('"', ' ').split(" ");
 		} else {
 			terms = query.split(" ");
@@ -105,6 +106,11 @@ public class ProximalEngine extends AbstractVSMEngine {
 					}
 
 				}
+
+				if (min_a == -1) {
+					break; // no hay ningun intervalo posible
+				}
+
 				a.add(min_a);
 
 				i++;
@@ -112,7 +118,7 @@ public class ProximalEngine extends AbstractVSMEngine {
 
 			// calculamos la score
 			double score = 0;
-			for (int j = 1; j < a.size() - 1; j++) {
+			for (int j = 1; j < a.size(); j++) {
 				score += (double) 1 / ((b.get(j) - a.get(j)) - terms.length + 2);
 			}
 			if (score > 0)

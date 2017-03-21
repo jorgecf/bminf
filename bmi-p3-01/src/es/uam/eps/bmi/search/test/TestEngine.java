@@ -81,11 +81,11 @@ public class TestEngine {
         System.out.println("=======================");
         System.out.println("Checking search...");
         
-        testSearch("toy", new LuceneEngine("index/toy/lucene/regular"), "and to sleep", 5);
+       testSearch("toy", new LuceneEngine("index/toy/lucene/regular"), "and to sleep", 5);
         testSearch("toy", new ProximalEngine(new LucenePositionalIndex("index/toy/lucene/positional")), "and to sleep", 5);
-       /* testSearch("toy", new LuceneEngine("index/toy/lucene/regular"), "a b c", 5);
+       testSearch("toy", new LuceneEngine("index/toy/lucene/regular"), "a b c", 5);
         testSearch("toy", new ProximalEngine(new LucenePositionalIndex("index/toy/lucene/positional")), "a b c", 5);
-        testSearch("toy", new ProximalEngine(new LucenePositionalIndex("index/toy/lucene/positional")), "\"a b c\"", 5);
+        /*  testSearch("toy", new ProximalEngine(new LucenePositionalIndex("index/toy/lucene/positional")), "\"a b c\"", 5);
         testSearch("toy", new ProximalEngine(new LucenePositionalIndex("index/toy/lucene/positional")), "b c a", 5);
         testSearch("toy", new ProximalEngine(new LucenePositionalIndex("index/toy/lucene/positional")), "\"b c a\"", 5);
         testSearch("toy", new ProximalEngine(new PositionalIndexImpl("index/toy/lucene/positional")), "b c a", 5);
