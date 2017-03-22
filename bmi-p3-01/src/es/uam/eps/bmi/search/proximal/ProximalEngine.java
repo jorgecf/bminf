@@ -23,12 +23,14 @@ public class ProximalEngine extends AbstractVSMEngine {
 	public SearchRanking search(String query, int cutoff) throws IOException {
 
 		String[] terms;
+		boolean flagLiteral = false;
 
 		// primero comprobamos si es una consulta literal
 		if (query.charAt(0) == '"' && query.charAt(query.length() - 1) == '"') {
 			// TODO BUSQUEDA LITERAL -->los terminos tiene que estar en orden
 			// (es decir las posiciones en orden una en cada posting list)
-			terms = query.replace('"', ' ').split(" ");
+			terms = query.replaceAll("\"", "").split(" ");
+			flagLiteral = true;
 		} else {
 			terms = query.split(" ");
 		}
@@ -41,8 +43,15 @@ public class ProximalEngine extends AbstractVSMEngine {
 			ArrayList<Integer> a = new ArrayList<>();
 			ArrayList<Integer> b = new ArrayList<>();
 
+			// busqueda literal
+			ArrayList<Integer> a_lit = new ArrayList<>();
+			ArrayList<Integer> b_lit = new ArrayList<>();
+
 			a.add(-1); // - infinito
 			b.add(-1);
+
+			a_lit.add(-1);
+			b_lit.add(-1);
 
 			int i = 1;
 
@@ -113,19 +122,85 @@ public class ProximalEngine extends AbstractVSMEngine {
 
 				a.add(min_a);
 
+				if (flagLiteral == true) {
+					if (comprobarLiteral(min_a, doc, terms) == true) {
+						a_lit.add(min_a);
+						b_lit.add(max_b);
+					}
+				}
+
 				i++;
 			}
 
 			// calculamos la score
 			double score = 0;
-			for (int j = 1; j < a.size(); j++) {
-				score += (double) 1 / ((b.get(j) - a.get(j)) - terms.length + 2);
+			
+			if (flagLiteral == true) {
+				score = calculaScore(a_lit, b_lit, terms);
+			} else {
+				score = calculaScore(a, b, terms);
 			}
+			
 			if (score > 0)
 				ranking.add(doc, score);
 
 		}
 
 		return ranking;
+	}
+
+	private double calculaScore(ArrayList<Integer> a, ArrayList<Integer> b, String[] terms) {
+
+		double score = 0;
+		for (int j = 1; j < a.size(); j++) {
+			score += (double) 1 / ((b.get(j) - a.get(j)) - terms.length + 2);
+		}
+		return score;
+
+	}
+
+	private boolean comprobarLiteral(int min_a, int doc, String[] terms) throws IOException {
+
+		ArrayList<LucenePositionalPostingsList> pl = new ArrayList<>();
+
+		for (String t : terms) {
+			pl.add((LucenePositionalPostingsList) this.index.getPostings(t));
+		}
+
+		Iterator<LucenePositionalPostingsList> it = pl.iterator();
+
+		int pos = min_a;
+		while (it.hasNext()) {
+
+			Iterator<Posting> itpos = it.next().iterator();
+			while (itpos.hasNext()) {
+
+				Posting q = itpos.next();
+				PositionsIterator pi = (PositionsIterator) ((PositionalPosting) q).iterator();
+
+				if (q.getDocID() == doc) {
+
+					boolean contains = false;
+
+					while (pi.hasNext()) {
+						if (pi.next() == pos) {
+							contains = true;
+							break;
+						}
+					}
+
+					if (contains == false) {
+						return false;
+					}
+
+					break;
+				}
+			}
+
+			pos++;
+		}
+
+		return true;
+
 	}
 }
