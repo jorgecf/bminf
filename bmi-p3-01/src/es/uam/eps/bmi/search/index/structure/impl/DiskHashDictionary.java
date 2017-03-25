@@ -1,4 +1,4 @@
-package es.uam.eps.bmi.search.index.structure.impl;
+	package es.uam.eps.bmi.search.index.structure.impl;
 
 import es.uam.eps.bmi.search.index.Config;
 import es.uam.eps.bmi.search.index.NoIndexException;

@@ -10,7 +10,7 @@ import java.util.List;
  * @author pablo
  */
 public class EditablePostingsList implements PostingsList, Serializable {
-    List<Posting> postings;
+    protected List<Posting> postings;
 
     public EditablePostingsList() {
         postings = new ArrayList<Posting>();

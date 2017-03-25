@@ -13,7 +13,7 @@ import java.util.Map;
  * @author pablo
  */
 public class HashDictionary implements EditableDictionary {
-    Map<String,EditablePostingsList> termPostings;
+    protected Map<String,EditablePostingsList> termPostings;
 
     public HashDictionary() {
         termPostings = new HashMap<String,EditablePostingsList>();

@@ -9,14 +9,14 @@ import java.util.List;
  * @author pablo
  */
 public class PositionalPosting extends Posting implements Iterable<Integer> {
-    List<Integer> positions;
-    
-    public PositionalPosting(int id, long f, List<Integer> pos) {
-        super(id, f);
-        positions = pos;
-    }
-    
-    public Iterator<Integer> iterator() {
-        return new PositionsIterator(positions);
-    }
+	protected List<Integer> positions;
+
+	public PositionalPosting(int id, long f, List<Integer> pos) {
+		super(id, f);
+		positions = pos;
+	}
+
+	public Iterator<Integer> iterator() {
+		return new PositionsIterator(positions);
+	}
 }

@@ -11,9 +11,14 @@ import es.uam.eps.bmi.search.ranking.SearchRanking;
 
 public class PageRank extends AbstractEngine implements DocumentMap {
 
-	public PageRank(Index idx) {
-		super(idx);
-		// TODO Auto-generated constructor stub
+	private double r;
+	private int convergenceCondition;
+
+
+	public PageRank(String string, double r, int convergenceCondition) {
+		super(null);
+		this.r = r;
+		this.convergenceCondition = convergenceCondition;
 	}
 
 	@Override
@@ -25,10 +30,7 @@ public class PageRank extends AbstractEngine implements DocumentMap {
 		for (int i = 0; i < index.numDocs(); i++) {
 
 			// Calculamos los outlinks
-			//HashMap<String, Integer> out = new HashMap<>();
-			
-			
-			
+			// HashMap<String, Integer> out = new HashMap<>();
 
 		}
 	}

@@ -27,8 +27,6 @@ public class ProximalEngine extends AbstractVSMEngine {
 
 		// primero comprobamos si es una consulta literal
 		if (query.charAt(0) == '"' && query.charAt(query.length() - 1) == '"') {
-			// TODO BUSQUEDA LITERAL -->los terminos tiene que estar en orden
-			// (es decir las posiciones en orden una en cada posting list)
 			terms = query.replaceAll("\"", "").split(" ");
 			flagLiteral = true;
 		} else {
@@ -56,7 +54,6 @@ public class ProximalEngine extends AbstractVSMEngine {
 			int i = 1;
 
 			while (true) {
-				// TODO sacar fuera y reset iter??
 				ArrayList<LucenePositionalPostingsList> pl = new ArrayList<>();
 				ArrayList<LucenePositionalPostingsList> pl2 = new ArrayList<>();
 

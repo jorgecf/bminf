@@ -7,16 +7,20 @@ import java.util.List;
 import es.uam.eps.bmi.search.index.structure.Posting;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
 import es.uam.eps.bmi.search.index.structure.positional.PositionalPostingImpl;
+import es.uam.eps.bmi.search.index.structure.positional.lucene.LucenePositionalPostingsList;
 
-public class PositionalPostingsList implements PostingsList {
+public class PositionalPostingsList extends LucenePositionalPostingsList {
 
 	List<PositionalPostingImpl> postings;
 
 	public PositionalPostingsList() {
+		super(null, null, 0);
 		postings = new ArrayList<PositionalPostingImpl>();
 	}
 
 	public PositionalPostingsList(int docID, int position) {
+		super(null, null, 0);
+
 		if (this.postings == null)
 			this.postings = new ArrayList<PositionalPostingImpl>();
 		
