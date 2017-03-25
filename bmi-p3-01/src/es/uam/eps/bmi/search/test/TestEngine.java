@@ -27,7 +27,7 @@ import java.io.IOException;
  */
 public class TestEngine {
     public static void main (String a[]) throws IOException {
-        System.out.println("=======================");
+   /*    System.out.println("=======================");
         System.out.println("Building indices...");
         
         System.out.println("-----------------------");
@@ -35,7 +35,7 @@ public class TestEngine {
         new LuceneIndexBuilder().build("collections/toy", "index/toy/lucene/regular");
         new LucenePositionalIndexBuilder().build("collections/toy", "index/toy/lucene/positional");
         new PositionalIndexBuilderImpl().build("collections/toy", "index/toy/positional");
-
+/*
         System.out.println("-----------------------");
         System.out.println("URLs collection");
         new LuceneIndexBuilder().build("collections/urls.txt", "index/urls/lucene/regular");
@@ -56,6 +56,7 @@ public class TestEngine {
         System.out.println("Toy collection");
         testIndex(new LuceneIndex("index/toy/lucene/regular"), "a");
         testIndex(new LucenePositionalIndex("index/toy/lucene/positional"), "a");
+      
         testIndex(new PositionalIndexImpl("index/toy/positional"), "a");
 
         testIndex(new LuceneIndex("index/toy/lucene/regular"), "sleep");
@@ -83,8 +84,10 @@ public class TestEngine {
         testSearch("toy", new ProximalEngine(new LucenePositionalIndex("index/toy/lucene/positional")), "a b c", 5);
         testSearch("toy", new ProximalEngine(new LucenePositionalIndex("index/toy/lucene/positional")), "\"a b c\"", 5);
         testSearch("toy", new ProximalEngine(new LucenePositionalIndex("index/toy/lucene/positional")), "b c a", 5);
-        testSearch("toy", new ProximalEngine(new LucenePositionalIndex("index/toy/lucene/positional")), "\"b c a\"", 5);
-        testSearch("toy", new ProximalEngine(new PositionalIndexImpl("index/toy/positional")), "b c a", 5);
+       */
+        //testSearch("toy", new ProximalEngine(new LucenePositionalIndex("index/toy/lucene/positional")), "\"b c a\"", 5);
+        /*
+         testSearch("toy", new ProximalEngine(new PositionalIndexImpl("index/toy/positional")), "b c a", 5);
          
         testSearch("urls", new LuceneEngine("index/urls/lucene/regular"), "information probability", 5);
         testSearch("urls", new ProximalEngine(new LucenePositionalIndex("index/urls/lucene/positional")), "information probability", 5);
@@ -93,7 +96,7 @@ public class TestEngine {
         testSearch("1k", new DocBasedVSMEngine(new LuceneIndex("index/1k/lucene/regular")), "obama family tree", 5);
         testSearch("1k", new ProximalEngine(new LucenePositionalIndex("index/1k/lucene/positional")), "obama family tree", 5);
         testSearch("1k", new ProximalEngine(new LucenePositionalIndex("index/1k/lucene/positional")), "\"obama family tree\"", 5);
-        
+        */
         testSearch("toy 1", new PageRank("graph/toy-graph1.dat", 0.5, 50), "", 5);
         testSearch("toy 2", new PageRank("graph/toy-graph2.dat", 0.6, 50), "", 5);
         testSearch("1k simulated links", new PageRank("graph/1k-links.dat", 0.2, 50), "", 5);
