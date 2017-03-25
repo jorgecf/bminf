@@ -1,20 +1,20 @@
 package es.uam.eps.bmi.search.index.structure.impl;
 
 public class DocumentLink {
-	private String from;
-	private String to;
+	private int from;
+	private int to;
 
-	public DocumentLink(String from, String to) {
+	public DocumentLink(int from, int to) {
 		super();
 		this.from = from;
 		this.to = to;
 	}
 
-	public String getFrom() {
+	public int getFrom() {
 		return from;
 	}
 
-	public String getTo() {
+	public int getTo() {
 		return to;
 	}
 

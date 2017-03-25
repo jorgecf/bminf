@@ -98,11 +98,15 @@ public class TestEngine {
         testSearch("1k", new ProximalEngine(new LucenePositionalIndex("index/1k/lucene/positional")), "\"obama family tree\"", 5);
         */
         testSearch("toy 1", new PageRank("graph/toy-graph1.dat", 0.5, 50), "", 5);
-        testSearch("toy 2", new PageRank("graph/toy-graph2.dat", 0.6, 50), "", 5);
+     testSearch("toy 2", new PageRank("graph/toy-graph2.dat", 0.6, 50), "", 5);
+        Timer.reset();
         testSearch("1k simulated links", new PageRank("graph/1k-links.dat", 0.2, 50), "", 5);
+        Timer.time("  --> ");
+        
         Timer.reset();
         testSearch("google", new PageRank("graph/web-google.dat", 0.2, 50), "", 5);
         Timer.time("  --> ");
+
     /*    
         testSearch("1k", new CombinedEngine(new SearchEngine[] {
                                                 new ProximalEngine(new LucenePositionalIndex("index/1k/lucene/positional")),
