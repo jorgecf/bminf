@@ -16,12 +16,21 @@ import es.uam.eps.bmi.search.index.structure.impl.PositionalPostingsList;
 
 public class PositionalIndexBuilderImpl extends BaseIndexBuilder {
 
-	@Override
-	public void build(String collectionPath, String indexPath) throws IOException {
-		clear(indexPath);
+	
+	public PositionalIndexBuilderImpl() {
+		super();
+		
 		nDocs = 0;
 		dictionary = new PositionalDictionary();
 		docPaths = new ArrayList<String>();
+	}
+
+	@Override
+	public void build(String collectionPath, String indexPath) throws IOException {
+		clear(indexPath);
+		/*nDocs = 0;
+		dictionary = new PositionalDictionary();
+		docPaths = new ArrayList<String>();*/
 
 		File f = new File(collectionPath);
 		if (f.isDirectory())
@@ -37,7 +46,6 @@ public class PositionalIndexBuilderImpl extends BaseIndexBuilder {
 
 	@Override
 	public void save(String indexPath) throws IOException {
-		// TODO Auto-generated method stub
 
 		// writers en archivo
 		FileOutputStream os = new FileOutputStream(indexPath + Config.dictionaryFileName, false);
