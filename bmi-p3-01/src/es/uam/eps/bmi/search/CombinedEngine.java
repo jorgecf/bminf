@@ -1,5 +1,6 @@
 package es.uam.eps.bmi.search;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class CombinedEngine implements SearchEngine {
 		this.weights = weights;
 		try {
 			indxBldr = new LuceneIndexBuilder();
-			indxBldr.build(null, "index/combined");
+			indxBldr.build("collections/aux.txt", "index/combined");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
