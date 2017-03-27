@@ -46,7 +46,8 @@ public class PositionalIndexBuilderImpl extends BaseIndexBuilder {
 
 	@Override
 	public void save(String indexPath) throws IOException {
-
+		clear(indexPath);
+		
 		// writers en archivo
 		FileOutputStream os = new FileOutputStream(indexPath + Config.dictionaryFileName, false);
 		PrintStream psDicc = new PrintStream(os, true, "UTF-8");
