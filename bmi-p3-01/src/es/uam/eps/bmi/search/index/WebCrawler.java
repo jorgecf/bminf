@@ -25,14 +25,19 @@ public class WebCrawler {
 	private String seedFile;
 	private Set<String> disallowed;
 	private PriorityQueue<String> crawlingList;
+	private Set<String> alreadyCrawled;
+	private int indexedDocs;
 
 	public WebCrawler(BaseIndexBuilder indexBuilder, int maxDocs, String seedFile) {
 		this.indexBuilder = indexBuilder;
 		this.maxDocs = maxDocs;
 		this.seedFile = seedFile;
 
+		this.indexedDocs = 0;
+
 		this.disallowed = new HashSet<>();
 		this.crawlingList = new PriorityQueue<>();
+		this.alreadyCrawled = new HashSet<>();
 	}
 
 	public void crawl() throws IOException {
@@ -41,10 +46,12 @@ public class WebCrawler {
 
 		crawlingList.addAll(seedUrls);
 
-		while (this.crawlingList.size() < this.maxDocs) {
+		while (this.indexedDocs < this.maxDocs) {
 			this.crawlingList.addAll(this.expandCrawl(this.crawlingList));
 			System.out.println("CRAWLINGLIST: " + crawlingList.size());
 		}
+
+		this.indexBuilder.save("index/crawled");
 	}
 
 	private Collection<String> expandCrawl(Collection<String> urls) throws IOException {
@@ -53,6 +60,13 @@ public class WebCrawler {
 
 		for (String url : urls) {
 
+			System.out.println("\t\t\t NUM=" + indexedDocs);
+
+			if (this.indexedDocs == this.maxDocs) {
+				System.out.println("[info] index lleno, parando");
+				break;
+			}
+
 			System.out.println("url " + url);
 
 			// URL base
@@ -60,6 +74,7 @@ public class WebCrawler {
 			String robotsUrl = baseUrl.getProtocol() + "://" + baseUrl.getHost() + "/robots.txt";
 
 			// Leemos el archivo de robots.txt
+			// TODO user-agent
 			try {
 				Scanner sc = new Scanner(new URL(robotsUrl).openStream(), "UTF-8");
 				String out = sc.useDelimiter("\\A").next();
@@ -76,25 +91,37 @@ public class WebCrawler {
 
 				sc.close();
 			} catch (Exception e) {
-				System.out.println("[error] con esta url...");
+				System.out.println("[error] con " + robotsUrl);
 			}
+
 			// Obtenemos el contenido a indexar
 			// TODO clase config
-			Document d = Jsoup.connect(url).get();
+			if (this.alreadyCrawled.contains(url) == false) {
+				try {
+					Document d = Jsoup.connect(url).get();
 
-			// Indexamos el contenido
-			String text = d.body().text();
-			this.indexBuilder.indexText(text, url);
+					// Indexamos el contenido
+					String text = d.body().text();
+					this.indexBuilder.indexText(text, url);
+					this.indexedDocs++;
 
-			// Obtenemos los links contenidos en cada web
-			for (Element e : d.select("a[href]")) {
-				String next = e.attr("abs:href");
-				if (disallowed.contains(next) == false) {
-					// crawlingList.add(next);
-					ret.add(next);
-				} else {
-					System.out.println("no se puede agregar este: " + next);
+					// Obtenemos los links contenidos en cada web
+					for (Element e : d.select("a[href]")) {
+						String next = e.attr("abs:href");
+						if (disallowed.contains(next) == false) {
+							// crawlingList.add(next);
+							ret.add(next);
+						} else {
+							System.out.println("[error] no se puede agregar " + next);
+						}
+					}
+				} catch (Exception e) {
+					System.out.println("[error] connectandose a " + url);
 				}
+
+				this.alreadyCrawled.add(url);
+			} else {
+				System.out.println("[info] " + url + " already crawled");
 			}
 
 		}
