@@ -93,5 +93,14 @@ public class PositionalIndexBuilderImpl extends BaseIndexBuilder {
 		docPaths.add(path);
 		nDocs++;
 	}
+	
+	@Override
+	public void saveDocPaths (String indexPath) {
+		try {
+			super.saveDocPaths(indexPath);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 }
