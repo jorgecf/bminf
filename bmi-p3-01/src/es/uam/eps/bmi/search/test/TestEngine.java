@@ -70,10 +70,10 @@ public class TestEngine {
         testIndex(new LucenePositionalIndex("index/urls/lucene/positional"), "channel");
         testIndex(new PositionalIndexImpl("index/urls/positional"), "channel");
 */
-        System.out.println("-----------------------");
-        System.out.println("1k collection");
-        testIndex(new LuceneIndex("index/1k/lucene/regular"), "kansas");
-        testIndex(new LucenePositionalIndex("index/1k/lucene/positional"), "kansas");
+ //       System.out.println("-----------------------");
+   //     System.out.println("1k collection");
+     //   testIndex(new LuceneIndex("index/1k/lucene/regular"), "kansas");
+       // testIndex(new LucenePositionalIndex("index/1k/lucene/positional"), "kansas");
         /*testIndex(new PositionalIndexImpl("index/1k/positional"), "kansas");
          
         System.out.println("=======================");
@@ -93,10 +93,10 @@ public class TestEngine {
         testSearch("urls", new LuceneEngine("index/urls/lucene/regular"), "information probability", 5);
         testSearch("urls", new ProximalEngine(new LucenePositionalIndex("index/urls/lucene/positional")), "information probability", 5);
 */
-        testSearch("1k", new LuceneEngine("index/1k/lucene/regular"), "obama family tree", 5);
-        testSearch("1k", new DocBasedVSMEngine(new LuceneIndex("index/1k/lucene/regular")), "obama family tree", 5);
-        testSearch("1k", new ProximalEngine(new LucenePositionalIndex("index/1k/lucene/positional")), "obama family tree", 5);
-        testSearch("1k", new ProximalEngine(new LucenePositionalIndex("index/1k/lucene/positional")), "\"obama family tree\"", 5);
+    //    testSearch("1k", new LuceneEngine("index/1k/lucene/regular"), "obama family tree", 5);
+     //   testSearch("1k", new DocBasedVSMEngine(new LuceneIndex("index/1k/lucene/regular")), "obama family tree", 5);
+       // testSearch("1k", new ProximalEngine(new LucenePositionalIndex("index/1k/lucene/positional")), "obama family tree", 5);
+        //testSearch("1k", new ProximalEngine(new LucenePositionalIndex("index/1k/lucene/positional")), "\"obama family tree\"", 5);
         
         /*testSearch("toy 1", new PageRank("graph/toy-graph1.dat", 0.5, 50), "", 5);
      testSearch("toy 2", new PageRank("graph/toy-graph2.dat", 0.6, 50), "", 5);
