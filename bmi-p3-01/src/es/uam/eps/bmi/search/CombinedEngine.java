@@ -2,6 +2,7 @@ package es.uam.eps.bmi.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -43,15 +44,18 @@ public class CombinedEngine implements SearchEngine {
 			srArr[i] = seArr[i].search(query, cutoff);
 		}
 		
-		double max = 0, min = Double.MAX_VALUE;
+		double[] max = new double[this.weights.length];
+		double[] min = new double[this.weights.length];
+		Arrays.fill(min, 0);
+		Arrays.fill(min, Double.MAX_VALUE);
 		int docID = 0;
 		
 		for (int i = 0; i < srArr.length; i ++) {
 			for (SearchRankingDoc result : srArr[i]) {
-				if (result.getScore() > max)
-					max = result.getScore();
-				if (result.getScore() < min)
-					min = result.getScore();
+				if (result.getScore() > max[i])
+					max[i] = result.getScore();
+				if (result.getScore() < min[i])
+					min[i] = result.getScore();
 				if (!hm.containsKey(result.getPath())) {
 					hm.put(result.getPath(), docID);
 					docID++;
@@ -62,10 +66,10 @@ public class CombinedEngine implements SearchEngine {
 		for (int i = 0; i < srArr.length; i ++) {
 			for (SearchRankingDoc result : srArr[i]) {
 				if (ranking.containsKey(hm.get(result.getPath()))){
-					ranking.get(hm.get(result.getPath())).add(((result.getScore()-min)/(max-min)) * this.weights[i]);
+					ranking.get(hm.get(result.getPath())).add(((result.getScore()-min[i])/(max[i]-min[i])) * this.weights[i]);
 				} else {
 					ArrayList<Double> l = new ArrayList<Double>();
-					l.add(((result.getScore()-min)/(max-min)) * this.weights[i]);
+					l.add(((result.getScore()-min[i])/(max[i]-min[i])) * this.weights[i]);
 					ranking.put(hm.get(result.getPath()), l);
 					this.indxBldr.indexText("hola", result.getPath());
 				}
