@@ -18,6 +18,15 @@ import es.uam.eps.bmi.search.index.structure.impl.DocumentLink;
 import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.impl.RankingImpl;
 
+/**
+ * Clase que calcula el PageRank de una lista de docs a partir de sus enlaces.
+ * Realiza un numero pasado por argumentos de iteraciones, que detiene si antes
+ * se converge con un umbral definido en todos los docs.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class PageRank extends AbstractEngine implements DocumentMap {
 
 	private double r;
@@ -54,24 +63,24 @@ public class PageRank extends AbstractEngine implements DocumentMap {
 
 		String red;
 		while ((red = sc.readLine()) != null) {
-			String[] link = red.split("\\s+");
-
-			// TODO if no hay 2 ---> excepcion
+			String[] link = red.split("\\s+"); // todos los caracteres de espacio
 
 			if (this.inverseDocPaths.get(link[0]) == null) {
 				int newID = this.docPaths.size() + 1;
+			
 				this.docPaths.put(newID, link[0]);
 				this.inverseDocPaths.put(link[0], newID);
 			}
 
 			if (this.inverseDocPaths.get(link[1]) == null) {
 				int newID = this.docPaths.size() + 1;
+				
 				this.docPaths.put(newID, link[1]);
 				this.inverseDocPaths.put(link[1], newID);
 			}
 
 			links.add(new DocumentLink(this.inverseDocPaths.get(link[0]), this.inverseDocPaths.get(link[1])));
-			
+
 			fromSet.add(this.inverseDocPaths.get(link[0]));
 			sinksSet.add(this.inverseDocPaths.get(link[1]));
 		}
@@ -96,6 +105,7 @@ public class PageRank extends AbstractEngine implements DocumentMap {
 
 		// PageRank score inicial
 		Map<Integer, Double> pageRank = new HashMap<>();
+		
 		double initialScore = (double) 1 / this.docPaths.size();
 		for (Integer docID : this.docPaths.keySet()) {
 			pageRank.put(docID, initialScore);
@@ -125,16 +135,15 @@ public class PageRank extends AbstractEngine implements DocumentMap {
 				pageRank2.put(j, pageRank2.get(j) + (double) (rInv * pageRank.get(i) / outlinks.get(i)));
 			}
 
-			// Valor de ajuste: si hay sumideros se ajustan todos los pageranks
+			// Valor de ajuste: si hay sumideros se ajustan todos los pageranks2
 			double adjust = 0;
 			if (sinksSet.size() > 0) {
 				adjust = (double) ((1 - pageRank2.values().stream().mapToDouble(d -> d.doubleValue()).sum())
 						/ this.docPaths.size());
-			}
-
-			// actualizamos P(i) = P'(i)
-			final double adj = adjust;
-			pageRank2.replaceAll((k, v) -> v + adj);
+				
+				final double adj = adjust;
+				pageRank2.replaceAll((k, v) -> v + adj);
+			}			
 
 			// Comprobamos si hay convergencia
 			boolean converged = true;
@@ -152,7 +161,7 @@ public class PageRank extends AbstractEngine implements DocumentMap {
 			pageRank = pageRank2;
 
 			if (converged) {
-				System.out.println("[info] PageRank ha CONVERGIDO en la " + w + " iteracion");
+				System.out.println("[info] PageRank ha convergido en la " + w + " iteracion");
 				break;
 			}
 

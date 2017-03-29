@@ -14,12 +14,18 @@ import es.uam.eps.bmi.search.index.structure.impl.PositionalDictionary;
 import es.uam.eps.bmi.search.index.structure.positional.PositionalPostingImpl;
 import es.uam.eps.bmi.search.index.structure.impl.PositionalPostingsList;
 
+/**
+ * Builde de indice posicional (con lista de posiciones en las postings list).
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class PositionalIndexBuilderImpl extends BaseIndexBuilder {
 
-	
 	public PositionalIndexBuilderImpl() {
 		super();
-		
+
 		nDocs = 0;
 		dictionary = new PositionalDictionary();
 		docPaths = new ArrayList<String>();
@@ -28,9 +34,6 @@ public class PositionalIndexBuilderImpl extends BaseIndexBuilder {
 	@Override
 	public void build(String collectionPath, String indexPath) throws IOException {
 		clear(indexPath);
-		/*nDocs = 0;
-		dictionary = new PositionalDictionary();
-		docPaths = new ArrayList<String>();*/
 
 		File f = new File(collectionPath);
 		if (f.isDirectory())
@@ -47,11 +50,11 @@ public class PositionalIndexBuilderImpl extends BaseIndexBuilder {
 	@Override
 	public void save(String indexPath) throws IOException {
 		clear(indexPath);
-		
+
 		// writers en archivo
 		FileOutputStream os = new FileOutputStream(indexPath + Config.dictionaryFileName, false);
 		PrintStream psDicc = new PrintStream(os, true, "UTF-8");
-		
+
 		RandomAccessFile postingsFile = new RandomAccessFile(indexPath + Config.postingsFileName, "rw");
 
 		long address = 0;
@@ -69,7 +72,7 @@ public class PositionalIndexBuilderImpl extends BaseIndexBuilder {
 					postingsFile.writeInt(pl.get(i));
 				}
 			}
-			
+
 			psDicc.println(term + "\t" + address); // termino y su offset
 			address = postingsFile.getFilePointer();
 		}
@@ -81,7 +84,6 @@ public class PositionalIndexBuilderImpl extends BaseIndexBuilder {
 
 	@Override
 	public void indexText(String text, String path) throws IOException {
-		// super.indexText(text, path);
 
 		String[] terms = text.toLowerCase().split("\\P{Alpha}+");
 
@@ -93,9 +95,9 @@ public class PositionalIndexBuilderImpl extends BaseIndexBuilder {
 		docPaths.add(path);
 		nDocs++;
 	}
-	
+
 	@Override
-	public void saveDocPaths (String indexPath) {
+	public void saveDocPaths(String indexPath) {
 		try {
 			super.saveDocPaths(indexPath);
 		} catch (IOException e) {

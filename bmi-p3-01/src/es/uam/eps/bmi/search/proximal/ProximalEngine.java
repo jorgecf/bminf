@@ -13,6 +13,13 @@ import es.uam.eps.bmi.search.ranking.SearchRanking;
 import es.uam.eps.bmi.search.ranking.impl.RankingImpl;
 import es.uam.eps.bmi.search.vsm.AbstractVSMEngine;
 
+/**
+ * Engine de busqueda que realiza una busqueda proximal (por intervalos).
+ * 
+ * @author Alejandro Martin
+ * @author Jorge Cifuentes
+ *
+ */
 public class ProximalEngine extends AbstractVSMEngine {
 
 	public ProximalEngine(Index index) {
@@ -25,7 +32,7 @@ public class ProximalEngine extends AbstractVSMEngine {
 		String[] terms;
 		boolean flagLiteral = false;
 
-		// primero comprobamos si es una consulta literal
+		// Primero comprobamos si es una consulta literal
 		if (query.charAt(0) == '"' && query.charAt(query.length() - 1) == '"') {
 			terms = query.replaceAll("\"", "").split(" ");
 			flagLiteral = true;
@@ -45,7 +52,7 @@ public class ProximalEngine extends AbstractVSMEngine {
 			ArrayList<Integer> a_lit = new ArrayList<>();
 			ArrayList<Integer> b_lit = new ArrayList<>();
 
-			a.add(-1); // - infinito
+			a.add(-1); // -infinito
 			b.add(-1);
 
 			a_lit.add(-1);
@@ -53,6 +60,7 @@ public class ProximalEngine extends AbstractVSMEngine {
 
 			int i = 1;
 
+			// bucle principal
 			while (true) {
 				ArrayList<LucenePositionalPostingsList> pl = new ArrayList<>();
 				ArrayList<LucenePositionalPostingsList> pl2 = new ArrayList<>();
@@ -62,7 +70,7 @@ public class ProximalEngine extends AbstractVSMEngine {
 					pl2.add((LucenePositionalPostingsList) this.index.getPostings(t));
 				}
 
-				// b
+				// calculamos el valor de b
 				int max_b = -1;
 				Iterator<LucenePositionalPostingsList> it = pl.iterator();
 				while (it.hasNext()) {
@@ -92,7 +100,7 @@ public class ProximalEngine extends AbstractVSMEngine {
 					b.add(max_b);
 				}
 
-				// a
+				// calculamos el valor de a
 				int min_a = max_b;
 				Iterator<LucenePositionalPostingsList> it2 = pl2.iterator();
 				while (it2.hasNext()) {
@@ -119,6 +127,8 @@ public class ProximalEngine extends AbstractVSMEngine {
 
 				a.add(min_a);
 
+				// Si hay busqueda literal, solo si cumplen literalidad se
+				// agregan
 				if (flagLiteral == true) {
 					if (comprobarLiteral(min_a, doc, terms) == true) {
 						a_lit.add(min_a);
@@ -131,13 +141,13 @@ public class ProximalEngine extends AbstractVSMEngine {
 
 			// calculamos la score
 			double score = 0;
-			
+
 			if (flagLiteral == true) {
-				score = calculaScore(a_lit, b_lit, terms);
+				score = calculaScore(a_lit, b_lit, terms.length);
 			} else {
-				score = calculaScore(a, b, terms);
+				score = calculaScore(a, b, terms.length);
 			}
-			
+
 			if (score > 0)
 				ranking.add(doc, score);
 
@@ -146,16 +156,39 @@ public class ProximalEngine extends AbstractVSMEngine {
 		return ranking;
 	}
 
-	private double calculaScore(ArrayList<Integer> a, ArrayList<Integer> b, String[] terms) {
+	/**
+	 * Calcula el score de un documento partido en intervalos proximales.
+	 * 
+	 * @param a
+	 *            Lista de inicios de intervalo.
+	 * @param b
+	 *            Lista de finales de intervalo.
+	 * @param terms
+	 *            Terminos el doc.
+	 * @return Score calculada.
+	 */
+	private double calculaScore(ArrayList<Integer> a, ArrayList<Integer> b, int termsLength) {
 
 		double score = 0;
 		for (int j = 1; j < a.size(); j++) {
-			score += (double) 1 / ((b.get(j) - a.get(j)) - terms.length + 2);
+			score += (double) 1 / ((b.get(j) - a.get(j)) - termsLength + 2);
 		}
-		return score;
 
+		return score;
 	}
 
+	/**
+	 * Comprueba si un intervalo cumple literalidad.
+	 * 
+	 * @param min_a
+	 *            Primer valor del intervalo.
+	 * @param doc
+	 *            docID.
+	 * @param terms
+	 *            Terminos del documento.
+	 * @return True si lo cumple, false sino
+	 * @throws IOException
+	 */
 	private boolean comprobarLiteral(int min_a, int doc, String[] terms) throws IOException {
 
 		ArrayList<LucenePositionalPostingsList> pl = new ArrayList<>();
