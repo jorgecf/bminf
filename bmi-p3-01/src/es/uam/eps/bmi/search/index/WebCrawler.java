@@ -1,10 +1,14 @@
 package es.uam.eps.bmi.search.index;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -18,6 +22,11 @@ import org.jsoup.nodes.Element;
 
 import es.uam.eps.bmi.search.index.impl.BaseIndexBuilder;
 
+/**
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ */
 public class WebCrawler {
 
 	private BaseIndexBuilder indexBuilder;
@@ -28,6 +37,9 @@ public class WebCrawler {
 	private Set<String> alreadyCrawled;
 	private int indexedDocs;
 
+	private File webgraph;
+	private PrintWriter fw;
+	
 	public WebCrawler(BaseIndexBuilder indexBuilder, int maxDocs, String seedFile) {
 		this.indexBuilder = indexBuilder;
 		this.maxDocs = maxDocs;
@@ -43,15 +55,22 @@ public class WebCrawler {
 	public void crawl() throws IOException {
 
 		List<String> seedUrls = Files.readAllLines(Paths.get(this.seedFile));
+		
+		this.webgraph = new File("graph/", Config.graphFileName);
+		webgraph.getParentFile().mkdirs();
+		webgraph.createNewFile();
+		this.fw = new PrintWriter(this.webgraph);
 
 		crawlingList.addAll(seedUrls);
 
 		while (this.indexedDocs < this.maxDocs) {
 			this.crawlingList.addAll(this.expandCrawl(this.crawlingList));
-			System.out.println("CRAWLINGLIST: " + crawlingList.size());
+			System.out.println(" [fin iteracion] CrawlingList (frontera): " + crawlingList.size());
 		}
 
-		this.indexBuilder.save("index/crawled");
+		// Movemos el grafo resultado y salvamos todo		
+		this.indexBuilder.save("index/crawled");	
+		this.fw.close();
 	}
 
 	private Collection<String> expandCrawl(Collection<String> urls) throws IOException {
@@ -59,8 +78,6 @@ public class WebCrawler {
 		Collection<String> ret = new PriorityQueue<>();
 
 		for (String url : urls) {
-
-			System.out.println("\t\t\t NUM=" + indexedDocs);
 
 			if (this.indexedDocs == this.maxDocs) {
 				System.out.println("[info] index lleno, parando");
@@ -111,6 +128,10 @@ public class WebCrawler {
 						if (disallowed.contains(next) == false) {
 							// crawlingList.add(next);
 							ret.add(next);
+
+							// archivo de links para su uso por PageRank
+							fw.write(url + "\t" + next + "\n");
+
 						} else {
 							System.out.println("[error] no se puede agregar " + next);
 						}
