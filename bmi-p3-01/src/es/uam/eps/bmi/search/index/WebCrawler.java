@@ -1,20 +1,17 @@
 package es.uam.eps.bmi.search.index;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,6 +20,7 @@ import org.jsoup.nodes.Element;
 import es.uam.eps.bmi.search.index.impl.BaseIndexBuilder;
 
 /**
+ * Crawler basico que crawlea.
  * 
  * @author Jorge Cifuentes
  * @author Alejandro Martin
@@ -39,7 +37,7 @@ public class WebCrawler {
 
 	private File webgraph;
 	private PrintWriter fw;
-	
+
 	public WebCrawler(BaseIndexBuilder indexBuilder, int maxDocs, String seedFile) {
 		this.indexBuilder = indexBuilder;
 		this.maxDocs = maxDocs;
@@ -55,7 +53,7 @@ public class WebCrawler {
 	public void crawl() throws IOException {
 
 		List<String> seedUrls = Files.readAllLines(Paths.get(this.seedFile));
-		
+
 		this.webgraph = new File("graph/", Config.graphFileName);
 		webgraph.getParentFile().mkdirs();
 		webgraph.createNewFile();
@@ -68,8 +66,8 @@ public class WebCrawler {
 			System.out.println(" [fin iteracion] CrawlingList (frontera): " + crawlingList.size());
 		}
 
-		// Movemos el grafo resultado y salvamos todo		
-		this.indexBuilder.save("index/crawled");	
+		// Salvamos todo
+		this.indexBuilder.save("index/crawled");
 		this.fw.close();
 	}
 
@@ -91,7 +89,6 @@ public class WebCrawler {
 			String robotsUrl = baseUrl.getProtocol() + "://" + baseUrl.getHost() + "/robots.txt";
 
 			// Leemos el archivo de robots.txt
-			// TODO user-agent
 			try {
 				Scanner sc = new Scanner(new URL(robotsUrl).openStream(), "UTF-8");
 				String out = sc.useDelimiter("\\A").next();
@@ -112,7 +109,6 @@ public class WebCrawler {
 			}
 
 			// Obtenemos el contenido a indexar
-			// TODO clase config
 			if (this.alreadyCrawled.contains(url) == false) {
 				try {
 					Document d = Jsoup.connect(url).get();
