@@ -9,6 +9,13 @@ import es.uam.eps.bmi.search.index.structure.EditableDictionary;
 import es.uam.eps.bmi.search.index.structure.PostingsList;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+/**
+ * Diccionario preparado para trabajar con postings posicionales.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class PositionalDictionary implements EditableDictionary {
 
 	private static final long serialVersionUID = 1L;
@@ -45,5 +52,4 @@ public class PositionalDictionary implements EditableDictionary {
 	public void add(String term, int docID) {
 		throw new NotImplementedException();
 	}
-
 }

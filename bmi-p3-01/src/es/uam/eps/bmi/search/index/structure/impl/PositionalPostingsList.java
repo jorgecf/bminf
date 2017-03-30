@@ -5,10 +5,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import es.uam.eps.bmi.search.index.structure.Posting;
-import es.uam.eps.bmi.search.index.structure.PostingsList;
 import es.uam.eps.bmi.search.index.structure.positional.PositionalPostingImpl;
 import es.uam.eps.bmi.search.index.structure.positional.lucene.LucenePositionalPostingsList;
 
+/**
+ * Lista de Postings Posicionales con iterador.
+ * 
+ * @author Alejandro Martin
+ * @author Jorge Cifuentes
+ *
+ */
 public class PositionalPostingsList extends LucenePositionalPostingsList {
 
 	List<PositionalPostingImpl> postings;
@@ -23,7 +29,7 @@ public class PositionalPostingsList extends LucenePositionalPostingsList {
 
 		if (this.postings == null)
 			this.postings = new ArrayList<PositionalPostingImpl>();
-		
+
 		this.postings.add(new PositionalPostingImpl(docID, 1, position));
 	}
 
@@ -43,7 +49,15 @@ public class PositionalPostingsList extends LucenePositionalPostingsList {
 		return postings.size();
 	}
 
-	// supuesto: adicion por docID's ordenados y crecientes
+	/**
+	 * Agrega un nuevo posting. Supuesto: adicion por docID's ordenados y
+	 * crecientes.
+	 * 
+	 * @param docID
+	 *            docId.
+	 * @param position
+	 *            Posicion de la aparicion enesima.
+	 */
 	public void add(int docID, int position) {
 
 		// ya existe el posting de este termino para ese docID, actualizar
@@ -58,10 +72,20 @@ public class PositionalPostingsList extends LucenePositionalPostingsList {
 
 	}
 
+	/**
+	 * Agrega un nuevo postings con sus posiciones.
+	 * 
+	 * @param doc
+	 *            codID.
+	 * @param freq
+	 *            Frecuencia en documento.
+	 * @param l
+	 *            Posiciones (lista de longitud freq).
+	 */
 	public void add(int doc, long freq, List<Integer> l) {
 		if (this.postings == null)
 			this.postings = new ArrayList<PositionalPostingImpl>();
-		
+
 		this.postings.add(new PositionalPostingImpl(doc, freq, l));
 	}
 

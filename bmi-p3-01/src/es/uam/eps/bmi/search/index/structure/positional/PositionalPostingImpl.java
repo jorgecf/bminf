@@ -4,10 +4,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import es.uam.eps.bmi.search.index.structure.Posting;
 import es.uam.eps.bmi.search.index.structure.positional.PositionalPosting;
 import es.uam.eps.bmi.search.index.structure.positional.PositionsIterator;
 
+/**
+ * Positional posting extendido.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class PositionalPostingImpl extends PositionalPosting {
 
 	private static final long serialVersionUID = 1L;

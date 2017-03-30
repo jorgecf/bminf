@@ -63,18 +63,19 @@ public class PageRank extends AbstractEngine implements DocumentMap {
 
 		String red;
 		while ((red = sc.readLine()) != null) {
-			String[] link = red.split("\\s+"); // todos los caracteres de espacio
+			String[] link = red.split("\\s+"); // todos los caracteres de
+												// espacio
 
 			if (this.inverseDocPaths.get(link[0]) == null) {
 				int newID = this.docPaths.size() + 1;
-			
+
 				this.docPaths.put(newID, link[0]);
 				this.inverseDocPaths.put(link[0], newID);
 			}
 
 			if (this.inverseDocPaths.get(link[1]) == null) {
 				int newID = this.docPaths.size() + 1;
-				
+
 				this.docPaths.put(newID, link[1]);
 				this.inverseDocPaths.put(link[1], newID);
 			}
@@ -105,7 +106,7 @@ public class PageRank extends AbstractEngine implements DocumentMap {
 
 		// PageRank score inicial
 		Map<Integer, Double> pageRank = new HashMap<>();
-		
+
 		double initialScore = (double) 1 / this.docPaths.size();
 		for (Integer docID : this.docPaths.keySet()) {
 			pageRank.put(docID, initialScore);
@@ -140,10 +141,10 @@ public class PageRank extends AbstractEngine implements DocumentMap {
 			if (sinksSet.size() > 0) {
 				adjust = (double) ((1 - pageRank2.values().stream().mapToDouble(d -> d.doubleValue()).sum())
 						/ this.docPaths.size());
-				
+
 				final double adj = adjust;
 				pageRank2.replaceAll((k, v) -> v + adj);
-			}			
+			}
 
 			// Comprobamos si hay convergencia
 			boolean converged = true;
@@ -192,5 +193,4 @@ public class PageRank extends AbstractEngine implements DocumentMap {
 	public DocumentMap getDocMap() {
 		return this;
 	}
-
 }

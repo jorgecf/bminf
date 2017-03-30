@@ -28,8 +28,10 @@ import es.uam.eps.bmi.search.index.impl.BaseIndexBuilder;
 public class WebCrawler {
 
 	private BaseIndexBuilder indexBuilder;
+
 	private int maxDocs;
 	private String seedFile;
+
 	private Set<String> disallowed;
 	private PriorityQueue<String> crawlingList;
 	private Set<String> alreadyCrawled;
@@ -71,6 +73,11 @@ public class WebCrawler {
 		this.fw.close();
 	}
 
+	/**
+	 * Operacion de crawling, carga de robots.txt e inspeccion de enlaces.
+	 * 
+	 * @throws IOException
+	 */
 	private Collection<String> expandCrawl(Collection<String> urls) throws IOException {
 
 		Collection<String> ret = new PriorityQueue<>();
@@ -122,7 +129,6 @@ public class WebCrawler {
 					for (Element e : d.select("a[href]")) {
 						String next = e.attr("abs:href");
 						if (disallowed.contains(next) == false) {
-							// crawlingList.add(next);
 							ret.add(next);
 
 							// archivo de links para su uso por PageRank

@@ -15,7 +15,7 @@ import es.uam.eps.bmi.search.index.structure.positional.PositionalPostingImpl;
 import es.uam.eps.bmi.search.index.structure.impl.PositionalPostingsList;
 
 /**
- * Builde de indice posicional (con lista de posiciones en las postings list).
+ * Builder de indice posicional (con lista de posiciones en las postings list).
  * 
  * @author Jorge Cifuentes
  * @author Alejandro Martin
@@ -104,5 +104,4 @@ public class PositionalIndexBuilderImpl extends BaseIndexBuilder {
 			e.printStackTrace();
 		}
 	}
-
 }

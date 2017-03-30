@@ -1,5 +1,13 @@
 package es.uam.eps.bmi.search.index.structure.impl;
 
+/**
+ * Representa un link (enlace inicio y enlace final). Los documentos
+ * se representan como docIDs.
+ * 
+ * @author Alejandro Martin
+ * @author Jorge Cifuentes
+ *
+ */
 public class DocumentLink {
 
 	private int from;
