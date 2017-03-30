@@ -7,7 +7,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import es.uam.eps.bmi.search.graph.PageRank;
+import es.uam.eps.bmi.search.index.AbstractIndex;
 import es.uam.eps.bmi.search.index.DocumentMap;
+import es.uam.eps.bmi.search.index.Index;
 import es.uam.eps.bmi.search.index.impl.PositionalIndexBuilderImpl;
 import es.uam.eps.bmi.search.index.impl.PositionalIndexImpl;
 import es.uam.eps.bmi.search.ranking.SearchRanking;
@@ -41,7 +44,7 @@ public class CombinedEngine implements SearchEngine {
 		HashMap<Integer, Double> hashNorm = new HashMap<Integer, Double>();
 		
 		for (int i = 0; i < this.weights.length; i ++) {
-			srArr[i] = seArr[i].search(query, cutoff);
+				srArr[i] = seArr[i].search(query, Integer.MAX_VALUE);
 		}
 		
 		double[] max = new double[this.weights.length];
