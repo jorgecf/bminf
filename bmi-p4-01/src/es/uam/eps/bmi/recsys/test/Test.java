@@ -34,7 +34,7 @@ import java.io.PrintStream;
  */
 public class Test {
     public static void main (String a[]) throws FileNotFoundException {
-        testDataset("data/ml-ratings.csv", "data/tags.csv", ",", new IntParser(), 35, 1176);
+        testDataset("data/ratings.csv", "data/tags.csv", ",", new IntParser(), 35, 1176);
         testDataset("data/user_ratedmovies.dat", "data/movie_tags.dat", "\t", new StringParser(), 894, 993);
     }
     
