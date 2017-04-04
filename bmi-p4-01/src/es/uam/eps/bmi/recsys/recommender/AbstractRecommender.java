@@ -1,7 +1,5 @@
 package es.uam.eps.bmi.recsys.recommender;
 
-import java.util.Set;
-
 import es.uam.eps.bmi.recsys.Recommendation;
 import es.uam.eps.bmi.recsys.RecommendationImpl;
 import es.uam.eps.bmi.recsys.data.Ratings;

@@ -6,17 +6,11 @@ import es.uam.eps.bmi.recsys.recommender.similarity.CosineItemSimilarity;
 import es.uam.eps.bmi.recsys.recommender.similarity.JaccardFeatureSimilarity;
 import es.uam.eps.bmi.recsys.recommender.similarity.Similarity;
 
-public class ItemNNRecommender implements Recommender {
+public class ItemNNRecommender extends AbstractRecommender {
 
 	public ItemNNRecommender(Ratings ratings, Similarity similarity) {
 		// TODO Auto-generated constructor stub
-	}
-
-
-	@Override
-	public Recommendation recommend(int cutoff) {
-		// TODO Auto-generated method stub
-		return null;
+		super(ratings);
 	}
 
 	@Override

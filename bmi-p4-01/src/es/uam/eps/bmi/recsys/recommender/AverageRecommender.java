@@ -1,24 +1,45 @@
 package es.uam.eps.bmi.recsys.recommender;
 
-import es.uam.eps.bmi.recsys.Recommendation;
+import java.util.HashMap;
+import java.util.Map;
+
 import es.uam.eps.bmi.recsys.data.Ratings;
 
-public class AverageRecommender implements Recommender {
+public class AverageRecommender extends AbstractRecommender {
 
-	public AverageRecommender(Ratings ratings, int i) {
-		// TODO Auto-generated constructor stub
-	}
+	private int minRatings;
+	private Map<Integer, Double> ratingSum;
 
-	@Override
-	public Recommendation recommend(int cutoff) {
-		// TODO Auto-generated method stub
-		return null;
+	public AverageRecommender(Ratings ratings, int minRatings) {
+		super(ratings);
+
+		this.minRatings = minRatings;
+
+		// Hacemos el promedio de ratings.
+		this.ratingSum = new HashMap<Integer, Double>();
+
+		for (Integer item : ratings.getItems()) {
+
+			double acc = 0;
+			for (Integer user : ratings.getUsers(item)) {
+				acc += ratings.getRating(user, item);
+			}
+
+			// Solo se tiene en cuenta si cumple el requisito de valoraciones
+			// minimas.
+			int nRatings = ratings.getUsers(item).size();
+			if (nRatings >= this.minRatings) {
+				acc = acc / nRatings;
+				this.ratingSum.put(item, acc);
+			}
+		}
+
 	}
 
 	@Override
 	public double score(int user, int item) {
-		// TODO Auto-generated method stub
-		return 0;
+		Double s = ratingSum.get(item);
+		return (s == null) ? 0 : s;
 	}
 
 }
