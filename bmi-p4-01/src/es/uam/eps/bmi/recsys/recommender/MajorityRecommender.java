@@ -27,6 +27,6 @@ public class MajorityRecommender extends AbstractRecommender {
     }
 
     public String toString() {
-        return "majority";
-    }
+		return "majority";
+	}
 }

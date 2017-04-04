@@ -98,11 +98,12 @@ public class Test {
         Timer.reset();
         testRecommender(new CentroidRecommender<F>(ratings, new CosineFeatureSimilarity<F>(features)), n, nUsers, nItems);
         Timer.reset();
-    //    testRecommender(new ItemNNRecommender(ratings, new JaccardFeatureSimilarity<F>(features)), n, nUsers, nItems);
+        testRecommender(new ItemNNRecommender(ratings, new JaccardFeatureSimilarity<F>(features)), n, nUsers, nItems);
    }
 
     static <U extends Comparable<U>,I extends Comparable<I>,F> void evaluateRecommenders(Ratings ratings, Features<F> features, int k, int n, Metric metrics[]) {
-  /*      Timer.reset();
+  /*    
+     	Timer.reset();
         evaluateRecommender(new MajorityRecommender(ratings), n, metrics);
         Timer.reset();
         evaluateRecommender(new AverageRecommender(ratings, 2), n, metrics);
