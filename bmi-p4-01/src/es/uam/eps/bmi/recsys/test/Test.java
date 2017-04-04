@@ -35,12 +35,13 @@ import java.io.PrintStream;
 public class Test {
     public static void main (String a[]) throws FileNotFoundException {
         testDataset("data/ratings.csv", "data/tags.csv", ",", new IntParser(), 35, 1176);
-        testDataset("data/user_ratedmovies.dat", "data/movie_tags.dat", "\t", new StringParser(), 894, 993);
+    //    testDataset("data/user_ratedmovies.dat", "data/movie_tags.dat", "\t", new StringParser(), 894, 993);
     }
     
     static <F>void testDataset(String ratingsFile, String featuresFile, String separator, Parser<F> featureParser, int user, int item) 
             throws FileNotFoundException {
-        int n = 100;
+      
+    	int n = 100;
         int cutoff = 10;
         int k = 50;
         double threshold = 4;
@@ -49,9 +50,11 @@ public class Test {
         Features<String> features = new FeaturesImpl<String>(featuresFile, separator, new StringParser());
         
         testData(ratings, features, user, item);
+   
         
         testRecommenders(ratings, features, k, n, 3, 4);
-
+      
+        /*
         Ratings folds[] = ratings.randomSplit(0.8);
         Ratings train = folds[0];
         Ratings test = folds[1];
@@ -63,6 +66,7 @@ public class Test {
         };
         
         evaluateRecommenders(train, features, k, n, metrics);
+        */
     }
     
     static <F>void testData(Ratings ratings, Features<F> features, int user, int item) {
@@ -81,7 +85,7 @@ public class Test {
     }
     
     static <F> void testRecommenders(Ratings ratings, Features<F> features, int k, int n, int nUsers, int nItems) throws FileNotFoundException {
-     /*   Timer.reset();
+       Timer.reset();
         testRecommender(new MajorityRecommender(ratings), n, nUsers, nItems);
         Timer.reset();
         testRecommender(new AverageRecommender(ratings, 2), n, nUsers, nItems);
@@ -94,9 +98,8 @@ public class Test {
         Timer.reset();
         testRecommender(new CentroidRecommender<F>(ratings, new CosineFeatureSimilarity<F>(features)), n, nUsers, nItems);
         Timer.reset();
-        testRecommender(new ItemNNRecommender(ratings, new JaccardFeatureSimilarity<F>(features)), n, nUsers, nItems);
-*/
-    }
+    //    testRecommender(new ItemNNRecommender(ratings, new JaccardFeatureSimilarity<F>(features)), n, nUsers, nItems);
+   }
 
     static <U extends Comparable<U>,I extends Comparable<I>,F> void evaluateRecommenders(Ratings ratings, Features<F> features, int k, int n, Metric metrics[]) {
   /*      Timer.reset();

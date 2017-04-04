@@ -1,12 +1,13 @@
 package es.uam.eps.bmi.recsys.data;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
-import java.util.TreeMap;
 
 public class RatingsImpl implements Ratings {
 
@@ -16,6 +17,7 @@ public class RatingsImpl implements Ratings {
 	private Map<Integer, Map<Integer, Double>> data; // user - item/rating
 	private Map<Integer, Map<Integer, Double>> dataInverse; // item -
 															// user/rating
+	private int nRatings;
 
 	public RatingsImpl(String ratingsFile, String separator) {
 		this.ratingsFile = ratingsFile;
@@ -23,6 +25,34 @@ public class RatingsImpl implements Ratings {
 
 		this.data = new HashMap<Integer, Map<Integer, Double>>();
 		this.dataInverse = new HashMap<Integer, Map<Integer, Double>>();
+		this.nRatings = 0;
+
+		this.parseInput(ratingsFile, separator);
+	}
+
+	private void parseInput(String r, String separator) { // mover a otra clase?
+															// TODO
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(r));
+
+			String line = "";
+			while ((line = br.readLine()) != null) {
+
+				// use comma as separator
+				String[] d = line.split(separator);
+				try {
+					this.rate(Integer.valueOf(d[0]), Integer.valueOf(d[1]), Double.valueOf(d[2]));
+					this.nRatings++;
+				} catch (NumberFormatException n) {
+				}
+			}
+			br.close();
+
+			} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
@@ -75,13 +105,14 @@ public class RatingsImpl implements Ratings {
 
 	@Override
 	public int nRatings() {
-		return this.data.size();
+		return this.nRatings;
 	}
 
 	@Override
 	public Ratings[] randomSplit(double ratio) {
 
 		Ratings[] r = new Ratings[2];
+		Random rnd = new Random();
 
 		// Creamos los nuevos ratings.
 		Ratings r1 = new RatingsImpl(this.ratingsFile, this.separator);
@@ -93,11 +124,18 @@ public class RatingsImpl implements Ratings {
 			int next = it.next();
 
 			Iterator<Integer> it2 = this.data.get(next).keySet().iterator();
-		
+
 			while (it2.hasNext()) {
 				int next2 = it2.next();
 				Double rat2 = this.data.get(next).get(next2);
-				r1.rate(next, next2, rat2); // TODO random
+
+				int nx = rnd.nextInt(100);
+				System.out.println("nx==" + nx);
+				if (nx <= 100 * ratio) {
+					r1.rate(next, next2, rat2);
+				} else {
+					r2.rate(next, next2, rat2);
+				}
 			}
 
 		}
@@ -106,15 +144,14 @@ public class RatingsImpl implements Ratings {
 		r[0] = r1;
 		r[1] = r2;
 
+		System.out.println("DATA: " + this.data.size() + ", r1: " + ((RatingsImpl) r1).getData().size() + ", r2: "
+				+ ((RatingsImpl) r2).getData().size() + "; RATIO=== " + ratio);
+
 		return r;
 	}
 
-	public void setData(Map<Integer, Map<Integer, Double>> data) {
-		this.data = data;
-	}
-
-	public void setDataInverse(Map<Integer, Map<Integer, Double>> dataInverse) {
-		this.dataInverse = dataInverse;
+	public Map<Integer, Map<Integer, Double>> getData() {
+		return data;
 	}
 
 }
