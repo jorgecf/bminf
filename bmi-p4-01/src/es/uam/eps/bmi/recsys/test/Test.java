@@ -39,7 +39,7 @@ public class Test {
         testDataset("data/ratings.csv", "data/tags.csv", ",", new IntParser(), 35, 1176);
         System.out.println("=========================");
         System.out.println("Testing MovieLens HetRec dataset");
-    //    testDataset("data/user_ratedmovies.dat", "data/movie_tags.dat", "\t", new StringParser(), 894, 993);
+        testDataset("data/user_ratedmovies.dat", "data/movie_tags.dat", "\t", new StringParser(), 894, 993);
     }
     
     static <F>void testDataset(String ratingsFile, String featuresFile, String separator, Parser<F> featureParser, int user, int item) 
@@ -52,7 +52,7 @@ public class Test {
         Ratings ratings = new RatingsImpl(ratingsFile, separator);
         Features<String> features = new FeaturesImpl<String>(featuresFile, separator, new StringParser());
         
-      //  testData(ratings, features, user, item);
+     //   testData(ratings, features, user, item);
         
       //  testRecommenders(ratings, features, k, n, 3, 4);
 

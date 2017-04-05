@@ -8,7 +8,7 @@ import java.util.Set;
  * 
  * En principio características de ítems, pero también podrían ser de usuario.
  */
-public interface Features<F> extends Iterable<F> {
+public interface Features<F> {
     public Set<F> getFeatures(int id);
     public Double getFeature(int id, F feature);
     public void setFeature(int id, F feature, double value);

@@ -1,0 +1,3 @@
+EJ5
+
+metricas salen diferentes segun ejecucion ---> al venir de un RandomSplit

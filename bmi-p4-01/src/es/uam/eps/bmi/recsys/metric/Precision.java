@@ -35,22 +35,23 @@ public class Precision implements Metric {
 			int c = 0;
 
 			Iterator<RankingElement> it = r.iterator();
-			while (it.hasNext() && ++c != this.cutoff) {
+			while (it.hasNext() && c != this.cutoff) {
 
 				RankingElement rel = it.next();
 
-				// Lo ha valorado con nota necesaria
+				// Lo ha valorado con nota necesaria?
 				Double rat = this.ratings.getRating(user, rel.getID());
 				if (rat != null && rat > this.treshold) {
 					nRelevants++;
 				}
+
+				c++;
 			}
 
-			pAcc += (double) nRelevants / this.cutoff; // top-en-k / k
-
+			pAcc += ((double) nRelevants) / this.cutoff; // relevantes-en-k / k
 		}
 
-		return (double) pAcc / rec.getUsers().size();
+		return ((double) pAcc) / rec.getUsers().size();
 	}
 
 	@Override

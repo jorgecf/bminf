@@ -53,14 +53,6 @@ public class FeaturesImpl<F> implements Features<F> {
 	}
 
 	@Override
-	public Iterator<F> iterator() {
-		Set<F> ret = new HashSet<>();
-		this.data.values().forEach(m -> ret.addAll(m.keySet()));
-
-		return ret.iterator();
-	}
-
-	@Override
 	public Set<F> getFeatures(int id) {
 		return this.data.get(id).keySet();
 	}
