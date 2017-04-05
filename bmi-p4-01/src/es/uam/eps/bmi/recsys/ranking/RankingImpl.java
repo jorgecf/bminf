@@ -38,6 +38,6 @@ public class RankingImpl implements Ranking {
     }
 
     public int totalSize() {
-		return nElements;
-	}
+        return nElements;
+    }
 }

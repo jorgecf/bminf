@@ -10,13 +10,18 @@ import es.uam.eps.bmi.recsys.data.Features;
  * p.e. enteros, strings.
  */
 public abstract class FeatureSimilarity<F> implements Similarity {
-    Features<F> features;
+    protected Features<F> xFeatures;
+    protected Features<F> yFeatures;
     
     public FeatureSimilarity(Features<F> features) {
-        this.features = features;
+        xFeatures = yFeatures = features;
     }
     
     public Features<F> getFeatures() {
-        return features;
+        return yFeatures;
+    }
+
+    public void setXFeatures(Features<F> xf) {
+        xFeatures = xf;
     }
 }
