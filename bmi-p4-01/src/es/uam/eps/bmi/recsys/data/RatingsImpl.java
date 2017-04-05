@@ -86,7 +86,12 @@ public class RatingsImpl implements Ratings {
 
 	@Override
 	public Double getRating(int user, int item) {
-		return this.data.get(user).get(item);
+
+		if (this.data.containsKey(user))
+			if (this.data.get(user).containsKey(item))
+				return this.data.get(user).get(item);
+			
+		return null;
 	}
 
 	@Override
@@ -96,7 +101,10 @@ public class RatingsImpl implements Ratings {
 
 	@Override
 	public Set<Integer> getItems(int user) {
-		return this.data.get(user).keySet();
+		if (this.data.containsKey(user)) {
+			return this.data.get(user).keySet();
+		} else
+			return null;
 	}
 
 	@Override

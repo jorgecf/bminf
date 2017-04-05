@@ -1,12 +1,11 @@
 package es.uam.eps.bmi.recsys.recommender;
 
-import es.uam.eps.bmi.recsys.Recommendation;
 import es.uam.eps.bmi.recsys.data.Ratings;
-import es.uam.eps.bmi.recsys.recommender.similarity.CosineUserSimilarity;
+import es.uam.eps.bmi.recsys.recommender.similarity.Similarity;
 
 public class UserKNNRecommender extends AbstractRecommender {
 
-	public UserKNNRecommender(Ratings ratings, CosineUserSimilarity cosineUserSimilarity, int k) {
+	public UserKNNRecommender(Ratings ratings, Similarity similarity, int k) {
 		// TODO Auto-generated constructor stub
 		super(ratings);
 	}

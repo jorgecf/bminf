@@ -52,9 +52,9 @@ public class Test {
         Ratings ratings = new RatingsImpl(ratingsFile, separator);
         Features<String> features = new FeaturesImpl<String>(featuresFile, separator, new StringParser());
         
-        testData(ratings, features, user, item);
+      //  testData(ratings, features, user, item);
         
-        testRecommenders(ratings, features, k, n, 3, 4);
+      //  testRecommenders(ratings, features, k, n, 3, 4);
 
         Ratings folds[] = ratings.randomSplit(0.8);
         Ratings train = folds[0];

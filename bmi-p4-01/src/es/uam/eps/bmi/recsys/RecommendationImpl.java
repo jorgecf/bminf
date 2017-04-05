@@ -36,7 +36,6 @@ public class RecommendationImpl implements Recommendation {
 	@Override
 	public void print(PrintStream out) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
