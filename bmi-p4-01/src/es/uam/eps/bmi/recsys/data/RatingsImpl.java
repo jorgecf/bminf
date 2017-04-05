@@ -19,6 +19,12 @@ public class RatingsImpl implements Ratings {
 															// user/rating
 	private int nRatings;
 
+	public RatingsImpl() {
+		this.data = new HashMap<Integer, Map<Integer, Double>>();
+		this.dataInverse = new HashMap<Integer, Map<Integer, Double>>();
+		this.nRatings = 0;
+	}
+
 	public RatingsImpl(String ratingsFile, String separator) {
 		this.ratingsFile = ratingsFile;
 		this.separator = separator;
@@ -43,13 +49,12 @@ public class RatingsImpl implements Ratings {
 				String[] d = line.split(separator);
 				try {
 					this.rate(Integer.valueOf(d[0]), Integer.valueOf(d[1]), Double.valueOf(d[2]));
-					this.nRatings++;
 				} catch (NumberFormatException n) {
 				}
 			}
 			br.close();
 
-			} catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
@@ -76,6 +81,7 @@ public class RatingsImpl implements Ratings {
 			this.dataInverse.get(item).put(user, rating);
 		}
 
+		this.nRatings++;
 	}
 
 	@Override
@@ -115,8 +121,8 @@ public class RatingsImpl implements Ratings {
 		Random rnd = new Random();
 
 		// Creamos los nuevos ratings.
-		Ratings r1 = new RatingsImpl(this.ratingsFile, this.separator);
-		Ratings r2 = new RatingsImpl(this.ratingsFile, this.separator);
+		Ratings r1 = new RatingsImpl();
+		Ratings r2 = new RatingsImpl();
 
 		Iterator<Integer> it = this.data.keySet().iterator();
 		while (it.hasNext()) {
@@ -130,22 +136,21 @@ public class RatingsImpl implements Ratings {
 				Double rat2 = this.data.get(next).get(next2);
 
 				int nx = rnd.nextInt(100);
-				System.out.println("nx==" + nx);
+
 				if (nx <= 100 * ratio) {
 					r1.rate(next, next2, rat2);
 				} else {
 					r2.rate(next, next2, rat2);
 				}
 			}
-
 		}
 
 		// Guardamos los nuevos mapas.
 		r[0] = r1;
 		r[1] = r2;
 
-		System.out.println("DATA: " + this.data.size() + ", r1: " + ((RatingsImpl) r1).getData().size() + ", r2: "
-				+ ((RatingsImpl) r2).getData().size() + "; RATIO=== " + ratio);
+		System.out.println("DATA: " + this.nRatings + ", r1: " + ((RatingsImpl) r1).nRatings + ", r2: "
+				+ ((RatingsImpl) r2).nRatings + "; RATIO=== " + ratio);
 
 		return r;
 	}

@@ -39,7 +39,7 @@ public class Test {
         testDataset("data/ratings.csv", "data/tags.csv", ",", new IntParser(), 35, 1176);
         System.out.println("=========================");
         System.out.println("Testing MovieLens HetRec dataset");
-        testDataset("data/user_ratedmovies.dat", "data/movie_tags.dat", "\t", new StringParser(), 894, 993);
+    //    testDataset("data/user_ratedmovies.dat", "data/movie_tags.dat", "\t", new StringParser(), 894, 993);
     }
     
     static <F>void testDataset(String ratingsFile, String featuresFile, String separator, Parser<F> featureParser, int user, int item) 
