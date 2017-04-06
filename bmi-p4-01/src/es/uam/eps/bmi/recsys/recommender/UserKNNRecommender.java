@@ -1,5 +1,7 @@
 package es.uam.eps.bmi.recsys.recommender;
 
+import java.util.Iterator;
+
 import es.uam.eps.bmi.recsys.data.Ratings;
 import es.uam.eps.bmi.recsys.data.RatingsImpl;
 import es.uam.eps.bmi.recsys.ranking.Ranking;
@@ -9,13 +11,11 @@ import es.uam.eps.bmi.recsys.recommender.similarity.Similarity;
 
 public class UserKNNRecommender extends AbstractRecommender {
 
-	 private Ratings ratings2;
+	private Ratings ratings2;
 	// private RankingImpl rank;
 
 	public UserKNNRecommender(Ratings ratings, Similarity sim, int k) {
 		super(ratings);
-
-		
 
 		for (Integer user : ratings.getUsers()) {
 			for (Integer item : ratings.getItems()) {
@@ -29,7 +29,7 @@ public class UserKNNRecommender extends AbstractRecommender {
 
 					for (Integer vuser : ratings.getUsers()) {
 						Double r = this.ratings.getRating(user, item);
-						if (r == null) {
+						if (r != null) {
 							acc = sim.sim(user, vuser) * r;
 						}
 					}
@@ -50,11 +50,16 @@ public class UserKNNRecommender extends AbstractRecommender {
 				rank.add(item, this.ratings.getRating(user, item)); // k mejores
 			}
 
-			for (RankingElement re : rank) {
+			// for (RankingElement re : rank) {
+			Iterator<RankingElement> it = rank.iterator();
+			while (it.hasNext()) {
+				RankingElement re = it.next();
 				ratings2.rate(user, re.getID(), re.getScore());
 			}
 		}
 
+		this.ratings = null;
+		this.ratings = this.ratings2;
 	}
 
 	@Override

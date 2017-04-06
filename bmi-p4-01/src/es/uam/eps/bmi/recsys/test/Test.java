@@ -90,7 +90,10 @@ public class Test {
         Timer.reset();
         testRecommender(new AverageRecommender(ratings, 2), n, nUsers, nItems);
         Timer.reset();
-        testRecommender(new UserKNNRecommender(ratings, new CosineUserSimilarity(ratings), k), n, nUsers, nItems);
+       
+        Ratings[] rr=ratings.randomSplit(0.98);
+        testRecommender(new UserKNNRecommender(rr[1], new CosineUserSimilarity(rr[1]), k), n, nUsers, nItems);
+        
         Timer.reset();
         testRecommender(new NormUserKNNRecommender(ratings, new CosineUserSimilarity(ratings), k, 2), n, nUsers, nItems);
         Timer.reset();
