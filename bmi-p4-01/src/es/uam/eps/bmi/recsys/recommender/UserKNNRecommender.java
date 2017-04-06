@@ -9,13 +9,13 @@ import es.uam.eps.bmi.recsys.recommender.similarity.Similarity;
 
 public class UserKNNRecommender extends AbstractRecommender {
 
-	// private Ratings ratings;
+	 private Ratings ratings2;
 	// private RankingImpl rank;
 
 	public UserKNNRecommender(Ratings ratings, Similarity sim, int k) {
 		super(ratings);
 
-		// this.ratings=ratings;
+		
 
 		for (Integer user : ratings.getUsers()) {
 			for (Integer item : ratings.getItems()) {
@@ -41,7 +41,7 @@ public class UserKNNRecommender extends AbstractRecommender {
 		}
 
 		// knn
-		Ratings r2 = new RatingsImpl();
+		this.ratings2 = new RatingsImpl();
 
 		for (Integer user : ratings.getUsers()) {
 
@@ -51,7 +51,7 @@ public class UserKNNRecommender extends AbstractRecommender {
 			}
 
 			for (RankingElement re : rank) {
-				r2.rate(user, re.getID(), re.getScore());
+				ratings2.rate(user, re.getID(), re.getScore());
 			}
 		}
 
@@ -66,7 +66,6 @@ public class UserKNNRecommender extends AbstractRecommender {
 		else
 			return r; // TODO simplif con average
 
-		// return this.rank.
 	}
 
 }
