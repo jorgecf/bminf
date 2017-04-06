@@ -42,4 +42,10 @@ public class AverageRecommender extends AbstractRecommender {
 		return (s == null) ? 0 : s;
 	}
 
+	@Override
+	public String toString() {
+		return "average";
+	}
+	
+
 }

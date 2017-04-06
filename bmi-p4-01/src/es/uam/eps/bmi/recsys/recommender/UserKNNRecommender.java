@@ -1,6 +1,7 @@
 package es.uam.eps.bmi.recsys.recommender;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import es.uam.eps.bmi.recsys.data.Ratings;
 import es.uam.eps.bmi.recsys.data.RatingsImpl;
@@ -17,8 +18,13 @@ public class UserKNNRecommender extends AbstractRecommender {
 	public UserKNNRecommender(Ratings ratings, Similarity sim, int k) {
 		super(ratings);
 
-		for (Integer user : ratings.getUsers()) {
-			for (Integer item : ratings.getItems()) {
+		Set<Integer> users1 = ratings.getUsers();
+		Set<Integer> users2 = ratings.getUsers();
+		Set<Integer> items = ratings.getItems();
+
+		for (Integer user : users1) {
+
+			for (Integer item : items) {
 
 				// Si no hay rating lo simulamos
 				if (this.ratings.getRating(user, item) == null) {
@@ -27,16 +33,17 @@ public class UserKNNRecommender extends AbstractRecommender {
 					// han valorado el item
 					Double acc = 0.0;
 
-					for (Integer vuser : ratings.getUsers()) {
-						Double r = this.ratings.getRating(user, item);
-						if (r != null) {
-							acc = sim.sim(user, vuser) * r;
+					for (Integer vuser : users2) {
+						if (user != vuser) {
+							Double r = this.ratings.getRating(vuser, item);
+							if (r != null) {
+								acc += sim.sim(user, vuser) * r;
+							}
 						}
 					}
 
 					this.ratings.rate(user, item, acc);
 				}
-
 			}
 		}
 
@@ -66,8 +73,9 @@ public class UserKNNRecommender extends AbstractRecommender {
 	public double score(int user, int item) {
 
 		Double r = this.ratings.getRating(user, item);
+
 		if (r == null)
-			return 0.0;
+			return 0.11112;
 		else
 			return r; // TODO simplif con average
 

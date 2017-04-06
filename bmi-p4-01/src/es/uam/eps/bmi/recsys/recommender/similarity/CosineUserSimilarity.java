@@ -17,8 +17,9 @@ public class CosineUserSimilarity implements Similarity {
 		Double acc = 0.0;
 		Double acc2u = 0.0;
 		Double acc2v = 0.0;
-
-		for (Integer item : this.ratings.getItems()) {
+		
+		//TODO coger menor set x o y
+		for (Integer item : this.ratings.getItems(x)) {
 
 			Double rx = this.ratings.getRating(x, item);
 			Double ry = this.ratings.getRating(y, item);
