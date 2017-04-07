@@ -36,10 +36,10 @@ public class Test {
     public static void main (String a[]) throws FileNotFoundException {
         System.out.println("=========================");
         System.out.println("Testing MovieLens \"latest-small\" dataset");
-        testDataset("data/ratings.csv", "data/tags.csv", ",", new IntParser(), 35, 1176);
+        testDataset("data/ratings.csv", "data/tags.csv", ",", new StringParser(), 35, 1176);
         System.out.println("=========================");
         System.out.println("Testing MovieLens HetRec dataset");
-        testDataset("data/user_ratedmovies.dat", "data/movie_tags.dat", "\t", new StringParser(), 894, 993);
+        testDataset("data/user_ratedmovies.dat", "data/movie_tags.dat", "\t", new IntParser(), 894, 993);
     }
     
     static <F>void testDataset(String ratingsFile, String featuresFile, String separator, Parser<F> featureParser, int user, int item) 
@@ -50,11 +50,11 @@ public class Test {
         double threshold = 4;
 
         Ratings ratings = new RatingsImpl(ratingsFile, separator);
-        Features<String> features = new FeaturesImpl<String>(featuresFile, separator, new StringParser());
+        Features<F> features = new FeaturesImpl<F>(featuresFile, separator, featureParser);
         
-     //   testData(ratings, features, user, item);
+        testData(ratings, features, user, item);
         
-      //  testRecommenders(ratings, features, k, n, 3, 4);
+        testRecommenders(ratings, features, k, n, 3, 4);
 
         Ratings folds[] = ratings.randomSplit(0.8);
         Ratings train = folds[0];
@@ -90,7 +90,10 @@ public class Test {
         Timer.reset();
         testRecommender(new AverageRecommender(ratings, 2), n, nUsers, nItems);
         Timer.reset();
-        testRecommender(new UserKNNRecommender(ratings, new CosineUserSimilarity(ratings), k), n, nUsers, nItems);
+       
+        Ratings[] rr=ratings.randomSplit(0.98);
+        testRecommender(new UserKNNRecommender(rr[1], new CosineUserSimilarity(rr[1]), k), n, nUsers, nItems);
+        
         Timer.reset();
         testRecommender(new NormUserKNNRecommender(ratings, new CosineUserSimilarity(ratings), k, 2), n, nUsers, nItems);
         Timer.reset();
@@ -99,7 +102,6 @@ public class Test {
         testRecommender(new CentroidRecommender<F>(ratings, new CosineFeatureSimilarity<F>(features)), n, nUsers, nItems);
         Timer.reset();
         testRecommender(new ItemNNRecommender(ratings, new JaccardFeatureSimilarity<F>(features)), n, nUsers, nItems);
-
     }
 
     static <U extends Comparable<U>,I extends Comparable<I>,F> void evaluateRecommenders(Ratings ratings, Features<F> features, int k, int n, Metric metrics[]) {
@@ -117,7 +119,6 @@ public class Test {
         evaluateRecommender(new CentroidRecommender<F>(ratings, new CosineFeatureSimilarity<F>(features)), n, metrics);
         Timer.reset();
         evaluateRecommender(new ItemNNRecommender(ratings, new JaccardFeatureSimilarity<F>(features)), n, metrics);
-
     }
 
     static <U,I extends Comparable<I>> void testRecommender(Recommender recommender, int n, int nUsers, int nItems) throws FileNotFoundException {
