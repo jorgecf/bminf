@@ -28,7 +28,8 @@ public abstract class AbstractRecommender implements Recommender {
 			for (Integer item : this.ratings.getItems()) {
 
 				// No queremos que aparezcan items que este user ya ha valorado.
-				if (this.ratings.getItems(user).contains(item) == false)
+				// if (this.ratings.getItems(user).contains(item) == false)
+				if (this.ratings.getRating(user, item) == null)
 					rank.add(item, this.score(user, item));
 			}
 

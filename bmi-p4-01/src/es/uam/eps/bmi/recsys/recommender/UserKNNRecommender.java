@@ -75,7 +75,7 @@ public class UserKNNRecommender extends AbstractRecommender {
 		Double r = this.ratings.getRating(user, item);
 
 		if (r == null)
-			return 0.11112;
+			return 0.0;
 		else
 			return r; // TODO simplif con average
 
