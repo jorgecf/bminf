@@ -90,7 +90,7 @@ public class RatingsImpl implements Ratings {
 		if (this.data.containsKey(user))
 			if (this.data.get(user).containsKey(item))
 				return this.data.get(user).get(item);
-			
+
 		return null;
 	}
 
@@ -101,9 +101,9 @@ public class RatingsImpl implements Ratings {
 
 	@Override
 	public Set<Integer> getItems(int user) {
-		if (this.data.containsKey(user)) {
+		if (this.data.containsKey(user))
 			return this.data.get(user).keySet();
-		} else
+		else
 			return null;
 	}
 
