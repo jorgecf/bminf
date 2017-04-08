@@ -1,12 +1,11 @@
 package es.uam.eps.bmi.recsys.recommender.similarity;
 
-import es.uam.eps.bmi.recsys.data.Ratings;
-import es.uam.eps.bmi.recsys.util.Timer;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import es.uam.eps.bmi.recsys.data.Ratings;
 
 public class CosineUserSimilarity implements Similarity {
 
@@ -17,7 +16,6 @@ public class CosineUserSimilarity implements Similarity {
 	public CosineUserSimilarity(Ratings ratings) { // TODO vencidarios
 													// simetricos? ---> ¿¿x,y ==
 													// y,x??
-		Timer.reset();
 		this.ratings = ratings;
 
 		this.data = new HashMap<>();
@@ -35,11 +33,11 @@ public class CosineUserSimilarity implements Similarity {
 					if (v > 0.0)
 						nh.put(user2, v);
 				}
+
 				this.data.put(user1, nh);
 			}
 		}
 
-		Timer.time("[1] cosine constructor: ");
 	}
 
 	@Override
@@ -53,21 +51,19 @@ public class CosineUserSimilarity implements Similarity {
 	}
 
 	private double simAux(int x, int y) {
-	
+
 		// tema 5 pag 58 o 60
 		Double acc = 0.0;
 		Double acc2u = 0.0;
 		Double acc2v = 0.0;
 
-		
-		Set<Integer> x1=this.ratings.getItems(x);
-		Set<Integer> y1=this.ratings.getItems(y);
+		Set<Integer> x1 = this.ratings.getItems(x);
+		Set<Integer> y1 = this.ratings.getItems(y);
 
 		// Items valorados por ambos
-		HashSet<Integer> xy=new HashSet<>(x1);
+		HashSet<Integer> xy = new HashSet<>(x1);
 		xy.retainAll(y1); //
 
-		
 		// Sumatorio de items que ambos users han valorado
 		for (Integer item : xy) {
 
@@ -77,10 +73,6 @@ public class CosineUserSimilarity implements Similarity {
 			if (rx != null && ry != null) {
 				acc += rx * ry;
 			}
-			else{
-				System.out.println("CosineUserSimilarity.simAux() FALLO");
-			}
-
 		}
 
 		// Sumatorio de r(u, i)^2 (items rateados por x)
@@ -92,7 +84,7 @@ public class CosineUserSimilarity implements Similarity {
 			}
 
 		}
-		
+
 		// Sumatorio de r(v, i)^2 (items rateados por y)
 		for (Integer item : this.ratings.getItems(y)) {
 			Double ry = this.ratings.getRating(y, item);
@@ -108,4 +100,10 @@ public class CosineUserSimilarity implements Similarity {
 		else
 			return ret;
 	}
+
+	@Override
+	public String toString() {
+		return "cosine";
+	}
+
 }
