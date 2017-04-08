@@ -33,7 +33,7 @@ public class RatingsImpl implements Ratings {
 		this.dataInverse = new HashMap<Integer, Map<Integer, Double>>();
 		this.nRatings = 0;
 
-		this.parseInput(ratingsFile, separator);
+		this.parseInput(this.ratingsFile, this.separator);
 	}
 
 	private void parseInput(String r, String separator) { // mover a otra clase?

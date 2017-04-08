@@ -32,24 +32,10 @@ public class UserKNNRecommender extends AbstractUserKNNRecommender {
 					rank.add(user2, s);
 			}
 
-			return this.scoreAux(user, item, rank, false, 0); // TODO simplif con average
+			return this.scoreAux(user, item, rank, false, 0); // TODO simplif
+																// con average
 		}
 	}
-
-/*	private double scoreAux(int user, int item, Ranking kNearest) {
-
-		double acc = 0.0;
-
-		Iterator<RankingElement> it = kNearest.iterator();
-		while (it.hasNext()) {
-			RankingElement neighbour = it.next();
-			Double nr = this.ratings.getRating(neighbour.getID(), item);
-			if (nr != null)
-				acc = acc + (neighbour.getScore() * nr);
-		}
-
-		return acc;
-	}*/
 
 	@Override
 	public String toString() {

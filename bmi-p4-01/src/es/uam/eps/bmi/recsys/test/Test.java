@@ -97,10 +97,10 @@ public class Test {
     //    testRecommender(new NormUserKNNRecommender(ratings, new CosineUserSimilarity(ratings), k, 2), n, nUsers, nItems);
         Timer.reset();
         testRecommender(new ItemNNRecommender(ratings, new CosineItemSimilarity(ratings)), n, nUsers, nItems);
-        Timer.reset();
-        testRecommender(new CentroidRecommender<F>(ratings, new CosineFeatureSimilarity<F>(features)), n, nUsers, nItems);
-        Timer.reset();
-        testRecommender(new ItemNNRecommender(ratings, new JaccardFeatureSimilarity<F>(features)), n, nUsers, nItems);
+     //   Timer.reset();
+     //   testRecommender(new CentroidRecommender<F>(ratings, new CosineFeatureSimilarity<F>(features)), n, nUsers, nItems);
+     //   Timer.reset();
+      //  testRecommender(new ItemNNRecommender(ratings, new JaccardFeatureSimilarity<F>(features)), n, nUsers, nItems);
     }
 
     static <U extends Comparable<U>,I extends Comparable<I>,F> void evaluateRecommenders(Ratings ratings, Features<F> features, int k, int n, Metric metrics[]) {

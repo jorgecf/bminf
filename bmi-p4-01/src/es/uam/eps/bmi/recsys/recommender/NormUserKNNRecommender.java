@@ -21,7 +21,7 @@ public class NormUserKNNRecommender extends AbstractUserKNNRecommender {
 	@Override
 	public double score(int user, int item) {
 
-		Double r = this.ratings.getRating(user, item); 
+		Double r = this.ratings.getRating(user, item);
 
 		if (r != null) {
 			return r;
@@ -40,32 +40,6 @@ public class NormUserKNNRecommender extends AbstractUserKNNRecommender {
 			return this.scoreAux(user, item, rank, true, this.minNeighbourRatings);
 		}
 	}
-
-	/*private double scoreAux(int user, int item, Ranking kNearest, boolean normalize) {
-
-		double acc = 0.0;
-		int nNeighbours = 0;
-		double c = 0.0;
-
-		Iterator<RankingElement> it = kNearest.iterator();
-		while (it.hasNext()) {
-			RankingElement neighbour = it.next();
-			Double nr = this.ratings.getRating(neighbour.getID(), item);
-			if (nr != null) {
-				acc = acc + (neighbour.getScore() * nr);
-				nNeighbours++;
-
-				if (normalize) {
-					c = c + neighbour.getScore();
-				}
-			}
-		}
-
-		if (nNeighbours >= this.minNeighbourRatings)
-			return (double) acc / c;
-		else
-			return 0.0;
-	}*/
 
 	@Override
 	public String toString() {

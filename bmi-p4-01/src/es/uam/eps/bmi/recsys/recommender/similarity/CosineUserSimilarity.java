@@ -12,9 +12,11 @@ public class CosineUserSimilarity implements Similarity {
 	private Ratings ratings;
 	private Map<Integer, Map<Integer, Double>> data;
 
-	public CosineUserSimilarity(Ratings ratings) { // TODO vencidarios
+	public CosineUserSimilarity(Ratings ratings) { // TODO importante
+													// vencidarios
 													// simetricos? ---> ¿¿x,y ==
-													// y,x??
+													// y,x??---->
+													// (get x y) =? (get y x)
 		this.ratings = ratings;
 
 		this.data = new HashMap<>();
@@ -58,7 +60,7 @@ public class CosineUserSimilarity implements Similarity {
 		Set<Integer> x1 = this.ratings.getItems(x);
 		Set<Integer> y1 = this.ratings.getItems(y);
 
-		// Items valorados por ambos
+		// Items valorados por ambos usuarios
 		HashSet<Integer> xy = new HashSet<>(x1);
 		xy.retainAll(y1); // Interseccion
 
