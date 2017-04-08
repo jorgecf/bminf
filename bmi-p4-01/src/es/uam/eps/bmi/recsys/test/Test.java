@@ -52,7 +52,7 @@ public class Test {
         Ratings ratings = new RatingsImpl(ratingsFile, separator);
         Features<F> features = new FeaturesImpl<F>(featuresFile, separator, featureParser);
         
-        testData(ratings, features, user, item);
+    //    testData(ratings, features, user, item);
         
         testRecommenders(ratings, features, k, n, 3, 4);
 
@@ -66,7 +66,7 @@ public class Test {
             new Recall(test, threshold, cutoff),
         };
         
-        evaluateRecommenders(train, features, k, n, metrics);
+      //  evaluateRecommenders(train, features, k, n, metrics);
     }
     
     static <F>void testData(Ratings ratings, Features<F> features, int user, int item) {
@@ -91,8 +91,8 @@ public class Test {
         testRecommender(new AverageRecommender(ratings, 2), n, nUsers, nItems);
         Timer.reset();
        
-        Ratings[] rr=ratings.randomSplit(0.98);
-        testRecommender(new UserKNNRecommender(rr[1], new CosineUserSimilarity(rr[1]), k), n, nUsers, nItems);
+       // Ratings[] rr=ratings.randomSplit(0.98);
+        testRecommender(new UserKNNRecommender(ratings, new CosineUserSimilarity(ratings), k), n, nUsers, nItems);
         
         Timer.reset();
         testRecommender(new NormUserKNNRecommender(ratings, new CosineUserSimilarity(ratings), k, 2), n, nUsers, nItems);

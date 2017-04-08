@@ -11,6 +11,7 @@ public class CosineUserSimilarity implements Similarity {
 
 	private Ratings ratings;
 	private Map<Integer, Map<Integer, Double>> data;
+	// private Map<Integer, Ranking> data;
 
 	public CosineUserSimilarity(Ratings ratings) { // TODO vencidarios
 													// simetricos? ---> ¿¿x,y ==
@@ -28,11 +29,13 @@ public class CosineUserSimilarity implements Similarity {
 
 			HashMap<Integer, Double> nh = new HashMap<>();
 			for (Integer user2 : users2) {
-				Double v = this.simAux(user1, user2);
-				nh.put(user2, v);
+				if (user1 != user2) {
+					Double v = this.simAux(user1, user2);
+					if (v > 0.0)
+						nh.put(user2, v);
+				}
+				this.data.put(user1, nh);
 			}
-			this.data.put(user1, nh);
-
 		}
 
 		Timer.time("[1] cosine constructor: ");
@@ -44,8 +47,8 @@ public class CosineUserSimilarity implements Similarity {
 		if (this.data.containsKey(x) && this.data.get(x).containsKey(y)) {
 			return this.data.get(x).get(y);
 		} else {
-			System.out.println("CosineUserSimilarity.sim(): SIM not found");
-			return this.simAux(x, y);
+			//System.out.println("CosineUserSimilarity.sim(): SIM not found, assuming 0.0");
+			return 0.0;
 		}
 	}
 
