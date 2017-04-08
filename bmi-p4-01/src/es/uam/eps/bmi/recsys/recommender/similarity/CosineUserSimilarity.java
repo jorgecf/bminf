@@ -11,7 +11,6 @@ public class CosineUserSimilarity implements Similarity {
 
 	private Ratings ratings;
 	private Map<Integer, Map<Integer, Double>> data;
-	// private Map<Integer, Ranking> data;
 
 	public CosineUserSimilarity(Ratings ratings) { // TODO vencidarios
 													// simetricos? ---> ¿¿x,y ==
@@ -52,7 +51,6 @@ public class CosineUserSimilarity implements Similarity {
 
 	private double simAux(int x, int y) {
 
-		// tema 5 pag 58 o 60
 		Double acc = 0.0;
 		Double acc2u = 0.0;
 		Double acc2v = 0.0;
@@ -62,7 +60,7 @@ public class CosineUserSimilarity implements Similarity {
 
 		// Items valorados por ambos
 		HashSet<Integer> xy = new HashSet<>(x1);
-		xy.retainAll(y1); //
+		xy.retainAll(y1); // Interseccion
 
 		// Sumatorio de items que ambos users han valorado
 		for (Integer item : xy) {

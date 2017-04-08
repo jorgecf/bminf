@@ -85,17 +85,16 @@ public class Test {
     }
     
     static <F> void testRecommenders(Ratings ratings, Features<F> features, int k, int n, int nUsers, int nItems) throws FileNotFoundException {
-        Timer.reset();
-        testRecommender(new MajorityRecommender(ratings), n, nUsers, nItems);
-        Timer.reset();
-        testRecommender(new AverageRecommender(ratings, 2), n, nUsers, nItems);
-        Timer.reset();
+      //  Timer.reset();
+     //   testRecommender(new MajorityRecommender(ratings), n, nUsers, nItems);
+     //   Timer.reset();
+      //  testRecommender(new AverageRecommender(ratings, 2), n, nUsers, nItems);
+     //   Timer.reset();
        
-       // Ratings[] rr=ratings.randomSplit(0.98);
-        testRecommender(new UserKNNRecommender(ratings, new CosineUserSimilarity(ratings), k), n, nUsers, nItems);
+     //   testRecommender(new UserKNNRecommender(ratings, new CosineUserSimilarity(ratings), k), n, nUsers, nItems);
         
-        Timer.reset();
-        testRecommender(new NormUserKNNRecommender(ratings, new CosineUserSimilarity(ratings), k, 2), n, nUsers, nItems);
+      //  Timer.reset();
+    //    testRecommender(new NormUserKNNRecommender(ratings, new CosineUserSimilarity(ratings), k, 2), n, nUsers, nItems);
         Timer.reset();
         testRecommender(new ItemNNRecommender(ratings, new CosineItemSimilarity(ratings)), n, nUsers, nItems);
         Timer.reset();

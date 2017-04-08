@@ -1,14 +1,10 @@
 package es.uam.eps.bmi.recsys.recommender;
 
-import java.util.Iterator;
-
 import es.uam.eps.bmi.recsys.data.Ratings;
-import es.uam.eps.bmi.recsys.ranking.Ranking;
-import es.uam.eps.bmi.recsys.ranking.RankingElement;
 import es.uam.eps.bmi.recsys.ranking.RankingImpl;
 import es.uam.eps.bmi.recsys.recommender.similarity.Similarity;
 
-public class UserKNNRecommender extends AbstractRecommender {
+public class UserKNNRecommender extends AbstractUserKNNRecommender {
 
 	private int k;
 	private Similarity similarity;
@@ -36,11 +32,11 @@ public class UserKNNRecommender extends AbstractRecommender {
 					rank.add(user2, s);
 			}
 
-			return this.scoreAux(user, item, rank); // TODO simplif con average
+			return this.scoreAux(user, item, rank, false, 0); // TODO simplif con average
 		}
 	}
 
-	private double scoreAux(int user, int item, Ranking kNearest) {
+/*	private double scoreAux(int user, int item, Ranking kNearest) {
 
 		double acc = 0.0;
 
@@ -53,7 +49,7 @@ public class UserKNNRecommender extends AbstractRecommender {
 		}
 
 		return acc;
-	}
+	}*/
 
 	@Override
 	public String toString() {
