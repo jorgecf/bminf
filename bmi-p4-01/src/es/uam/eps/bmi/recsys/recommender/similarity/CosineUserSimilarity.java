@@ -4,6 +4,7 @@ import es.uam.eps.bmi.recsys.data.Ratings;
 import es.uam.eps.bmi.recsys.util.Timer;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,36 +48,54 @@ public class CosineUserSimilarity implements Similarity {
 		if (this.data.containsKey(x) && this.data.get(x).containsKey(y)) {
 			return this.data.get(x).get(y);
 		} else {
-			//System.out.println("CosineUserSimilarity.sim(): SIM not found, assuming 0.0");
 			return 0.0;
 		}
 	}
 
 	private double simAux(int x, int y) {
+	
 		// tema 5 pag 58 o 60
 		Double acc = 0.0;
 		Double acc2u = 0.0;
 		Double acc2v = 0.0;
 
-		// TODO coger menor set x o y
-		for (Integer item : this.ratings.getItems(x)) { // getItems(x)
+		
+		Set<Integer> x1=this.ratings.getItems(x);
+		Set<Integer> y1=this.ratings.getItems(y);
 
-			Double rx = this.ratings.getRating(x, item); // TODO formula mal?
+		// Items valorados por ambos
+		HashSet<Integer> xy=new HashSet<>(x1);
+		xy.retainAll(y1); //
+
+		
+		// Sumatorio de items que ambos users han valorado
+		for (Integer item : xy) {
+
+			Double rx = this.ratings.getRating(x, item);
 			Double ry = this.ratings.getRating(y, item);
 
 			if (rx != null && ry != null) {
 				acc += rx * ry;
 			}
+			else{
+				System.out.println("CosineUserSimilarity.simAux() FALLO");
+			}
 
 		}
 
-		for (Integer item : this.ratings.getItems()) {
-			Double rx = this.ratings.getRating(x, item); // TODO formula mal?
-			Double ry = this.ratings.getRating(y, item);
+		// Sumatorio de r(u, i)^2 (items rateados por x)
+		for (Integer item : this.ratings.getItems(x)) {
+			Double rx = this.ratings.getRating(x, item);
 
 			if (rx != null) {
 				acc2u += rx * rx;
 			}
+
+		}
+		
+		// Sumatorio de r(v, i)^2 (items rateados por y)
+		for (Integer item : this.ratings.getItems(y)) {
+			Double ry = this.ratings.getRating(y, item);
 
 			if (ry != null) {
 				acc2v += ry * ry;
@@ -88,6 +107,5 @@ public class CosineUserSimilarity implements Similarity {
 			return 0.0;
 		else
 			return ret;
-		// return ret; /// NaN TODO
 	}
 }
