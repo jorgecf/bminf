@@ -42,5 +42,4 @@ public abstract class AbstractRecommender implements Recommender {
 
 		return r;
 	}
-
 }

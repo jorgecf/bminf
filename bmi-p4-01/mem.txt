@@ -1,8 +1,34 @@
+EJ2
+
+UserKNN
+	mi pc: 20-40 segundos 4GB ram
+	Como lo hemos aligerado tanto:
+
+	AbstractRecommender:
+		Iteramos solo sobre los items que el user no ha valorado aun
+	
+	AbstractUserKNNRecommender
+		Solo calculamos el ranking de vecinos mas proximos a cada user una vez, despues
+		lo leemos de una tabla hash donde se almacena (este cambio fue el que mas tiempo redujo)
+	
+	CosineUserSimilarity
+		Para los 3 sumatorios, solo iteramos sobre el set exacto de items (de x e y, de x, y de y),
+		asi evitamos iteraciones largas y chequeos de null innecesarios
+		
+		Los sumatorios de abajo (raiz de todos los ratings del user al cuadrado) son constantes
+		independientemente del otro user, asi que los calculamos una sola vez y los guardamos en una hash
+		
+	UserKNNRecommender y NormUserKNNRecommender no tienen codigo
+		
+	
+	
+
 EJ4
 
 ITEMNN
 	guardar suma de ratings de cada item, para no tener que recalcular cada vez (mapa item - double)
 	al iterar, iterar con el resto de items desde el actual (iteraciones de cada vez menos items, descartamos anteriores) al ser vecindario simetrico
+
 
 EJ5
 

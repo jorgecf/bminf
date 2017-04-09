@@ -1,9 +1,7 @@
 package es.uam.eps.bmi.recsys.recommender.similarity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,17 +24,11 @@ public class CosineUserSimilarity implements Similarity {
 		Set<Integer> users2 = ratings.getUsers();
 
 		// Precalculamos todas las similitudes
-		int index = 0;
-		int end = users2.size();
-		List<Integer> rest = new ArrayList<Integer>(users2);
 		for (Integer user1 : users1) {
 
-			index++;
-			rest = rest.subList(1, end + 1 - index);
-
 			HashMap<Integer, Double> nh = new HashMap<>();
-			for (Integer user2 : rest) {
 
+			for (Integer user2 : users2) {
 				Double v = this.simAux(user1, user2);
 				if (v > 0.0) {
 					nh.put(user2, v);
@@ -45,7 +37,6 @@ public class CosineUserSimilarity implements Similarity {
 
 			this.data.put(user1, nh);
 		}
-
 	}
 
 	@Override
@@ -53,8 +44,6 @@ public class CosineUserSimilarity implements Similarity {
 
 		if (this.data.containsKey(x) && this.data.get(x).containsKey(y)) {
 			return this.data.get(x).get(y);
-		} else if (this.data.containsKey(y) && this.data.get(y).containsKey(x)) {
-			return this.data.get(y).get(x);
 		} else {
 			return 0.0;
 		}
@@ -71,7 +60,14 @@ public class CosineUserSimilarity implements Similarity {
 
 		// Items valorados por ambos usuarios
 		HashSet<Integer> xy = new HashSet<>(x1);
-		xy.retainAll(y1); // Interseccion
+		xy.retainAll(y1); // interseccion
+
+		// Si no tienen elementos en comun, su similitud sera
+		// 0 / algo ---> 0. Lo mismo pasa si algun user no
+		// ha valorado nada ( algo / algo * 0 ) ---> 0.
+		if (xy.size() == 0 || x1.size() == 0 || y1.size() == 0) {
+			return 0.0;
+		}
 
 		// Sumatorio de items que ambos users han valorado
 		for (Integer item : xy) {
@@ -79,21 +75,17 @@ public class CosineUserSimilarity implements Similarity {
 			Double rx = this.ratings.getRating(x, item);
 			Double ry = this.ratings.getRating(y, item);
 
-			if (rx != null && ry != null) {
-				acc += rx * ry;
-			}
+			acc += rx * ry;
 		}
 
 		// Sumatorio de r(u, i)^2 (items rateados por x)
 		if (this.userRatings.containsKey(x) == false) {
+
 			for (Integer item : this.ratings.getItems(x)) {
 				Double rx = this.ratings.getRating(x, item);
-
-				if (rx != null) {
-					acc2u += rx * rx;
-				}
-
+				acc2u += rx * rx;
 			}
+
 			this.userRatings.put(x, acc2u);
 		} else {
 			acc2u = this.userRatings.get(x);
@@ -101,18 +93,18 @@ public class CosineUserSimilarity implements Similarity {
 
 		// Sumatorio de r(v, i)^2 (items rateados por y)
 		if (this.userRatings.containsKey(y) == false) {
+
 			for (Integer item : this.ratings.getItems(y)) {
 				Double ry = this.ratings.getRating(y, item);
-
-				if (ry != null) {
-					acc2v += ry * ry;
-				}
+				acc2v += ry * ry;
 			}
+
 			this.userRatings.put(y, acc2v);
 		} else {
 			acc2v = this.userRatings.get(y);
 		}
 
+		// Resultado final.
 		Double ret = (double) acc / Math.sqrt(acc2u * acc2v);
 		if (ret.isNaN())
 			return 0.0;
