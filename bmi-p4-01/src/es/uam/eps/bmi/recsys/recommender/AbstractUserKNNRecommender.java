@@ -9,8 +9,16 @@ import es.uam.eps.bmi.recsys.ranking.RankingElement;
 import es.uam.eps.bmi.recsys.ranking.RankingImpl;
 import es.uam.eps.bmi.recsys.recommender.similarity.Similarity;
 
+/**
+ * Recommender base para user-based KNN.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public abstract class AbstractUserKNNRecommender extends AbstractRecommender {
 
+	/* Mapa de user - ranking de sus vecinos mas proximos, ya calculado */
 	protected Map<Integer, RankingImpl> prevRankings;
 	protected Similarity similarity;
 	protected int k;
@@ -19,14 +27,15 @@ public abstract class AbstractUserKNNRecommender extends AbstractRecommender {
 
 	public AbstractUserKNNRecommender(Ratings ratings, Similarity similarity, int k, boolean normalize,
 			int minNeighbourRatings) {
+
 		super(ratings);
 
 		this.k = k;
 		this.normalize = normalize;
 		this.minNeighbourRatings = minNeighbourRatings;
 		this.similarity = similarity;
+		
 		this.prevRankings = new HashMap<>();
-
 	}
 
 	@Override
@@ -40,7 +49,7 @@ public abstract class AbstractUserKNNRecommender extends AbstractRecommender {
 
 			RankingImpl rank;
 
-			// k vecinos mas proximos
+			// k vecinos mas proximos.
 			if (this.prevRankings.containsKey(user) == false) {
 
 				rank = new RankingImpl(this.k);
@@ -89,7 +98,7 @@ public abstract class AbstractUserKNNRecommender extends AbstractRecommender {
 			c = 1;
 		}
 
-		// Restriccion en numero de valoraciones minimo de mis vecinos.
+		// Restriccion en numero de valoraciones minimo de vecinos.
 		if (nNeighbours >= minNeighbourRatings)
 			return (double) acc / c;
 		else

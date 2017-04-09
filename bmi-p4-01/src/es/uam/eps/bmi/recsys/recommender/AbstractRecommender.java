@@ -9,6 +9,14 @@ import es.uam.eps.bmi.recsys.data.Ratings;
 import es.uam.eps.bmi.recsys.ranking.Ranking;
 import es.uam.eps.bmi.recsys.ranking.RankingImpl;
 
+/**
+ * Recommender abstracto. Crea un ranking de recomendacion a partir de las
+ * scores de user con item.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public abstract class AbstractRecommender implements Recommender {
 
 	protected Ratings ratings;

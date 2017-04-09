@@ -7,10 +7,21 @@ import java.util.Set;
 
 import es.uam.eps.bmi.recsys.data.Ratings;
 
+/**
+ * Calcula la similitud entre usuarios por el metodo del coseno.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class CosineUserSimilarity implements Similarity {
 
 	private Ratings ratings;
+
+	/* Informacion de user -> (user2, sim[user, user2]) */
 	private Map<Integer, Map<Integer, Double>> data;
+
+	/* Mapa de usuario -> sumatorio de sus ratings al cuadrado */
 	private Map<Integer, Double> userRatings;
 
 	public CosineUserSimilarity(Ratings ratings) {
@@ -29,9 +40,14 @@ public class CosineUserSimilarity implements Similarity {
 			HashMap<Integer, Double> nh = new HashMap<>();
 
 			for (Integer user2 : users2) {
-				Double v = this.simAux(user1, user2);
-				if (v > 0.0) {
-					nh.put(user2, v);
+
+				if (this.data.containsKey(user2) && this.data.get(user2).containsKey(user1)) {
+					// simetria
+				} else {
+					Double v = this.simAux(user1, user2);
+					if (v > 0.0) {
+						nh.put(user2, v);
+					}
 				}
 			}
 
@@ -42,11 +58,14 @@ public class CosineUserSimilarity implements Similarity {
 	@Override
 	public double sim(int x, int y) {
 
-		if (this.data.containsKey(x) && this.data.get(x).containsKey(y)) {
+		if (this.data.containsKey(x) && this.data.get(x).containsKey(y))
 			return this.data.get(x).get(y);
-		} else {
-			return 0.0;
-		}
+
+		if (this.data.containsKey(y) && this.data.get(y).containsKey(x))
+			return this.data.get(y).get(x);
+
+		return 0.0;
+
 	}
 
 	private double simAux(int x, int y) {
@@ -58,7 +77,7 @@ public class CosineUserSimilarity implements Similarity {
 		Set<Integer> x1 = this.ratings.getItems(x);
 		Set<Integer> y1 = this.ratings.getItems(y);
 
-		// Items valorados por ambos usuarios
+		// Items valorados por ambos usuarios.
 		HashSet<Integer> xy = new HashSet<>(x1);
 		xy.retainAll(y1); // interseccion
 
@@ -69,7 +88,7 @@ public class CosineUserSimilarity implements Similarity {
 			return 0.0;
 		}
 
-		// Sumatorio de items que ambos users han valorado
+		// Sumatorio de items que ambos users han valorado.
 		for (Integer item : xy) {
 
 			Double rx = this.ratings.getRating(x, item);
@@ -78,7 +97,7 @@ public class CosineUserSimilarity implements Similarity {
 			acc += rx * ry;
 		}
 
-		// Sumatorio de r(u, i)^2 (items rateados por x)
+		// Sumatorio de r(u, i)^2 (items rateados por x).
 		if (this.userRatings.containsKey(x) == false) {
 
 			for (Integer item : this.ratings.getItems(x)) {
@@ -91,7 +110,7 @@ public class CosineUserSimilarity implements Similarity {
 			acc2u = this.userRatings.get(x);
 		}
 
-		// Sumatorio de r(v, i)^2 (items rateados por y)
+		// Sumatorio de r(v, i)^2 (items rateados por y).
 		if (this.userRatings.containsKey(y) == false) {
 
 			for (Integer item : this.ratings.getItems(y)) {
