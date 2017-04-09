@@ -1,7 +1,9 @@
 package es.uam.eps.bmi.recsys.recommender.similarity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,28 +13,33 @@ public class CosineUserSimilarity implements Similarity {
 
 	private Ratings ratings;
 	private Map<Integer, Map<Integer, Double>> data;
+	private Map<Integer, Double> userRatings;
 
-	public CosineUserSimilarity(Ratings ratings) { // TODO importante
-													// vencidarios
-													// simetricos? ---> ¿¿x,y ==
-													// y,x??---->
-													// (get x y) =? (get y x)
+	public CosineUserSimilarity(Ratings ratings) {
+
 		this.ratings = ratings;
 
 		this.data = new HashMap<>();
+		this.userRatings = new HashMap<>();
 
 		Set<Integer> users1 = ratings.getUsers();
 		Set<Integer> users2 = ratings.getUsers();
 
 		// Precalculamos todas las similitudes
+		int index = 0;
+		int end = users2.size();
+		List<Integer> rest = new ArrayList<Integer>(users2);
 		for (Integer user1 : users1) {
 
+			index++;
+			rest = rest.subList(1, end + 1 - index);
 			HashMap<Integer, Double> nh = new HashMap<>();
-			for (Integer user2 : users2) {
+			for (Integer user2 : rest) {
 				if (user1 != user2) {
 					Double v = this.simAux(user1, user2);
-					if (v > 0.0)
+					if (v > 0.0) {
 						nh.put(user2, v);
+					}
 				}
 
 				this.data.put(user1, nh);
@@ -76,22 +83,32 @@ public class CosineUserSimilarity implements Similarity {
 		}
 
 		// Sumatorio de r(u, i)^2 (items rateados por x)
-		for (Integer item : this.ratings.getItems(x)) {
-			Double rx = this.ratings.getRating(x, item);
+		if (this.userRatings.containsKey(x) == false) {
+			for (Integer item : this.ratings.getItems(x)) {
+				Double rx = this.ratings.getRating(x, item);
 
-			if (rx != null) {
-				acc2u += rx * rx;
+				if (rx != null) {
+					acc2u += rx * rx;
+				}
+
 			}
-
+			this.userRatings.put(x, acc2u);
+		} else {
+			acc2u = this.userRatings.get(x);
 		}
 
 		// Sumatorio de r(v, i)^2 (items rateados por y)
-		for (Integer item : this.ratings.getItems(y)) {
-			Double ry = this.ratings.getRating(y, item);
+		if (this.userRatings.containsKey(y) == false) {
+			for (Integer item : this.ratings.getItems(y)) {
+				Double ry = this.ratings.getRating(y, item);
 
-			if (ry != null) {
-				acc2v += ry * ry;
+				if (ry != null) {
+					acc2v += ry * ry;
+				}
 			}
+			this.userRatings.put(y, acc2v);
+		} else {
+			acc2v = this.userRatings.get(y);
 		}
 
 		Double ret = (double) acc / Math.sqrt(acc2u * acc2v);

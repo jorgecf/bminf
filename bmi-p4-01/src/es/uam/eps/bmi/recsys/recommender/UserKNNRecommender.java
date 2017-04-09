@@ -28,12 +28,12 @@ public class UserKNNRecommender extends AbstractUserKNNRecommender {
 			RankingImpl rank = new RankingImpl(this.k);
 			for (Integer user2 : this.ratings.getUsers()) {
 				Double s = this.similarity.sim(user, user2);
-				if (s > 0.0)
+				if (s > 0.0) {
 					rank.add(user2, s);
+				}
 			}
 
-			return this.scoreAux(user, item, rank, false, 0); // TODO simplif
-																// con average
+			return this.scoreAux(user, item, rank, false, 0);
 		}
 	}
 

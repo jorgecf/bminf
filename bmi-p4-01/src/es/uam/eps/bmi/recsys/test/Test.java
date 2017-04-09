@@ -89,14 +89,12 @@ public class Test {
      //   testRecommender(new MajorityRecommender(ratings), n, nUsers, nItems);
      //   Timer.reset();
       //  testRecommender(new AverageRecommender(ratings, 2), n, nUsers, nItems);
-     //   Timer.reset();
-       
-     //   testRecommender(new UserKNNRecommender(ratings, new CosineUserSimilarity(ratings), k), n, nUsers, nItems);
-        
+        Timer.reset();
+        testRecommender(new UserKNNRecommender(ratings, new CosineUserSimilarity(ratings), k), n, nUsers, nItems);
       //  Timer.reset();
     //    testRecommender(new NormUserKNNRecommender(ratings, new CosineUserSimilarity(ratings), k, 2), n, nUsers, nItems);
-        Timer.reset();
-        testRecommender(new ItemNNRecommender(ratings, new CosineItemSimilarity(ratings)), n, nUsers, nItems);
+     //   Timer.reset();
+     //   testRecommender(new ItemNNRecommender(ratings, new CosineItemSimilarity(ratings)), n, nUsers, nItems);
      //   Timer.reset();
      //   testRecommender(new CentroidRecommender<F>(ratings, new CosineFeatureSimilarity<F>(features)), n, nUsers, nItems);
      //   Timer.reset();
