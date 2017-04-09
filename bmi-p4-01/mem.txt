@@ -1,3 +1,9 @@
+EJ4
+
+ITEMNN
+	guardar suma de ratings de cada item, para no tener que recalcular cada vez (mapa item - double)
+	al iterar, iterar con el resto de items desde el actual (iteraciones de cada vez menos items, descartamos anteriores) al ser vecindario simetrico
+
 EJ5
 
-metricas salen diferentes segun ejecucion ---> al venir de un RandomSplit
+	metricas salen diferentes segun ejecucion ---> al venir de un RandomSplit

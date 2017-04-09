@@ -96,7 +96,12 @@ public class RatingsImpl implements Ratings {
 
 	@Override
 	public Set<Integer> getUsers(int item) {
-		return this.dataInverse.get(item).keySet();
+		Map<Integer, Double> ret = this.dataInverse.get(item);
+
+		if (ret != null)
+			return ret.keySet();
+		else
+			return null;
 	}
 
 	@Override
