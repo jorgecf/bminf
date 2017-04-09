@@ -33,17 +33,17 @@ public class CosineUserSimilarity implements Similarity {
 
 			index++;
 			rest = rest.subList(1, end + 1 - index);
+
 			HashMap<Integer, Double> nh = new HashMap<>();
 			for (Integer user2 : rest) {
-				if (user1 != user2) {
-					Double v = this.simAux(user1, user2);
-					if (v > 0.0) {
-						nh.put(user2, v);
-					}
-				}
 
-				this.data.put(user1, nh);
+				Double v = this.simAux(user1, user2);
+				if (v > 0.0) {
+					nh.put(user2, v);
+				}
 			}
+
+			this.data.put(user1, nh);
 		}
 
 	}
@@ -53,6 +53,8 @@ public class CosineUserSimilarity implements Similarity {
 
 		if (this.data.containsKey(x) && this.data.get(x).containsKey(y)) {
 			return this.data.get(x).get(y);
+		} else if (this.data.containsKey(y) && this.data.get(y).containsKey(x)) {
+			return this.data.get(y).get(x);
 		} else {
 			return 0.0;
 		}

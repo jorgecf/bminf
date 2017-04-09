@@ -14,7 +14,7 @@ public class CosineItemSimilarity implements Similarity {
 
 	private Ratings ratings;
 	private Map<Integer, Map<Integer, Double>> data;
-	private Map<IdPair, Double> data2;
+	// private Map<IdPair, Double> data2;
 	private Map<Integer, Double> itemRatings;
 
 	public CosineItemSimilarity(Ratings ratings) {
@@ -23,7 +23,7 @@ public class CosineItemSimilarity implements Similarity {
 		this.ratings = ratings;
 
 		this.data = new HashMap<>();
-		this.data2 = new HashMap<>();
+		//this.data2 = new HashMap<>();
 		this.itemRatings = new HashMap<>();
 
 		Set<Integer> items1 = ratings.getItems();
@@ -55,6 +55,7 @@ public class CosineItemSimilarity implements Similarity {
 			rest = rest.subList(1, end + 1 - index);
 			// Timer.time("sublista---> ");
 
+			HashMap<Integer, Double> nh = new HashMap<>();
 			for (Integer item2 : rest) {
 				// if (item1 != item2) {
 				// IdPair pair = new IdPair(item1, item2);
@@ -62,7 +63,8 @@ public class CosineItemSimilarity implements Similarity {
 				// if (this.data2.containsKey(pair) == false) {
 				Double v = this.simAux(item1, item2);
 				if (v > 0.0) {
-					this.data2.put(new IdPair(item1, item2), v);
+					// this.data2.put(new IdPair(item1, item2), v);
+					nh.put(item2, v);
 				}
 				// }
 				// }
