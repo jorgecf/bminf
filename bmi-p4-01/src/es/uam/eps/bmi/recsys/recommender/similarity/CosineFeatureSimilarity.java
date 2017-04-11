@@ -15,4 +15,10 @@ public class CosineFeatureSimilarity<F> extends FeatureSimilarity<F> {
 		return 0;
 	}
 
+	@Override
+	public String toString() {
+		return "cosine on user centroid";
+	}
+
+	
 }

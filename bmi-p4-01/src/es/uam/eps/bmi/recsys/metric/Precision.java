@@ -6,6 +6,13 @@ import es.uam.eps.bmi.recsys.data.Ratings;
 import es.uam.eps.bmi.recsys.ranking.Ranking;
 import es.uam.eps.bmi.recsys.ranking.RankingElement;
 
+/**
+ * Calcula la Precision@K de una recomendacion respecto a unos ratings.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class Precision implements Metric {
 
 	private Ratings ratings;
@@ -29,7 +36,7 @@ public class Precision implements Metric {
 
 			nRelevants = 0;
 
-			// Obtenenmos el ranking de lo que se le ha recomenddo
+			// Obtenenemos el ranking de lo que se le ha recomenddo
 			Ranking r = rec.getRecommendation(user);
 
 			int c = 0;
@@ -39,7 +46,8 @@ public class Precision implements Metric {
 
 				RankingElement rel = it.next();
 
-				// Lo ha valorado con nota necesaria?
+				// Lo ha valorado con nota necesaria?: Si si, es una buena
+				// recomendacion
 				Double rat = this.ratings.getRating(user, rel.getID());
 				if (rat != null && rat > this.treshold) {
 					nRelevants++;

@@ -4,14 +4,22 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Caracteristicas de los items. Tambie parsea el input en csv.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class FeaturesImpl<F> implements Features<F> {
 
-	private Map<Integer, Map<F, Double>> data; // id - feature/count
+	/*
+	 * Mapa de item id -> mapa de caracteristica, numero de apariciones en item
+	 */
+	private Map<Integer, Map<F, Double>> data;
 
 	private String featuresFile;
 	private String separator;
@@ -23,12 +31,11 @@ public class FeaturesImpl<F> implements Features<F> {
 		this.featuresFile = featuresFile;
 		this.separator = separator;
 		this.parser = parser;
-		
+
 		this.parseInput(this.featuresFile, this.separator);
 	}
 
-	private void parseInput(String r, String separator) { // mover a otra clase?
-		// TODO
+	private void parseInput(String r, String separator) {
 
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(r));
@@ -36,11 +43,9 @@ public class FeaturesImpl<F> implements Features<F> {
 			String line = "";
 			while ((line = br.readLine()) != null) {
 
-				// use comma as separator
 				String[] d = line.split(separator);
 				try {
 					this.setFeature(Integer.valueOf(d[0]), this.parser.parse(d[1]), Double.valueOf(d[2]));
-					// this.nRatings++;
 				} catch (NumberFormatException n) {
 				}
 			}
@@ -54,12 +59,21 @@ public class FeaturesImpl<F> implements Features<F> {
 
 	@Override
 	public Set<F> getFeatures(int id) {
-		return this.data.get(id).keySet();
+		Map<F, Double> ret = this.data.get(id);
+
+		if (ret != null)
+			return ret.keySet();
+		else
+			return null;
 	}
 
 	@Override
 	public Double getFeature(int id, F feature) {
-		return this.data.get(id).get(feature);
+		
+		if (this.data.containsKey(id) && this.data.get(id).containsKey(feature))
+			return this.data.get(id).get(feature);
+
+		return 0.0;
 	}
 
 	@Override

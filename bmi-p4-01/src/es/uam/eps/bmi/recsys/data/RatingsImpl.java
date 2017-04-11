@@ -9,14 +9,25 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+/**
+ * Ratings. (Usuario -> item -> score). Tambien se encarga de parsear la entrada
+ * en csv.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class RatingsImpl implements Ratings {
 
 	private String ratingsFile;
 	private String separator;
 
-	private Map<Integer, Map<Integer, Double>> data; // user - item/rating
-	private Map<Integer, Map<Integer, Double>> dataInverse; // item -
-															// user/rating
+	/* Mapa de usuario -> mapa de item, rating de usuario */
+	private Map<Integer, Map<Integer, Double>> data;
+
+	/* Mapa de item -> mapa de usuario, rating de usuario */
+	private Map<Integer, Map<Integer, Double>> dataInverse;
+
 	private int nRatings;
 
 	public RatingsImpl() {
@@ -36,8 +47,7 @@ public class RatingsImpl implements Ratings {
 		this.parseInput(this.ratingsFile, this.separator);
 	}
 
-	private void parseInput(String r, String separator) { // mover a otra clase?
-															// TODO
+	private void parseInput(String r, String separator) {
 
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(r));
@@ -87,9 +97,8 @@ public class RatingsImpl implements Ratings {
 	@Override
 	public Double getRating(int user, int item) {
 
-		if (this.data.containsKey(user))
-			if (this.data.get(user).containsKey(item))
-				return this.data.get(user).get(item);
+		if (this.data.containsKey(user) && this.data.get(user).containsKey(item))
+			return this.data.get(user).get(item);
 
 		return null;
 	}
@@ -148,6 +157,7 @@ public class RatingsImpl implements Ratings {
 				int next2 = it2.next();
 				Double rat2 = this.data.get(next).get(next2);
 
+				// Dividiamos de acuerdo al ratio en tanto por ciento.
 				int nx = rnd.nextInt(100);
 
 				if (nx <= 100 * ratio) {
@@ -162,14 +172,7 @@ public class RatingsImpl implements Ratings {
 		r[0] = r1;
 		r[1] = r2;
 
-		System.out.println("DATA: " + this.nRatings + ", r1: " + ((RatingsImpl) r1).nRatings + ", r2: "
-				+ ((RatingsImpl) r2).nRatings + "; RATIO=== " + ratio);
-
 		return r;
-	}
-
-	public Map<Integer, Map<Integer, Double>> getData() {
-		return data;
 	}
 
 }

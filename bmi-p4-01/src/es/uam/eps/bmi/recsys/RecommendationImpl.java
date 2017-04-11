@@ -10,9 +10,17 @@ import java.util.Set;
 import es.uam.eps.bmi.recsys.ranking.Ranking;
 import es.uam.eps.bmi.recsys.ranking.RankingElement;
 
+/**
+ * Recomendacion, asigna a cada user un ranking de elementos recomendados.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class RecommendationImpl implements Recommendation {
 
-	private Map<Integer, Ranking> data; // user-ranking
+	/* Mapa de userID - Ranking asignado */
+	private Map<Integer, Ranking> data; 
 
 	public RecommendationImpl() {
 		this.data = new HashMap<>();
@@ -35,7 +43,6 @@ public class RecommendationImpl implements Recommendation {
 
 	@Override
 	public void print(PrintStream out) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override

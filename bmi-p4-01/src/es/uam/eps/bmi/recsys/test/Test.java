@@ -52,7 +52,7 @@ public class Test {
         Ratings ratings = new RatingsImpl(ratingsFile, separator);
         Features<F> features = new FeaturesImpl<F>(featuresFile, separator, featureParser);
         
-    //    testData(ratings, features, user, item);
+        testData(ratings, features, user, item);
         
         testRecommenders(ratings, features, k, n, 3, 4);
 

@@ -1,12 +1,20 @@
 package es.uam.eps.bmi.recsys.metric;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import es.uam.eps.bmi.recsys.Recommendation;
 import es.uam.eps.bmi.recsys.data.Ratings;
 import es.uam.eps.bmi.recsys.ranking.Ranking;
 import es.uam.eps.bmi.recsys.ranking.RankingElement;
 
+/**
+ * Calcula la Precision@K de una recomendacion respecto a unos ratings.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class Recall implements Metric {
 
 	private Ratings ratings;
@@ -23,6 +31,7 @@ public class Recall implements Metric {
 	public double compute(Recommendation rec) {
 
 		int nRelevants = 0;
+		int totRelevants = 0;
 		double pAcc = 0;
 
 		// Iteramos sobre cada user
@@ -30,7 +39,18 @@ public class Recall implements Metric {
 
 			nRelevants = 0;
 
-			// Obtenenmos el ranking de lo que se le ha recomenddo
+			totRelevants = 0;
+
+			Set<Integer> itemSet = this.ratings.getItems(user);
+			if (itemSet != null) {
+				for (Integer item : itemSet) {
+					Double rt = this.ratings.getRating(user, item);
+					if (rt.isNaN() == false && rt > this.treshold)
+						totRelevants++;
+				}
+			}
+
+			// Obtenenemos el ranking de lo que se le ha recomenddo
 			Ranking r = rec.getRecommendation(user);
 
 			int c = 0;
@@ -49,9 +69,12 @@ public class Recall implements Metric {
 				c++;
 			}
 
-			// relevantes-en-k / numero de relevantes
+			// relevantes-en-k / numero de relevantes TOTALES
 			if (this.ratings.getItems(user) != null) {
-				pAcc += ((double) nRelevants) / this.ratings.getItems(user).size();
+				Double nAcc = ((double) nRelevants) / totRelevants;
+				if (nAcc.isNaN())
+					nAcc = 0.0;
+				pAcc += nAcc;
 			}
 		}
 
