@@ -4,6 +4,15 @@ import java.util.Set;
 
 import es.uam.eps.bmi.recsys.data.Features;
 
+/**
+ * Calcula la similitud basada en contenido por coseno. Usa xFeatures e
+ * yFeatures (caracteristicas de cada elemento sobre el que llamar a sim(x, y)
+ * ).
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class CosineFeatureSimilarity<F> extends FeatureSimilarity<F> {
 
 	public CosineFeatureSimilarity(Features<F> features) {
@@ -37,7 +46,8 @@ public class CosineFeatureSimilarity<F> extends FeatureSimilarity<F> {
 		}
 
 		// Sumatorio de caracteristicas comunes
-		for (F commonFeature : itemF) {//TODO removeall
+		itemF.retainAll(userF);
+		for (F commonFeature : itemF) {
 			common = common
 					+ (this.xFeatures.getFeature(x, commonFeature) * this.yFeatures.getFeature(y, commonFeature));
 		}
