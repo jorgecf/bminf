@@ -16,13 +16,13 @@ import es.uam.eps.bmi.recsys.data.Ratings;
  */
 public class CosineUserSimilarity implements Similarity {
 
-	private Ratings ratings;
+	protected Ratings ratings;
 
 	/* Informacion de user -> (user2, sim[user, user2]) */
-	private Map<Integer, Map<Integer, Double>> data;
+	protected Map<Integer, Map<Integer, Double>> data;
 
 	/* Mapa de usuario -> sumatorio de sus ratings al cuadrado */
-	private Map<Integer, Double> userRatings;
+	protected Map<Integer, Double> userRatings;
 
 	public CosineUserSimilarity(Ratings ratings) {
 
@@ -68,7 +68,7 @@ public class CosineUserSimilarity implements Similarity {
 
 	}
 
-	private double simAux(int x, int y) {
+	protected double simAux(int x, int y) {
 
 		Double acc = 0.0;
 		Double acc2u = 0.0;
