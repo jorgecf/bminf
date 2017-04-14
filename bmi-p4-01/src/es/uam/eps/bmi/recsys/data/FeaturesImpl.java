@@ -4,11 +4,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Caracteristicas de los items. Tambie parsea el input en csv.
+ * Caracteristicas de los items. Tambien parsea el input en csv.
  * 
  * @author Jorge Cifuentes
  * @author Alejandro Martin
@@ -17,13 +18,17 @@ import java.util.Set;
 public class FeaturesImpl<F> implements Features<F> {
 
 	/*
-	 * Mapa de item id -> mapa de caracteristica, numero de apariciones en item
+	 * Mapa de id -> mapa de (caracteristica, numero de apariciones para ese id)
 	 */
 	private Map<Integer, Map<F, Double>> data;
 
 	private String featuresFile;
 	private String separator;
 	private Parser<F> parser;
+
+	public FeaturesImpl() {
+		this.data = new HashMap<>();
+	}
 
 	public FeaturesImpl(String featuresFile, String separator, Parser<F> parser) {
 		this.data = new HashMap<>();
@@ -64,7 +69,7 @@ public class FeaturesImpl<F> implements Features<F> {
 		if (ret != null)
 			return ret.keySet();
 		else
-			return null;
+			return new HashSet<>(); // emptySet
 	}
 
 	@Override
