@@ -1,15 +1,19 @@
 package es.uam.eps.bmi.recsys.recommender.similarity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import es.uam.eps.bmi.recsys.data.Ratings;
-import es.uam.eps.bmi.recsys.util.Timer;
 
+/**
+ * Calcula la similitud entre dos items por el metodo del coseno.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class CosineItemSimilarity implements Similarity {
 
 	private Ratings ratings;
@@ -33,7 +37,7 @@ public class CosineItemSimilarity implements Similarity {
 			for (Integer item2 : items2) {
 
 				if (this.data.containsKey(item2) && this.data.get(item2).containsKey(item1)) {
-					// simetria
+					// simetria, ya almacenado
 				} else {
 					Double v = this.simAux(item1, item2);
 					if (v > 0.0) {
@@ -82,9 +86,7 @@ public class CosineItemSimilarity implements Similarity {
 			Double rx = this.ratings.getRating(user, x);
 			Double ry = this.ratings.getRating(user, y);
 
-			// if (rx != null && ry != null) {
 			acc += rx * ry;
-			// }
 		}
 
 		// Sumatorio de r(u, i)^2 (ratings obtenidos por x)
@@ -92,10 +94,7 @@ public class CosineItemSimilarity implements Similarity {
 			for (Integer user : this.ratings.getUsers(x)) {
 				Double rx = this.ratings.getRating(user, x);
 
-				// if (rx != null) {
 				acc2u += rx * rx;
-				// }
-
 			}
 
 			this.itemRatings.put(x, acc2u);
@@ -108,9 +107,7 @@ public class CosineItemSimilarity implements Similarity {
 			for (Integer user : this.ratings.getUsers(y)) {
 				Double ry = this.ratings.getRating(user, y);
 
-				// if (ry != null) {
 				acc2v += ry * ry;
-				// }
 			}
 
 			this.itemRatings.put(y, acc2v);

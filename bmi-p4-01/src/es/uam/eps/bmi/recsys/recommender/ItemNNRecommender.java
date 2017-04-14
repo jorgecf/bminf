@@ -3,6 +3,14 @@ package es.uam.eps.bmi.recsys.recommender;
 import es.uam.eps.bmi.recsys.data.Ratings;
 import es.uam.eps.bmi.recsys.recommender.similarity.Similarity;
 
+/**
+ * Recomendador por NN items (recomienda respecto a otros items valorados por el
+ * usuario).
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class ItemNNRecommender extends AbstractRecommender {
 
 	private Similarity similarity;
