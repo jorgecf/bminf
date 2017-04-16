@@ -9,7 +9,7 @@ import es.uam.eps.bmi.recsys.ranking.Ranking;
 import es.uam.eps.bmi.recsys.ranking.RankingElement;
 
 /**
- * Calcula la Precision@K de una recomendacion respecto a unos ratings.
+ * Calcula el Recall@K de una recomendacion respecto a unos ratings.
  * 
  * @author Jorge Cifuentes
  * @author Alejandro Martin

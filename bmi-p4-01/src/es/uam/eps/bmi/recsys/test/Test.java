@@ -54,7 +54,7 @@ public class Test {
         
      //   testData(ratings, features, user, item);
         
-        testRecommenders(ratings, features, k, n, 3, 4);
+     //   testRecommenders(ratings, features, k, n, 3, 4);
 
         Ratings folds[] = ratings.randomSplit(0.8);
         Ratings train = folds[0];
@@ -66,7 +66,7 @@ public class Test {
             new Recall(test, threshold, cutoff),
         };
         
-      //  evaluateRecommenders(train, features, k, n, metrics);
+        evaluateRecommenders(train, features, k, n, metrics);
     }
     
     static <F>void testData(Ratings ratings, Features<F> features, int user, int item) {

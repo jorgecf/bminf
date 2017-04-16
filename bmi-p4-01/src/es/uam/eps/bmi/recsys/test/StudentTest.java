@@ -17,6 +17,7 @@ import es.uam.eps.bmi.recsys.recommender.similarity.PearsonSimilarity;
 import es.uam.eps.bmi.recsys.util.Timer;
 
 public class StudentTest {
+	
 	public static void main(String a[]) throws FileNotFoundException {
 		System.out.println("=========================");
 		System.out.println("Testing MovieLens \"latest-small\" dataset");
@@ -38,21 +39,24 @@ public class StudentTest {
 			throws FileNotFoundException {
 		Timer.reset();
 		testRecommender(new UserKNNRecommender(ratings, new PearsonSimilarity(ratings), k), n, nUsers, nItems);
-		
 	}
-	
 
-    static <U,I extends Comparable<I>> void testRecommender(Recommender recommender, int n, int nUsers, int nItems) throws FileNotFoundException {
-        System.out.println("-------------------------");
-        System.out.println("Testing " + recommender + " recommender");
-        Recommendation rec = recommender.recommend(n);
-        rec.print(System.out, nUsers, nItems);
-        
-        File outFolder = new File("recommendations");
-        if (!outFolder.exists()) outFolder.mkdir();
-        else for (File f : outFolder.listFiles()) if (f.isFile()) f.delete();
+	static <U, I extends Comparable<I>> void testRecommender(Recommender recommender, int n, int nUsers, int nItems)
+			throws FileNotFoundException {
+		System.out.println("-------------------------");
+		System.out.println("Testing " + recommender + " recommender");
+		Recommendation rec = recommender.recommend(n);
+		rec.print(System.out, nUsers, nItems);
 
-        rec.print(new PrintStream("recommendations/" + recommender + ".dat"));
-        Timer.time("--> ");
-    }
+		File outFolder = new File("recommendations");
+		if (!outFolder.exists())
+			outFolder.mkdir();
+		else
+			for (File f : outFolder.listFiles())
+				if (f.isFile())
+					f.delete();
+
+		rec.print(new PrintStream("recommendations/" + recommender + ".dat"));
+		Timer.time("--> ");
+	}
 }
