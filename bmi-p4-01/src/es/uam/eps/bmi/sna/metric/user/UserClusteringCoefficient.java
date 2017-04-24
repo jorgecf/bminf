@@ -1,13 +1,7 @@
 package es.uam.eps.bmi.sna.metric.user;
 
-public class UserClusteringCoefficient<U> {
+import es.uam.eps.bmi.sna.metric.LocalMetric;
+import es.uam.eps.bmi.sna.ranking.Ranking;
+import es.uam.eps.bmi.sna.structure.UndirectedSocialNetwork;
 
-	public UserClusteringCoefficient(int topK) {
-		// TODO Auto-generated constructor stub
-	}
-
-	public UserClusteringCoefficient() {
-		// TODO Auto-generated constructor stub
-	}
-
-}
+public class UserClusteringCoefficient{}

@@ -7,7 +7,9 @@ public class Assortativity<U> implements GlobalMetric<U>{
 
 	@Override
 	public double compute(UndirectedSocialNetwork<U> network) {
-		// TODO Auto-generated method stub
+	
+		
+		
 		return 0;
 	}
 
