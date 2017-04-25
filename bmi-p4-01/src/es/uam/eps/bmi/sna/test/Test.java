@@ -27,12 +27,12 @@ import java.io.FileNotFoundException;
 public class Test {
     public static void main (String a[]) throws FileNotFoundException {
         testNetwork("graph/small1.csv", ",", new IntParser(), 5, 6, 4);
-        testNetwork("graph/small2.csv", ",", new IntParser(), 5, 3, 5);
+      testNetwork("graph/small2.csv", ",", new IntParser(), 5, 3, 5);
         testNetwork("graph/small3.csv", ",", new StringParser(), 5, "a", "b");
-        testNetwork("graph/fb.csv", ",", new IntParser(), 5, 9, 3);
+     /*       testNetwork("graph/fb.csv", ",", new IntParser(), 5, 9, 3);
         testNetwork("graph/twitter.csv", ",", new StringParser(), 5, "el_pais", "ElviraLindo");
         testNetwork("graph/barabasi.csv", ",", new IntParser(), 5, 1, 2);
-        testNetwork("graph/erdos.csv", ",", new IntParser(), 5, 1, 2);
+        testNetwork("graph/erdos.csv", ",", new IntParser(), 5, 1, 2);*/
     }
     
     static <U extends Comparable<U>>void testNetwork(String graphFile, String separator, Parser<U> parser, int topK, U u, U v) throws FileNotFoundException {
@@ -54,7 +54,7 @@ public class Test {
         System.out.println("-------------------------");
         testMetric(new ClusteringCoefficient<U>(), network);
    //     testMetric(new AvgUserMetric<U>(new UserClusteringCoefficient<U>()), network);
- //       testMetric(new Assortativity<U>(), network);
+        testMetric(new Assortativity<U>(), network);
     }
     
     static <T extends Comparable<T>,U>void testMetric(LocalMetric<T,U> metric, UndirectedSocialNetwork<U> network, T example) {
