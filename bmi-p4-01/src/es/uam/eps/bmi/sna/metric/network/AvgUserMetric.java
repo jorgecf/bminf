@@ -1,12 +1,12 @@
 package es.uam.eps.bmi.sna.metric.network;
 
 import es.uam.eps.bmi.sna.metric.GlobalMetric;
-import es.uam.eps.bmi.sna.metric.user.UserClusteringCoefficient;
+import es.uam.eps.bmi.sna.metric.LocalMetric;
 import es.uam.eps.bmi.sna.structure.UndirectedSocialNetwork;
 
-public class AvgUserMetric<U> implements GlobalMetric<U>{
+public class AvgUserMetric<U extends Comparable<U>> implements GlobalMetric<U>{
 
-	public AvgUserMetric(UserClusteringCoefficient<U> userClusteringCoefficient) {
+	public AvgUserMetric(LocalMetric<U, U> metric) {
 		// TODO Auto-generated constructor stub
 	}
 

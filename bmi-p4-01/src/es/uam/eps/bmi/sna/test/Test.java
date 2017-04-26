@@ -43,21 +43,21 @@ public class Test {
         System.out.println("User " + u + " has " + network.getContacts(u).size() + " contacts");
 
         // Métricas de usuarios
-  //      System.out.println("-------------------------");
-    //   testMetric(new UserClusteringCoefficient<U>(topK), network, u);
-
+        System.out.println("-------------------------");
+        testMetric(new UserClusteringCoefficient<U>(topK), network, u);
+        
         // Métricas de arcos
-      //  System.out.println("-------------------------");
-   //     testMetric(new Embededness<U>(topK), network, new Edge<U>(u, v));
+       System.out.println("-------------------------");
+        testMetric(new Embededness<U>(topK), network, new Edge<U>(u, v));
         
         // Métricas globales de red
         System.out.println("-------------------------");
         testMetric(new ClusteringCoefficient<U>(), network);
-   //     testMetric(new AvgUserMetric<U>(new UserClusteringCoefficient<U>()), network);
+        testMetric(new AvgUserMetric<U>(new UserClusteringCoefficient<U>()), network);
         testMetric(new Assortativity<U>(), network);
     }
     
-    static <T extends Comparable<T>,U>void testMetric(LocalMetric<T,U> metric, UndirectedSocialNetwork<U> network, T example) {
+	static <T extends Comparable<T>,U>void testMetric(LocalMetric<T,U> metric, UndirectedSocialNetwork<U> network, T example) {
         Timer.reset();
         System.out.println(metric);
         Ranking<T> ranking = metric.compute(network);
