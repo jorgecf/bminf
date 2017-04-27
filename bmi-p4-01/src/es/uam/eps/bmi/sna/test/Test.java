@@ -27,7 +27,7 @@ import java.io.FileNotFoundException;
 public class Test {
     public static void main (String a[]) throws FileNotFoundException {
         testNetwork("graph/small1.csv", ",", new IntParser(), 5, 6, 4);
-      testNetwork("graph/small2.csv", ",", new IntParser(), 5, 3, 5);
+     testNetwork("graph/small2.csv", ",", new IntParser(), 5, 3, 5);
         testNetwork("graph/small3.csv", ",", new StringParser(), 5, "a", "b");
             testNetwork("graph/fb.csv", ",", new IntParser(), 5, 9, 3);
         testNetwork("graph/twitter.csv", ",", new StringParser(), 5, "el_pais", "ElviraLindo");
@@ -48,7 +48,7 @@ public class Test {
         
         // Métricas de arcos
        System.out.println("-------------------------");
-    //    testMetric(new Embededness<U>(topK), network, new Edge<U>(u, v));
+        testMetric(new Embededness<U>(topK), network, new Edge<U>(u, v));
         
         // Métricas globales de red
         System.out.println("-------------------------");
