@@ -3,6 +3,13 @@ package es.uam.eps.bmi.sna.metric.network;
 import es.uam.eps.bmi.sna.metric.GlobalMetric;
 import es.uam.eps.bmi.sna.structure.UndirectedSocialNetwork;
 
+/**
+ * Calcula la asortatividad de una red.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class Assortativity<U> implements GlobalMetric<U> {
 
 	@Override

@@ -11,6 +11,13 @@ import es.uam.eps.bmi.sna.ranking.RankingImpl;
 import es.uam.eps.bmi.sna.structure.Edge;
 import es.uam.eps.bmi.sna.structure.UndirectedSocialNetwork;
 
+/**
+ * Calcula el arraigo de una red.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class Embededness<U extends Comparable<U>> implements LocalMetric<Edge<U>, U> {
 
 	private Ranking<Edge<U>> ret;
@@ -66,6 +73,11 @@ public class Embededness<U extends Comparable<U>> implements LocalMetric<Edge<U>
 		union.addAll(vecinosV);
 
 		return (double) intersection.size() / union.size();
+	}
+
+	@Override
+	public String toString() {
+		return "Embededness";
 	}
 
 }

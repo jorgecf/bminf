@@ -3,6 +3,13 @@ package es.uam.eps.bmi.sna.metric.network;
 import es.uam.eps.bmi.sna.metric.GlobalMetric;
 import es.uam.eps.bmi.sna.structure.UndirectedSocialNetwork;
 
+/**
+ * Calcula el coeficiente de clustering global de una red.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class ClusteringCoefficient<U> implements GlobalMetric<U> {
 
 	@Override
@@ -26,8 +33,8 @@ public class ClusteringCoefficient<U> implements GlobalMetric<U> {
 			}
 		}
 
-		numTriang/=2; // quitamos repetidos
-		
+		numTriang /= 2; // quitamos repetidos
+
 		// Numero de vertices
 		for (U user : network.getUsers()) {
 			int size = network.getContacts(user).size();
@@ -37,4 +44,8 @@ public class ClusteringCoefficient<U> implements GlobalMetric<U> {
 		return (double) numTriang / numVertex;
 	}
 
+	@Override
+	public String toString() {
+		return "ClusteringCoefficient";
+	}
 }

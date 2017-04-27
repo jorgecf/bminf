@@ -5,6 +5,13 @@ import es.uam.eps.bmi.sna.ranking.Ranking;
 import es.uam.eps.bmi.sna.ranking.RankingImpl;
 import es.uam.eps.bmi.sna.structure.UndirectedSocialNetwork;
 
+/**
+ * Calcula el coeficiente de clustering local de un nodo de una red.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class UserClusteringCoefficient<U extends Comparable<U>> implements LocalMetric<U, U> {
 
 	private Ranking<U> ret;
@@ -48,6 +55,11 @@ public class UserClusteringCoefficient<U extends Comparable<U>> implements Local
 		neighbourCon /= 2;
 
 		return (double) neighbourCon / possibleCon;
+	}
+
+	@Override
+	public String toString() {
+		return "UserClusteringCoefficient";
 	}
 
 }
