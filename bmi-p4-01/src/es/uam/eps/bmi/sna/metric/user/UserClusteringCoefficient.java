@@ -2,28 +2,52 @@ package es.uam.eps.bmi.sna.metric.user;
 
 import es.uam.eps.bmi.sna.metric.LocalMetric;
 import es.uam.eps.bmi.sna.ranking.Ranking;
+import es.uam.eps.bmi.sna.ranking.RankingImpl;
 import es.uam.eps.bmi.sna.structure.UndirectedSocialNetwork;
 
 public class UserClusteringCoefficient<U extends Comparable<U>> implements LocalMetric<U, U> {
 
+	private Ranking<U> ret;
+
 	public UserClusteringCoefficient(int topK) {
-		// TODO
+		this.ret = new RankingImpl<>(topK);
 	}
 
 	public UserClusteringCoefficient() {
-		// TODO Auto-generated constructor stub
+		this.ret = new RankingImpl<>();
 	}
 
 	@Override
 	public Ranking<U> compute(UndirectedSocialNetwork<U> network) {
-		// TODO Auto-generated method stub
-		return null;
+
+		for (U user : network.getUsers()) {
+			ret.add(user, this.compute(network, user));
+		}
+
+		return ret;
 	}
 
 	@Override
 	public double compute(UndirectedSocialNetwork<U> network, U element) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		double neighbourCon = 0.0;
+		double possibleCon = 0.0;
+
+		// posibles conexiones entre vecinos (grafo no dirigido)
+		possibleCon = (double) (network.getContacts(element).size() * (network.getContacts(element).size() - 1)) / 2;
+
+		// conexiones entre vecinos
+		for (U neighbour : network.getContacts(element)) {
+			for (U neighbour2 : network.getContacts(element)) {
+				if (network.connected(neighbour, neighbour2))
+					neighbourCon++;
+			}
+		}
+
+		// eliminamos conexiones repetidas
+		neighbourCon /= 2;
+
+		return (double) neighbourCon / possibleCon;
 	}
 
 }
