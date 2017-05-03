@@ -1,5 +1,6 @@
 package es.uam.eps.bmi.sna.test;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,6 +26,8 @@ public class GenerateTest {
 		ErdosRenyiGenerator<Integer, Integer> er = new ErdosRenyiGenerator<Integer, Integer>(graphFactory1, vertexFactory1, edgeFactory1, 100, 0.5);
 		Graph<Integer, Integer> gEr = er.create();
 		
+		File archivo1 = new File("graph/erdos.csv");
+		
 		Factory<Graph<Integer,Integer>> graphFactory2 = new GraphFactory();
 		Factory<Integer> vertexFactory2 = new VertexFactory();
 		Factory<Integer> edgeFactory2 = new EdgeFactory();
@@ -32,6 +35,8 @@ public class GenerateTest {
 		
 		BarabasiAlbertGenerator<Integer, Integer> ba = new BarabasiAlbertGenerator<Integer, Integer>(graphFactory2, vertexFactory2, edgeFactory2, 10, 100, s);
 		Graph<Integer, Integer> gBa = ba.create();
+		
+		File archivo2 = new File("graph/barabasi.csv");
 		
 	}
 	
