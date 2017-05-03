@@ -26,26 +26,38 @@ public class GenerateTest {
 		Factory<Integer> vertexFactory1 = new VertexFactory();
 		Factory<Integer> edgeFactory1 = new EdgeFactory();
 		
-		ErdosRenyiGenerator<Integer, Integer> er = new ErdosRenyiGenerator<Integer, Integer>(graphFactory1, vertexFactory1, edgeFactory1, 100, 0.5);
+		ErdosRenyiGenerator<Integer, Integer> er = new ErdosRenyiGenerator<Integer, Integer>(graphFactory1, vertexFactory1, edgeFactory1, 4000, 0.5);
 		Graph<Integer, Integer> gEr = er.create();
 		
 		FileWriter archivo1 = new FileWriter("graph/erdos.csv");
 		PrintWriter pw1 = new PrintWriter(archivo1);
 		
 		// Escribir en el fichero erdos.csv los pares
+		for (Integer vertex : gEr.getVertices()) {
+			for (Integer neigh : gEr.getNeighbors(vertex))
+				pw1.println(vertex + "," + neigh);
+		}
+		
+		archivo1.close();
 		
 		Factory<Graph<Integer,Integer>> graphFactory2 = new GraphFactory();
 		Factory<Integer> vertexFactory2 = new VertexFactory();
 		Factory<Integer> edgeFactory2 = new EdgeFactory();
 		Set<Integer> s = new HashSet<Integer>();
 		
-		BarabasiAlbertGenerator<Integer, Integer> ba = new BarabasiAlbertGenerator<Integer, Integer>(graphFactory2, vertexFactory2, edgeFactory2, 10, 100, s);
+		BarabasiAlbertGenerator<Integer, Integer> ba = new BarabasiAlbertGenerator<Integer, Integer>(graphFactory2, vertexFactory2, edgeFactory2, 10, 4000, s);
 		Graph<Integer, Integer> gBa = ba.create();
 		
 		FileWriter archivo2 = new FileWriter("graph/barabasi.csv");
 		PrintWriter pw2 = new PrintWriter(archivo2);
 		
 		// Escribir en el fichero barabasi.csv los pares
+		for (Integer vertex : gBa.getVertices()) {
+			for (Integer neigh : gBa.getNeighbors(vertex))
+				pw2.println(vertex + "," + neigh);
+		}
+		
+		archivo2.close();
 		
 	}
 	
