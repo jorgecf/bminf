@@ -1,6 +1,9 @@
 package es.uam.eps.bmi.sna.test;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +20,7 @@ import es.uam.eps.bmi.sna.generator.VertexFactory;
 
 public class GenerateTest {
 	
-	public static void main (String a[]) {
+	public static void main (String a[]) throws IOException {
 		
 		Factory<UndirectedGraph<Integer,Integer>> graphFactory1 = new UndirectedGraphFactory();
 		Factory<Integer> vertexFactory1 = new VertexFactory();
@@ -26,7 +29,10 @@ public class GenerateTest {
 		ErdosRenyiGenerator<Integer, Integer> er = new ErdosRenyiGenerator<Integer, Integer>(graphFactory1, vertexFactory1, edgeFactory1, 100, 0.5);
 		Graph<Integer, Integer> gEr = er.create();
 		
-		File archivo1 = new File("graph/erdos.csv");
+		FileWriter archivo1 = new FileWriter("graph/erdos.csv");
+		PrintWriter pw1 = new PrintWriter(archivo1);
+		
+		// Escribir en el fichero erdos.csv los pares
 		
 		Factory<Graph<Integer,Integer>> graphFactory2 = new GraphFactory();
 		Factory<Integer> vertexFactory2 = new VertexFactory();
@@ -36,7 +42,10 @@ public class GenerateTest {
 		BarabasiAlbertGenerator<Integer, Integer> ba = new BarabasiAlbertGenerator<Integer, Integer>(graphFactory2, vertexFactory2, edgeFactory2, 10, 100, s);
 		Graph<Integer, Integer> gBa = ba.create();
 		
-		File archivo2 = new File("graph/barabasi.csv");
+		FileWriter archivo2 = new FileWriter("graph/barabasi.csv");
+		PrintWriter pw2 = new PrintWriter(archivo2);
+		
+		// Escribir en el fichero barabasi.csv los pares
 		
 	}
 	
