@@ -44,8 +44,15 @@ public class GenerateTest {
 		Factory<Integer> vertexFactory2 = new VertexFactory();
 		Factory<Integer> edgeFactory2 = new EdgeFactory();
 		Set<Integer> s = new HashSet<Integer>();
+		s.add(1);
+		s.add(2);
+		s.add(3);
+		s.add(4);
+		s.add(5);
+		s.add(6);
+		s.add(7);
 		
-		BarabasiAlbertGenerator<Integer, Integer> ba = new BarabasiAlbertGenerator<Integer, Integer>(graphFactory2, vertexFactory2, edgeFactory2, 10, 4000, s);
+		BarabasiAlbertGenerator<Integer, Integer> ba = new BarabasiAlbertGenerator<Integer, Integer>(graphFactory2, vertexFactory2, edgeFactory2, s.size(), 1, s);
 		Graph<Integer, Integer> gBa = ba.create();
 		
 		FileWriter archivo2 = new FileWriter("graph/barabasi.csv");
