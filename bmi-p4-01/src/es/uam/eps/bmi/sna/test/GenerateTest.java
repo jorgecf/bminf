@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.collections15.Factory;
 
@@ -43,16 +44,10 @@ public class GenerateTest {
 		Factory<Graph<Integer,Integer>> graphFactory2 = new GraphFactory();
 		Factory<Integer> vertexFactory2 = new VertexFactory();
 		Factory<Integer> edgeFactory2 = new EdgeFactory();
-		Set<Integer> s = new HashSet<Integer>();
-		s.add(1);
-		s.add(2);
-		s.add(3);
-		s.add(4);
-		s.add(5);
-		s.add(6);
-		s.add(7);
+		Set<Integer> s = new TreeSet<Integer>();
 		
-		BarabasiAlbertGenerator<Integer, Integer> ba = new BarabasiAlbertGenerator<Integer, Integer>(graphFactory2, vertexFactory2, edgeFactory2, s.size(), 1, s);
+		BarabasiAlbertGenerator<Integer, Integer> ba = new BarabasiAlbertGenerator<Integer, Integer>(graphFactory2, vertexFactory2, edgeFactory2, 2000, 2000, s);
+		ba.evolveGraph(10);
 		Graph<Integer, Integer> gBa = ba.create();
 		
 		FileWriter archivo2 = new FileWriter("graph/barabasi.csv");
