@@ -14,7 +14,48 @@ public class GradesTest {
 	
 	public static void main (String a[]) throws IOException {
 		
-		FileWriter archivo1 = new FileWriter("graph/small1_grades.txt");
+		FileWriter archivo1 = new FileWriter("graph/twitter_grades.txt");
+		PrintWriter pw1 = new PrintWriter(archivo1);
+		
+		int i = 0;
+		
+		BufferedReader br1 = new BufferedReader(new FileReader("graph/twitter.csv"));
+		
+		HashMap<String, Integer> h = new HashMap<String, Integer>();
+		HashMap<String, Integer> hS = new HashMap<String, Integer>();
+		
+		String line = br1.readLine();
+		while (line != null) {
+	        String[] str = line.split(",");
+	        String i1 = str[0];
+	        String i2 = str[1];
+	        if (hS.containsKey(i1)) {
+	        	hS.put(i1, (hS.get(i1))+1);
+	        } else {
+	        	hS.put(i1, 1);
+	        	h.put(i1, i);
+	        	i++;
+	        }
+	        if (hS.containsKey(i2)) {
+	        	hS.put(i2, (hS.get(i2))+1);	        	
+	        } else {
+	        	hS.put(i2, 1);
+	        	h.put(i2, i);
+	        	i++;
+	        }
+	        line = br1.readLine();
+	    }
+		
+		Set<String> e = hS.keySet();
+		for (String elem : e) {
+			pw1.println(h.get(elem)+ " " + hS.get(elem));
+		}
+		
+		archivo1.close();
+		
+		// Todas menos Twitter
+		/*
+		 FileWriter archivo1 = new FileWriter("graph/small1_grades.txt");
 		PrintWriter pw1 = new PrintWriter(archivo1);
 		
 		BufferedReader br1 = new BufferedReader(new FileReader("graph/small1.csv"));
@@ -45,6 +86,7 @@ public class GradesTest {
 		}
 		
 		archivo1.close();
+		 */
 		
 	}
 
