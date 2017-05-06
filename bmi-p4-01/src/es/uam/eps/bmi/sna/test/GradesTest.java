@@ -5,9 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Set;
 
 public class GradesTest {
@@ -52,6 +50,7 @@ public class GradesTest {
 		}
 		
 		archivo1.close();
+		br1.close();
 		
 		// Todas menos Twitter
 		/*

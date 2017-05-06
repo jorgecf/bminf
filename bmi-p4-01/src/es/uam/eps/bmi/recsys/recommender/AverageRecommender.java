@@ -5,6 +5,13 @@ import java.util.Map;
 
 import es.uam.eps.bmi.recsys.data.Ratings;
 
+/**
+ * Recommender por media de los items.
+ * 
+ * @author Jorge Cifuentes
+ * @author Alejandro Martin
+ *
+ */
 public class AverageRecommender extends AbstractRecommender {
 
 	private int minRatings;
@@ -46,6 +53,5 @@ public class AverageRecommender extends AbstractRecommender {
 	public String toString() {
 		return "average";
 	}
-	
 
 }

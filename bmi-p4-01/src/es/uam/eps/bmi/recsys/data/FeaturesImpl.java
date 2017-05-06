@@ -74,7 +74,7 @@ public class FeaturesImpl<F> implements Features<F> {
 
 	@Override
 	public Double getFeature(int id, F feature) {
-		
+
 		if (this.data.containsKey(id) && this.data.get(id).containsKey(feature))
 			return this.data.get(id).get(feature);
 

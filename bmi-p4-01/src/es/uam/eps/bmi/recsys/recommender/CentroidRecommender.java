@@ -9,7 +9,7 @@ import es.uam.eps.bmi.recsys.data.Ratings;
 import es.uam.eps.bmi.recsys.recommender.similarity.FeatureSimilarity;
 
 /**
- * Recommender por centroide de usuario. 
+ * Recommender por centroide de usuario.
  * 
  * @author Jorge Cifuentes
  * @author Alejandro Martin
@@ -24,7 +24,8 @@ public class CentroidRecommender<F> extends AbstractRecommender {
 
 		this.similarity = similarity;
 
-		// Construimos una estructura de Features que aloje cada centroide (Users x Features)
+		// Construimos una estructura de Features que aloje cada centroide
+		// (Users x Features)
 		Features<F> centroids = new FeaturesImpl<>();
 
 		// Obtenemos todas las features.
@@ -46,7 +47,7 @@ public class CentroidRecommender<F> extends AbstractRecommender {
 						val = val + (r * f);
 					}
 				}
-				
+
 				val = (double) val / this.ratings.getItems(user).size();
 				centroids.setFeature(user, feature, val);
 			}

@@ -20,7 +20,7 @@ import es.uam.eps.bmi.recsys.ranking.RankingElement;
 public class RecommendationImpl implements Recommendation {
 
 	/* Mapa de userID - Ranking asignado */
-	private Map<Integer, Ranking> data; 
+	private Map<Integer, Ranking> data;
 
 	public RecommendationImpl() {
 		this.data = new HashMap<>();
